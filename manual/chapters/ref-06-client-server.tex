@@ -5,7 +5,7 @@
 
 db4o's is an embedded database which usually runs in process. Nevertheless db4o also supports a client server setup. There's no ready to use db4o server, instead you embedded the db4o server in a regular application. This gives you full how you want to run the db4o server.
 
-In order to use the db4o client server mode you need to include the db4o-X.XX-cs-javaC.jar if your not using the db4o-X.XX-all-javaX.jar in your project. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
+In order to use the db4o client server mode you need to include the db4o-8.1-cs.jar if your not using the db4o-8.1-all.jar in your project. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
 
 \section*{Start The Server}
 
@@ -439,7 +439,7 @@ sender.send(new HelloMessage("Hi Server!"));
 
 With the default settings db4o client-server communication is not encrypted and thus can potentially be a dangerous security hole. db4o supports SSL for client server communication. The implementation uses the \hyperref[ref:configuration-networking-pluggable-sockets]{pluggable socket} (p.~\pageref{ref:configuration-networking-pluggable-sockets}) to provide secure sockets.
 
-The SSL-communication uses the standard Java Secure Socket Extensions, which are part of the normal JRE. You take a look a to \href{http://java.sun.com/javase/technologies/security/}{full documentation here}.
+The SSL-communication uses the standard Java Secure Socket Extensions, which are part of the normal JRE. You take a look a to \href{https://docs.oracle.com/javase/8/docs/technotes/guides/security/}{full documentation here}.
 
 You simply need to add the SSLSupport on the server and the clients and you done. The default-implementation uses the default SSLContext for the client and the server.
 
@@ -459,7 +459,7 @@ configuration.common().add(new SSLSupport());
 {\small\itshape SSLExample.java: Add SSL-support to the client\par}
 \medskip
 
-Of course you also can build your own SSLContext with the Java API. After you've build the SSL-Context, you can pass it to the SSLSupport-constructor. Read in the Java documentation how to \href{http://java.sun.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html}{build a proper SSLContext:}
+Of course you also can build your own SSLContext with the Java API. After you've build the SSL-Context, you can pass it to the SSLSupport-constructor. Read in the Java documentation how to \href{https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html}{build a proper SSLContext:}
 
 \begin{lstlisting}
 // You can build your own SSLContext and use all features of Java's SSL-support.

@@ -1096,7 +1096,7 @@ This gives a total of 64 KB of cache memory.
 
 \paragraph*{Caching Type}
 
-By default db4o uses a LRU/Q2 caching strategy. You can more about the LRU/Q2 cache on the Internet or you can look for the concrete implementation in db4o source code: LRU2QCache, LRU2QXCache and LRUCache. The LRU2QCache is a simplified implementation of the 2 Queue algorithm described here:\href{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.34.2641}{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1..34.2641}
+By default db4o uses a LRU/Q2 caching strategy. You can read more about the LRU/Q2 cache on the Internet or you can look for the concrete implementation in db4o source code: LRU2QCache, LRU2QXCache and LRUCache. The LRU2QCache is a simplified implementation of the 2 Queue algorithm described in: Theodore Johnson and Dennis Shasha, ``2Q: A Low Overhead High Performance Buffer Management Replacement Algorithm'', \emph{Proceedings of the 20th VLDB Conference}, 1994
 
 It's possible to exchange the cache-type. Inherit from the CachingStorage class and overwrite the new cache method. There you return you're caching implementation. For example use a simple LRU-Cache.
 

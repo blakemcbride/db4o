@@ -5,58 +5,31 @@
 
 Welcome to the db4o tutorial. In this tutorial we explore the basics of db4o and how to work with it.
 
-\section*{Community Help}
-
-If you have any questions ask on the \href{http://community.versant.com/Forums.aspx}{db4o community} forums. You will also find \href{http://community.versant.com/Blogs.aspx}{news} and \href{http://community.versant.com/LearningCenter.aspx}{documentation} there.
-
 \section*{Getting db4o}
 
-There are two ways how you can get db4o. Either you can download a distribution from db4o website or you can use Maven to get it.
-
-\subsection*{Downloading db4o}
-
-Download db4o from the \href{http://community.versant.com/Downloads.aspx}{developer website}. I recommend using the 'production' version of db4o. Choose the download which fits your environment. The download contains the binaries, documentation and source.
-
-\begin{center}
-\includegraphics[width=\maxwidth]{images/tut-contentjava.png}
-\end{center}
-\subsection*{Using Maven}
-
-Another way to grab db4o is via \href{http://maven.apache.org/}{Maven}. For the tutorial we just grab the full db4o distribution.
+db4o is maintained at \href{https://github.com/blakemcbride/db4o}{\nolinkurl{github.com/blakemcbride/db4o}}. Clone or download the repository and build it as described in its \href{https://github.com/blakemcbride/db4o/blob/master/BUILD.md}{\nolinkurl{BUILD.md}} file. The build needs JDK 17 or newer and nothing else:
 
 \begin{lstlisting}
-<dependency>
-    <groupId>com.db4o</groupId>
-    <artifactId>db4o-full-java5</artifactId>
-    <version>8.1-SNAPSHOT</version>
-</dependency>
+git clone https://github.com/blakemcbride/db4o.git
+cd db4o
+./bld jar
 \end{lstlisting}
 
-Additionally we need to add the db4o Maven repository.
-
-\begin{lstlisting}
-<repositories>
-   <repository>
-        <id>db4o</id>
-        <name>Db4o</name>
-        <url>https://source.db4o.com/maven/</url>
-   </repository>
-</repositories>
-\end{lstlisting}
+This writes the db4o jars to the target directory.
 
 \section*{Adding db4o to a Project}
 
-When you are using Maven it will add the needed dependencies for your project. When you downloaded the distribution add following dependencies for this tutorial:
+For this tutorial, add the all-in-one jar to your project:
 
 \begin{itemize}
-\item db4o-X.XX-all-java5.jar
+\item target/db4o-8.1-all.jar
 \end{itemize}
 
-A detailed overview of the dependencies is available in the reference documentation.
+A detailed overview of the jars is available in the reference documentation.
 
 \section*{db4o Area of Use}
 
-db4o is intended for embedded use with smaller databases around 2-16 GByte. As a general rule, if you expect your database to grow beyond 16 gigabytes, you should look at the \href{http://www.versant.com/}{Versant object database}.
+db4o is intended for embedded use with smaller databases around 2-16 GByte. As a general rule, if you expect your database to grow beyond 16 gigabytes, you should look at a larger database system.
 
-db4o is explicitly single-threaded. Concurrent accesses will be synchronized against a global database lock.That means db4o cannot deal with a highly concurrent access, since it blocks on all operations. When you expect a high load and concurrent access, then you should consider a larger database like the \href{http://www.versant.com/}{Versant object database}.
+db4o is explicitly single-threaded. Concurrent accesses will be synchronized against a global database lock. That means db4o cannot deal with a highly concurrent access, since it blocks on all operations. When you expect a high load and concurrent access, then you should consider a larger database system.
 

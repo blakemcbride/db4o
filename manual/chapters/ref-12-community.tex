@@ -3,29 +3,7 @@
 \chapter{Community}
 \label{ref:community}
 
-Participate in the db4o community and help to improve db4o. The main community website for db4o is \href{http://community.versant.com/}{http://community.versant.com/}. There you can find the db4o forums, blog posts additional resources and the newest db4o releases.
-
-\section{Forums}
-\label{ref:community:db4o}
-
-The best place to ask questions about db4o, discuss and make suggestions are the db4o forums. You can find the db4o forums here:\href{http://community.versant.com/Forums.aspx}{http://community.versant.com/Forums.aspx}
-
-\section{Resources \& News}
-\label{ref:community:addition}
-
-To stay informed about new features, community activity and other news subscribe to the different db4o blogs: \href{http://community.versant.com/Blogs.aspx}{http://community.versant.com/Blogs.aspx}
-
-Or follow us on Twitter: \href{http://twitter.com/db4objects}{http://twitter.com/db4objects}
-
-\section*{Report Bugs}
-
-Every software contains bugs and so does db4o. If you find bugs please report them to us. In case you're not sure if you really found a bug, you maybe want to discuss your issue first on the \href{http://community.versant.com/Forums.aspx}{db4o forum}. As soon as you're sure that you found a bug it best to report in \href{http://tracker.db4o.com/}{our bug-tracking system}. The login is the same as in the db4o forums. Read more on tips and tricks for reporting bugs \hyperref[ref:community-report-bugs]{here} (p.~\pageref{ref:community-report-bugs}).
-
-When possible include a small test program which reproduces the issue with the bug report. A test case avoids confusion and effort to reproduce the bug.
-
-\section*{Working with the Source Code}
-
-\hyperref[ref:community-working-with-source-code]{See "Working With Source Code"} (p.~\pageref{ref:community-working-with-source-code})
+Participate in the db4o community and help to improve db4o. The original db4o community website, forums, blogs and bug tracker no longer exist. db4o is now maintained at \href{https://github.com/blakemcbride/db4o}{\nolinkurl{github.com/blakemcbride/db4o}}. There you can find the source code, the build instructions and this manual.
 
 \section{Report Bugs}
 \label{ref:community-report-bugs}
@@ -34,9 +12,7 @@ Found a bug in db4o? Here are a few tips and tricks for reporting bugs.
 
 \subsection*{Where Do I Report Bugs?}
 
-The best way to report a bug is to report it on our issue \href{http://tracker.db4o.com/}{tracking system}. The login for the bug tracker is the same as in the db4o community page and db4o forums. If you don't have a login yet you can register \href{http://community.versant.com/register.aspx}{here}.
-
-In cases you are not sure if the issue is an bug or another problem you maybe want to discuss it in the \href{http://community.versant.com/register.aspx}{db4o forums}.
+Report bugs through the \href{https://github.com/blakemcbride/db4o}{GitHub repository}. If you have a fix, send it as a pull request (see \hyperref[ref:community-working-with-source-patch-submission]{Patch Submission}, p.~\pageref{ref:community-working-with-source-patch-submission}).
 
 \subsection*{What Should the Bug Report Contain?}
 
@@ -53,17 +29,16 @@ The bug report should be as specific as possible, so that the room for interpret
 \section{Working With Source Code}
 \label{ref:community-working-with-source-code}
 
-db4o is an open-source project. The source is available for reviewing, modifying for own needs or contributing your modifications. You can use the \hyperref[ref:community-working-with-source-using-the-sources-from-db4o-distribution]{source code from the downloaded distribution} (p.~\pageref{ref:community-working-with-source-using-the-sources-from-db4o-distribution}) package or you may use our \hyperref[ref:community-working-with-source-using-the-repository]{SVN repository} (p.~\pageref{ref:community-working-with-source-using-the-repository}) to get the latest modifications.
+db4o is an open-source project. The source is available for reviewing, modifying for own needs or contributing your modifications. The complete source code is in the \hyperref[ref:community-working-with-source-using-the-repository]{GitHub repository} (p.~\pageref{ref:community-working-with-source-using-the-repository}).
 
 More Reading:
 
 \begin{itemize}
 \item \hyperref[ref:community-working-with-source-db4o-testing-framework]{Unit Tests for db4o} (p.~\pageref{ref:community-working-with-source-db4o-testing-framework})
 \item \hyperref[ref:community-working-with-source-sharpen]{Sharpen: Converting Java to C\#} (p.~\pageref{ref:community-working-with-source-sharpen})
-\item \hyperref[ref:community-working-with-source-using-the-sources-from-db4o-distribution]{Using The Sources From db4o Distribution} (p.~\pageref{ref:community-working-with-source-using-the-sources-from-db4o-distribution})
+\item \hyperref[ref:community-working-with-source-using-the-sources-from-db4o-distribution]{Source Projects} (p.~\pageref{ref:community-working-with-source-using-the-sources-from-db4o-distribution})
 \item \hyperref[ref:community-working-with-source-using-the-repository]{Using The Repository} (p.~\pageref{ref:community-working-with-source-using-the-repository})
 \item \hyperref[ref:community-working-with-source-building-full-distribution]{Building Full Distribution} (p.~\pageref{ref:community-working-with-source-building-full-distribution})
-\item Building Java Version
 \item \hyperref[ref:community-working-with-source-patch-submission]{Patch Submission} (p.~\pageref{ref:community-working-with-source-patch-submission})
 \end{itemize}
 
@@ -84,11 +59,7 @@ More Reading:
 \subsubsection{How To Setup Sharpen}
 \label{ref:community-working-with-source-sharpen-how-to-setup-sharpen}
 
-You can obtain sharpen source from db4o svn repository at:
-
-\href{https://source.db4o.com/db4o/trunk/sharpen}{https://source.db4o.com/db4o/trunk/sharpen}
-
-For the ease of use check-out sharpen projects:
+The sharpen source code is in the sharpen directory of the \href{https://github.com/blakemcbride/db4o}{db4o repository}. It consists of these projects:
 
 \begin{itemize}
 \item sharpen.builder
@@ -97,7 +68,7 @@ For the ease of use check-out sharpen projects:
 \item sharpen.ui.tests
 \end{itemize}
 
-Additionally Sharpen requires a valid \href{http://eclipse.org/}{Eclipse} installation to run. Install Eclipse on your machine or reuse an existing installation. Check out the four projects into the same workspace as your java project which you want to convert. This is not required is easier to use and maintain.
+Additionally Sharpen requires a valid \href{http://eclipse.org/}{Eclipse} installation to run. Install Eclipse on your machine or reuse an existing installation. Put the four projects into the same workspace as your java project which you want to convert. This is not required is easier to use and maintain.
 
 The first step is to build sharpen. For that we can use Apache Ant:
 
@@ -417,7 +388,7 @@ db4ounit design deviates from vanilla xUnit in some respect, but if you know xUn
 
 db4ounit itself is completely agnostic of db4o, but there is the db4ounit.extensions module which provides a base class for db4o specific test cases with different fixtures, etc.
 
-Db4ounit and db4ounit.extensions are supplied as a source code for both java and .NET. Java version also comes with a compiled library: db4o-X.XX-db4ounit.jar, which allows you to run your tests from a separate package.
+Db4ounit and db4ounit.extensions are supplied as a source code for both java and .NET. The Java version is compiled by \texttt{./bld test} into target/test-classes/db4ounit, which allows you to run your tests from a separate package.
 
 If you've found a bug and want to supply a test case to help db4o to fix the issue quickly, the best option would be to supply your code in the java db4ounit format. This format allows very easy integration of a new test case into db4o test suite: only copy/paste is required to put your test class code into the framework using Eclipse.
 
@@ -490,20 +461,18 @@ Usually it's more convenient to extend the AbstractDb4oTestCase class and use th
 
 This class provides a variety of methods for asserting certain conditions
 
-\subsection{Using The Sources From db4o Distribution}
+\subsection{Source Projects}
 \label{ref:community-working-with-source-using-the-sources-from-db4o-distribution}
 
-The sources for db4o are in the 'src' subdirectory of the db4o distribution. You simply can open these projects in Eclipse (or another IDE). Compile and use the db4o projects like any other Eclipse project.
-
-Following projects are shipped with db4o:
+The Java source code is split into the following projects, each in its own directory of the repository:
 
 \begin{itemize}
 \item bloat: The bytecode manipulation library used by db4o.
 \item db4o.cs: The db4o client server mode.
 \item db4o.cs.optional: Optional additions for the db4o client server mode.
 \item db4o.instrumentation: The base for different instrumentations provided by db4o.
-\item db4o\_osgi: The db4o OSGi service
-\item db4o\_osgi\_test: The test cases for the db4o OSGi service.
+\item osgi-projects/db4o\_osgi: The db4o OSGi service.
+\item osgi-projects/db4o\_osgi\_test: The test cases for the db4o OSGi service.
 \item db4oj: The db4o core.
 \item db4oj.optional: Optional features for db4o.
 \item db4oj.tests: The db4o test-suite.
@@ -517,32 +486,24 @@ Following projects are shipped with db4o:
 \subsection{Using The Repository}
 \label{ref:community-working-with-source-using-the-repository}
 
-If you enjoy being on the "cutting edge" and want to follow up with the development process, you can use our SVN repository to get the most up-to-date db4o source code.
+The db4o source code is maintained in a Git repository on GitHub:
 
-Access to the public projects on our Subversion server is available under the following public URL. No login is required.
+\href{https://github.com/blakemcbride/db4o}{\nolinkurl{https://github.com/blakemcbride/db4o}}
 
-\href{https://source.db4o.com/db4o/trunk/}{https://source.db4o.com/db4o/trunk/}
+To get it:
 
-The following projects are currently available.
+\begin{lstlisting}
+git clone https://github.com/blakemcbride/db4o.git
+\end{lstlisting}
 
-Projects may be under constant development. Source code is not guaranteed to be stable.
-
-Most top-level modules in svn directly map to Eclipse projects, i.e. the root folder contains the Eclipse project metadata.
+Besides the Java projects listed in \hyperref[ref:community-working-with-source-using-the-sources-from-db4o-distribution]{Source Projects} (p.~\pageref{ref:community-working-with-source-using-the-sources-from-db4o-distribution}), the repository contains, among others:
 
 \begin{itemize}
-\item bloat: The byte code manipulation library db4o uses.
-\item db4o.cs: The client server implementation for db4o.
-\item db4o.cs.optional: Optional client server features for db4o.
-\item db4o.instrumentation: The instrumentation basic functionality for db4o.
 \item db4o.net: The .NET version of db4o.
-\item db4onqopt: The db4o native query optimizer.
-\item db4otaj: The db4o transparent activation/persistence enhancer.
-\item db4otools: The db4o tools like Ant scripts.
-\item db4ounit: The db4o test project.
-\item db4ounit.extensions: Additional unit test functionality.
-\item decaf: The Java 1.5 to Java 1.4 converter. You need to checkout all sub-projects on the same level as other db4o projects.
+\item decaf: The Java 1.5 to Java 1.4 converter.
 \item drs: The db4o replication system.
-\item sharpen: The Java to C\# converter. You need to checkout all sub-projects on the same level as other db4o projects.
+\item sharpen: The Java to C\# converter.
+\item manual: The source of this manual.
 \end{itemize}
 
 \subsection{Building Full Distribution}
@@ -560,22 +521,11 @@ This compiles the bloat, db4oj, db4oj.optional, db4o.cs, db4o.cs.optional, db4o.
 \subsection{Patch Submission}
 \label{ref:community-working-with-source-patch-submission}
 
-This topic explains how to prepare your patch.
-
-Before writing a patch, please, familiarize yourself with our Coding Style conventions.
-
-You can create a patch using "Create Patch" SVN command.
-
-If you are using \href{http://www.polarion.org/index.php?page=overview&project=subversive}{Subversive} plugin you can use the following steps:
+To contribute a change, send it as a pull request on GitHub:
 
 \begin{itemize}
-\item select the project in Package Explorer;
-\item right-click and select Team/Create Patch;
-\item select "Save In File System" and choose the file name;
-\item click "Next" and "Finish";
-\item check unversioned resources that should be included in the patch;
-\item click "OK"
+\item fork the \href{https://github.com/blakemcbride/db4o}{db4o repository} and clone your fork;
+\item make your change on a branch, following the coding style of the surrounding code;
+\item build and run the tests with \texttt{./bld test} (see BUILD.md), and add a \hyperref[ref:community-working-with-source-db4o-testing-framework]{test case} (p.~\pageref{ref:community-working-with-source-db4o-testing-framework}) where applicable;
+\item push the branch to your fork and open a pull request with a description of the change.
 \end{itemize}
-
-Once the patch is created you should register the functionality provided with our \href{http://tracker.db4o.com/secure/Dashboard.jspa}{Jira tracking system} by creating new issue, submitting the description, patch and \hyperref[ref:community-working-with-source-db4o-testing-framework]{test case} (p.~\pageref{ref:community-working-with-source-db4o-testing-framework}) if applicable.
-

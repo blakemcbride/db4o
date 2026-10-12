@@ -572,7 +572,7 @@ However, We strongly suggest that you use the features provided by your framewor
 \subsection{Spring MVC Example}
 \label{ref:platform-specific-issues-web-spring-mvc-example}
 
-This example is a tiny CRUD application which shows how to use db4o in a web-application. This example uses the \href{http://www.springsource.org/}{Spring MVC} framework. Of course, db4o works with any webframework.
+This example is a tiny CRUD application which shows how to use db4o in a web-application. This example uses the \href{https://spring.io/projects/spring-framework}{Spring MVC} framework. Of course, db4o works with any webframework.
 
 \subsubsection*{Managing Object Containers}
 
@@ -668,11 +668,11 @@ Another possibility would be to export the data to a relational database for rep
 \subsection{db4o with Jasper Reports Example}
 \label{ref:platform-specific-issues-reporting-db4o-with-jasper}
 
-This example illustrates how you can use Jasper Reports together with db4o to create a report. Take a look at the official \href{http://jasperforge.org/}{Jasper Reports website} for the documentation and tools around Jasper Reports.
+This example illustrates how you can use Jasper Reports together with db4o to create a report. Take a look at the official \href{https://github.com/TIBCOSoftware/jasperreports}{Jasper Reports website} for the documentation and tools around Jasper Reports.
 
 \subsubsection*{Designing the Report}
 
-The report layout is written as an XML file or alternatively you can use an editor like the \href{http://jasperforge.org/projects/ireport}{iReport}-editor.
+The report layout is written as an XML file or alternatively you can use an editor like the iReport-editor.
 
 For adding data you can declare fields, which then are used for each row of the report. Just use the names of your properties which you want to report. For navigating along the data separate the properties with dots:
 
@@ -707,7 +707,7 @@ After that you can access these fields in the report:
 
 \subsubsection*{Filling the Report}
 
-After that you can fill the report with data from the database. For simpler reports we can use the JRBeanCollectionDataSource, which reads the values from regular Java bean objects. For more complex reports you might need to use another data source which you can fill manually like the JRMapCollectionDataSource. For all the available datasources read the \href{http://jasperforge.org/website/jasperreportswebsite/trunk/documentation.html}{Jasper Reports documentation}.
+After that you can fill the report with data from the database. For simpler reports we can use the JRBeanCollectionDataSource, which reads the values from regular Java bean objects. For more complex reports you might need to use another data source which you can fill manually like the JRMapCollectionDataSource. For all the available datasources read the \href{https://github.com/TIBCOSoftware/jasperreports}{Jasper Reports documentation}.
 
 \begin{lstlisting}
 final ObjectSet<Person> queryResult = container.query(new Predicate<Person>() {
@@ -727,57 +727,29 @@ JasperExportManager.exportReportToPdfFile(jasperPrint, "the-report.pdf");
 \section{Maven}
 \label{ref:platform-specific-issues-maven}
 
-Currently db4o only provides snapshots of the current beta and production versions.
-
-\subsection*{Repository}
-
-All db4o artifacts are in this repository:
+db4o is not published to a Maven repository. To use it from a Maven project, build the jars as described in \href{https://github.com/blakemcbride/db4o/blob/master/BUILD.md}{\nolinkurl{BUILD.md}} in the \href{https://github.com/blakemcbride/db4o}{db4o repository} and install the one you need into your local Maven repository. For example, for the all-in-one jar:
 
 \begin{lstlisting}
-<repositories>
-   <repository>
-        <id>db4o</id>
-        <name>Db4o</name>
-        <url>https://source.db4o.com/maven/</url>
-   </repository>
-</repositories>
+mvn install:install-file -Dfile=target/db4o-8.1-all.jar \
+    -DgroupId=com.db4o -DartifactId=db4o-all -Dversion=8.1 -Dpackaging=jar
 \end{lstlisting}
 
-\subsection*{Artifacts}
-
-The db4o Maven artifacts represent the different functionality of db4o. All different artifacts use the groudID 'com.db4o'.
-
-You can either include the whole db4o distribution like this:
+Then add the dependency to your project:
 
 \begin{lstlisting}
 <dependency>
     <groupId>com.db4o</groupId>
-    <artifactId>db4o-full-java5</artifactId>
-    <version>8.1-SNAPSHOT</version>
+    <artifactId>db4o-all</artifactId>
+    <version>8.1</version>
 </dependency>
 \end{lstlisting}
 
-Or include the different part of db4o as you need them. Available are 'db4o-core-java5', 'db4o-cs-java5', 'db4o-cs-optional-java5', 'db4o-nqopt-java5', 'db4o-taj-java5' and 'db4o-tools-java5'. Take a look at this \hyperref[ref:dependency-overview]{overview for more details} (p.~\pageref{ref:dependency-overview}).
-
-\begin{lstlisting}
-<!--For example: Include native
- queries optimization and optional featueres-->
-<dependency>
-   <groupId>com.db4o</groupId>
-   <artifactId>db4o-nqopt-java5</artifactId>
-    <version>8.1-SNAPSHOT</version>
-</dependency>
-<dependency>
-    <groupId>com.db4o</groupId>
-    <artifactId>db4o-optional-java5</artifactId>
-    <version>8.1-SNAPSHOT</version>
-</dependency>
-\end{lstlisting}
+The build also produces one jar per module (core, optional, cs, cs-optional, nqopt, taj, tools and others), which can be installed the same way. Take a look at this \hyperref[ref:dependency-overview]{overview for more details} (p.~\pageref{ref:dependency-overview}).
 
 \section{Validation}
 \label{ref:platform-specific-issues-validation}
 
-By default db4o doesn't support any validation and integrity checks \hyperref[ref:advanced-topics-unique-constraints]{except unique field values} (p.~\pageref{ref:advanced-topics-unique-constraints}). However you can use other libraries like \href{http://www.hibernate.org/subprojects/validator.html}{Hibernate-Validator} to validate objects. Download the library from the \href{http://www.hibernate.org/subprojects/validator/download}{official Hibernate site} and include into your project.Objects can be validated when you store them in the database by \hyperref[ref:advanced-topics-callbacks]{using db4o events} (p.~\pageref{ref:advanced-topics-callbacks}).
+By default db4o doesn't support any validation and integrity checks \hyperref[ref:advanced-topics-unique-constraints]{except unique field values} (p.~\pageref{ref:advanced-topics-unique-constraints}). However you can use other libraries like \href{https://hibernate.org/validator/}{Hibernate-Validator} to validate objects. Download the library from the \href{https://hibernate.org/validator/}{official Hibernate site} and include into your project. Objects can be validated when you store them in the database by \hyperref[ref:advanced-topics-callbacks]{using db4o events} (p.~\pageref{ref:advanced-topics-callbacks}).
 
 Add the Annotation to your classes which you want to validate:
 
@@ -868,7 +840,7 @@ try {
 \section{Android}
 \label{ref:platform-specific-issues-android}
 
-db4o runs seamlessly on \href{http://code.google.com/android/}{Android}, enabling native storage and retrieval of objects of any complexity. db4o is a powerful alternative to the built in persistence-capabilities of the Android-platform. \hyperref[ref:platform-specific-issues-android-comparison-with-sqlite]{See "Comparison With SQLite"} (p.~\pageref{ref:platform-specific-issues-android-comparison-with-sqlite})
+db4o runs seamlessly on \href{https://developer.android.com/}{Android}, enabling native storage and retrieval of objects of any complexity. db4o is a powerful alternative to the built in persistence-capabilities of the Android-platform. \hyperref[ref:platform-specific-issues-android-comparison-with-sqlite]{See "Comparison With SQLite"} (p.~\pageref{ref:platform-specific-issues-android-comparison-with-sqlite})
 
 It's easy to start.Setting up db4o only takes a few steps. \hyperref[ref:platform-specific-issues-android-getting-started]{See "Getting Started"} (p.~\pageref{ref:platform-specific-issues-android-getting-started}).
 
@@ -884,11 +856,9 @@ It takes only a few steps to get started with db4o and Android. This description
 \subsubsection*{Setup db4o for a Android project}
 
 \begin{enumerate}
-\item First download the Java version of db4o at the
-
-\href{http://community.versant.com/Downloads.aspx}{download area}
-\item Unpack the distribution. Then copy the \textbf{\emph{db4o-xxx-java5.jar }}the db4o-distribution to your Android project-folder.
-\item Add the db4o-jar to the class path. In Eclipse you do it this way. Refresh you project. Right click on the \textbf{\emph{db4o-xxx-java5.jar }}. Choose 'Build Path' -\textgreater{} 'Add to Build Path'
+\item First build the db4o jars as described in \href{https://github.com/blakemcbride/db4o/blob/master/BUILD.md}{\nolinkurl{BUILD.md}}.
+\item Copy \textbf{\emph{target/db4o-8.1-all.jar}} to your Android project-folder.
+\item Add the db4o-jar to the class path. In Eclipse you do it this way. Refresh you project. Right click on \textbf{\emph{db4o-8.1-all.jar}}. Choose 'Build Path' -\textgreater{} 'Add to Build Path'
 \item Your done! You can now use db4o in your Android application and it will be deployed automatically when running the Android emulator.
 \end{enumerate}
 
@@ -1034,7 +1004,7 @@ You simply can include the enhancer step into the regular Android build. For tha
 \subsection{Comparison With SQLite}
 \label{ref:platform-specific-issues-android-comparison-with-sqlite}
 
-\href{http://code.google.com/android/}{Android} is a new complete, open and free mobile platform. Android offers developers a Java based software developer kit with lots of helpful APIs, including geolocational services. Of course, there is a database support as well: Android has a built-in support for SQLite database. The basic API is similar to standard JDBC API, with some additional helpful methods\newline{}
+\href{https://developer.android.com/}{Android} is a new complete, open and free mobile platform. Android offers developers a Java based software developer kit with lots of helpful APIs, including geolocational services. Of course, there is a database support as well: Android has a built-in support for SQLite database. The basic API is similar to standard JDBC API, with some additional helpful methods\newline{}
 
 It may look better than SQL, but if you look closer it still has the same issues. Queries are specified as strings, so we still stay with a problem of run-time checking instead of compile-time. Furthermore you still need to map between your object-model and the relational SQLite database.
 
@@ -1065,7 +1035,7 @@ db4o can use encryption or client/server mode for user access control. Client/se
 
 \paragraph*{Referential Integrity}
 
-Traditionally referential integrity in relational databases is implemented with the help of foreign keys. However SQLite \href{http://www.sqlite.org/omitted.htm}{does not support} this feature. In db4o referential integrity is imposed by the object model, i.e. you can't reference an object that does not exist.
+Traditionally referential integrity in relational databases is implemented with the help of foreign keys. However SQLite \href{https://www.sqlite.org/omitted.html}{does not support} this feature. In db4o referential integrity is imposed by the object model, i.e. you can't reference an object that does not exist.
 
 \paragraph*{Transactions}
 
@@ -1384,7 +1354,7 @@ db4o helps to avoid all the above mentioned problems: query syntax is completely
 
 \paragraph*{SQLite}
 
-SQLite does not support a special API to make a backup. However, as you remember SQLite database is stored in a single database file, so the backup can be simply a matter of copying the database file. Unfortunately, this can't be done if the database is in use. In this case you can use \href{http://code.google.com/android/reference/adb.htm}{Android Debug Bridge} (adb) tool to access sqlite3 command-line application, which has .dump command for backing up database contents while the database is in use:
+SQLite does not support a special API to make a backup. However, as you remember SQLite database is stored in a single database file, so the backup can be simply a matter of copying the database file. Unfortunately, this can't be done if the database is in use. In this case you can use \href{https://developer.android.com/tools/adb}{Android Debug Bridge} (adb) tool to access sqlite3 command-line application, which has .dump command for backing up database contents while the database is in use:
 
 \begin{lstlisting}
 E:\>adb shell
@@ -1854,7 +1824,7 @@ Import process is just the reverse:
 \item Save objects to db4o.
 \end{enumerate}
 
-Let's go through a simple example. We will use XStream library (\href{http://xstream.codehaus.org/}{http://xstream.codehaus.org/}) for object serialization, but any other tool capable of serializing objects into XML will do as well.
+Let's go through a simple example. We will use XStream library (\href{https://x-stream.github.io/}{\nolinkurl{https://x-stream.github.io/}}) for object serialization, but any other tool capable of serializing objects into XML will do as well.
 
 \begin{lstlisting}
 ObjectContainer container = Db4oEmbedded.openFile("database.db4o");
@@ -1962,7 +1932,7 @@ Note also that some db4o jars have a dependency on Ant and need an Ant bundle in
 
 \subsection*{Using the db4o OSGi package}
 
-An alternative is to use the db4o OSGi package, which is in the db4o--X.XX-osgi.jar and includes all dependencies. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview}). This provides a OSGi service which creates a db4o instance for you. It configures db4o in such a way that classes are loaded from the requesting OSGi service.
+An alternative is to use the db4o OSGi package, which includes all dependencies. It is not built by the db4o build; its source code is in the osgi-projects/db4o\_osgi directory of the repository. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview}). This provides a OSGi service which creates a db4o instance for you. It configures db4o in such a way that classes are loaded from the requesting OSGi service.
 
 \begin{lstlisting}
 ServiceReference reference = bundleContext.getServiceReference("com.db4o.osgi.Db4oService");

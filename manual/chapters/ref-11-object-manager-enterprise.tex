@@ -3,7 +3,7 @@
 \chapter{Object Manager Enterprise}
 \label{ref:object-manager-enterprise}
 
-Object Manager Enterprise (OME) is an object browser for db4o databases. OME installation can be found in /ome folder of the distribution. The zip file in this folder contains the Eclipse plugin version of OME. To install the plugin, you need to have a version of Eclipse \textgreater{}= 3.3 installed. Unzip the file to a folder of your choice. Then open Eclipse, select 'Help' -\textgreater{} 'Software Updates...' -\textgreater{} 'Available Software' from the menu. Choose 'Add Site...' -\textgreater{} 'Local...' and select the unzipped folder. Follow the Eclipse Update Manager instructions for the OME feature from here on. The actual menu structure may vary over Eclipse versions. (The above applies to Eclipse 3.4 Ganymede.) When in doubt, please refer to the Eclipse documentation on Software Updates. Alternatively, you can install the plugin manually by simply copying the contents of the 'plugins' and 'features' folders from the unzipped folder to the corresponding subfolders in the root folder of your Eclipse installation.
+Object Manager Enterprise (OME) is an object browser for db4o databases. OME is an Eclipse plugin. Its source code is in the enterprise/omj directory of the \href{https://github.com/blakemcbride/db4o}{db4o repository}; it is not built by the db4o build. To install the plugin, you need to have a version of Eclipse \textgreater{}= 3.3 installed. Build the plugin into a folder of your choice. Then open Eclipse, select 'Help' -\textgreater{} 'Software Updates...' -\textgreater{} 'Available Software' from the menu. Choose 'Add Site...' -\textgreater{} 'Local...' and select that folder. Follow the Eclipse Update Manager instructions for the OME feature from here on. The actual menu structure may vary over Eclipse versions. (The above applies to Eclipse 3.4 Ganymede.) When in doubt, please refer to the Eclipse documentation on Software Updates. Alternatively, you can install the plugin manually by simply copying the contents of the 'plugins' and 'features' folders from that folder to the corresponding subfolders in the root folder of your Eclipse installation.
 
 More Reading:
 
@@ -131,5 +131,5 @@ Are you experiencing problems with the object manager? You can take a look at th
 
 When you are using advanced configuration features like type handlers, special string encoding etc. you should \hyperref[ref:object-manager-enterprise-ome-for-eclipse-custom-config]{add your configuration} (p.~\pageref{ref:object-manager-enterprise-ome-for-eclipse-custom-config}) to the object manager.
 
-Otherwise ask for help in the \href{http://community.versant.com/Forums.aspx}{db4o forums}. When you see errors in the log please include them in your post.
+Otherwise see the db4o repository at \href{https://github.com/blakemcbride/db4o}{\nolinkurl{github.com/blakemcbride/db4o}}. When you report a problem, include any errors from the log.
 

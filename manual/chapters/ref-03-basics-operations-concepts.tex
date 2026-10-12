@@ -54,29 +54,24 @@ Other concepts are more unique to db4o, like the activation concept, which contr
 
 You can start using db4o within a few minutes following these few steps.
 
-\subsection*{1. Download db4o}
+\subsection*{1. Get db4o}
 
-First download db4o on the \href{http://community.versant.com/Downloads.aspx}{official download site}. There are different releases available on the web site. The latest production version, beta versions, continues build versions and older stable releases. Use the production version at the top to get started.
+db4o is maintained at \href{https://github.com/blakemcbride/db4o}{\nolinkurl{github.com/blakemcbride/db4o}}. Clone or download the repository; it contains the source code, the build and this manual.
 
-For each release there's a ZIP-file which contains db4o, the documentation and the source code.
+\subsection*{2. Build db4o}
 
-Download the ZIP-file to your computer and unpack it.
+Build the jars as described in \href{https://github.com/blakemcbride/db4o/blob/master/BUILD.md}{\nolinkurl{BUILD.md}}. You need JDK 17 or newer and nothing else:
 
-\subsection*{2. Content Of The db4o Distribution}
+\begin{lstlisting}
+./bld jar          # Linux, macOS
+bld.cmd jar        # Windows
+\end{lstlisting}
 
-The db4o distribution has following content.
-
-\textbf{db4o-folder/lib}: Contains the db4o database engine and the supporting libraries. There are different versions of the libraries for the Java-versions in this folder.
-
-\textbf{db4o-folder/doc}: Contains all the db4o documentation. There's the complete API-documentation (db4o-folder/doc/api/index.html), the tutorial (db4o-folder/doc/tutorial/index.html) and the reference documentation (db4o-folder/doc/api/index.html)
-
-\textbf{db4o-folder/ome}: Contains the installer for the Object Manager. \hyperref[ref:object-manager-enterprise]{See "Object Manager Enterprise"} (p.~\pageref{ref:object-manager-enterprise})
-
-\textbf{db4o-folder/src}: Contains the full source code of db4o.
+The jars are written to the target directory. \texttt{./bld javadoc} builds the API documentation into target/javadoc.
 
 \subsection*{3. Adding db4o To Your Project}
 
-After you've downloaded and unpacked the db4o distribution, you can start using it. The core of db4o is the single db4o-X.XX-core-javaX-jar and has no additional dependencies. The other jars provide additional functionality \hyperref[ref:dependency-overview]{See "Dependency Overview".} (p.~\pageref{ref:dependency-overview}). You can also use the db4o-X.XX-all-javaX.jar which includes every db4o feature and dependency in one jar.
+The core of db4o is the single db4o-8.1-core.jar and has no additional dependencies. The other jars provide additional functionality \hyperref[ref:dependency-overview]{See "Dependency Overview".} (p.~\pageref{ref:dependency-overview}). You can also use db4o-8.1-all.jar, which includes every db4o feature.
 
 To use db4o in your project you only need to add the required jars to your project and then you're ready to go.
 
@@ -93,7 +88,7 @@ Here is how to do this with Eclipse:
 \item Confirm the changes.
 \item Expand "Referenced Libraries" branch of your project in Package Explorer.
 \item Select db4o-* library, right-click and open "Properties".
-\item Select Javadoc Location in the list and browse to \textbackslash{}doc\textbackslash{}api folder in your db4o installation.
+\item Select Javadoc Location in the list and browse to the target/javadoc folder of your db4o build.
 \end{itemize}
 
 \subsection*{4. Ready To Go}
@@ -242,7 +237,7 @@ Native Queries provide the ability to run one or more lines of code against all 
 
 \subsubsection*{Dependencies}
 
-For a good native query performance you need to add these jars to your project:db4o-X.XX-nqopt-javax.jar, db4o-X.XX-instrumentation-javax.jar, bloat-1.0.jar. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
+For a good native query performance you need to add these jars to your project:db4o-8.1-nqopt.jar, db4o-8.1-instrumentation.jar, db4o-8.1-bloat.jar. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
 
 \subsubsection*{Simple Example}
 
@@ -2425,10 +2420,10 @@ You can inject transparent persistence awareness in your persisted classes witho
 For transparent activation/persistence you need following dependencies at compile time. (see also the \hyperref[ref:dependency-overview]{dependency overview} (p.~\pageref{ref:dependency-overview}))
 
 \begin{itemize}
-\item bloat-1.0.jar
-\item db4o-X.XX-instrumentation.jar
-\item db4o-X.XX-taj.jar
-\item db4o-X.XX-tools.jar
+\item db4o-8.1-bloat.jar
+\item db4o-8.1-instrumentation.jar
+\item db4o-8.1-taj.jar
+\item db4o-8.1-tools.jar
 \end{itemize}
 
 \subsubsection{Enhance Persistent Classes}
@@ -2808,7 +2803,7 @@ Make sure that all classes to be instrumented are available through the classpat
 
 Debugging instrumented classes may not work 100\% correct.
 
-You should be able to debug normally anywhere around instrumented bytecode. If you still think that the problem occurs in the instrumented area, please submit a bug report to \href{http://tracker.db4o.com/}{db4o Jira}.
+You should be able to debug normally anywhere around instrumented bytecode. If you still think that the problem occurs in the instrumented area, please report a bug through the \href{https://github.com/blakemcbride/db4o}{db4o repository}.
 
 \section{Delete Behavior}
 \label{ref:basics-delete-behavior}

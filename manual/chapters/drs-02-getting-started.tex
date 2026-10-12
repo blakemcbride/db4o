@@ -5,9 +5,9 @@
 
 This topic will give you some initial information about dRS and will help to get your environment ready to work with dRS.
 
-\section*{Download Content}
+\section*{Source Code}
 
-The distribution comes as a zip archive. Extract the content to any folder before you start to use the dRS. You can find the offline version the documentation in the\textbf{/docs/reference} folder. The API documentation in located in \textbf{/docs/api} folder.
+The dRS source code, its libraries and its Ant build file (build.xml) are in the drs directory of the \href{https://github.com/blakemcbride/db4o}{db4o repository}. dRS is not built by the db4o build (BUILD.md); this manual is its documentation.
 
 \section*{Requirements}
 
@@ -15,13 +15,13 @@ The dRS version corresponds to the db4o version. Ensure that the db4o and the dR
 
 The dRS system depends on the JDK 5 version of db4o and therefore requires Java 5 or newer.
 
-In order to use the \hyperref[drs:db4o-replication-system-drs-replication-with-rdbms]{Hibernate-Replication} (p.~\pageref{drs:db4o-replication-system-drs-replication-with-rdbms}) functionality the Hibernate core version 3.1 is required. The Hibernate dependencies have been included in the lib folder of the dRS distribution for your convenience. When you require more complex Hibernate Mappings or what to benefit from additional Hibernate features, feel free to download the entire Hibernate-distribution on the \href{http://www.hibernate.org/}{Hibernate project website}.
+In order to use the \hyperref[drs:db4o-replication-system-drs-replication-with-rdbms]{Hibernate-Replication} (p.~\pageref{drs:db4o-replication-system-drs-replication-with-rdbms}) functionality the Hibernate core version 3.1 is required. The Hibernate dependencies are included in the drs/lib directory of the repository for your convenience. When you require more complex Hibernate Mappings or what to benefit from additional Hibernate features, feel free to download the entire Hibernate-distribution on the \href{http://www.hibernate.org/}{Hibernate project website}.
 
 To run the provided ant-scripts \href{http://ant.apache.org/}{Apache Ant 1.6} or later is required.
 
 \section*{Installation}
 
-The dRS functionality is delivered in a single jar file. If you add dRS-8.1-core.jar to your CLASSPATH, dRS is installed. For using db4o replication to another database (RDBMS) you will also need the Hibernate library, which is included in the /lib folder in the distribution.
+The dRS functionality is delivered in a single jar file. If you add dRS-8.1-core.jar to your CLASSPATH, dRS is installed. For using db4o replication to another database (RDBMS) you will also need the Hibernate library, which is included in the drs/lib directory of the repository.
 
 Here is how to add the dRS library to an Eclipse project
 

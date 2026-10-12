@@ -23,10 +23,10 @@ Take a look at this small guide which gives tips on how to deal with a corrupt d
 
 If you experience issues with the performance of db4o take a look at this topic: \hyperref[ref:troubleshoot-speed-issues-html]{See "Performance and Scalability Issues"} (p.~\pageref{ref:troubleshoot-speed-issues-html})
 
-\section{Ask for Help and Advice on the db4o Forums}
+\section{Ask for Help and Advice}
 \label{ref:trouble-shooting:ask}
 
-If you hit a problem you can ask for help in the \href{http://community.versant.com/Forums.aspx}{db4o forums}. You can find the forums here: \href{http://community.versant.com/Forums.aspx}{http://community.versant.com/Forums.aspx}
+The original db4o forums no longer exist. If you hit a problem, see the db4o repository at \href{https://github.com/blakemcbride/db4o}{\nolinkurl{github.com/blakemcbride/db4o}}.
 
 \section{Investigate a Corrupt Database}
 \label{ref:troubleshoot-corrupt-db}
@@ -42,7 +42,7 @@ The fist step is to run the consistency check on your database. If the database 
 To run consistency checks use the com.db4o.consistency.ConsistencyChecker class, like this:
 
 \begin{lstlisting}
-java -cp db4oX-X.XX-all-java5.jar com.db4o.consistency.ConsistencyChecker databaseFile.db4o
+java -cp db4o-8.1-all.jar com.db4o.consistency.ConsistencyChecker databaseFile.db4o
 \end{lstlisting}
 
 This consistency check doesn't check the content of objects. It only checks if the overall structure of the database file is still intact. Also it doesn't offer any repair functionality. It only tells you if the file is corrupted or not.
@@ -84,7 +84,7 @@ You are experiencing speed or scalability problems with db4o? In this section gi
 
 db4o is built for embedded use cases with small databases. It isn't optimized for database larger than a few gigabytes. \hyperref[ref:troubleshoot-increasing-the-maximum-database-file-size]{See "Increasing The Maximum Database File Size"} (p.~\pageref{ref:troubleshoot-increasing-the-maximum-database-file-size})
 
-db4o is explicitly single-threaded. Concurrent accesses will be synchronized against a global database lock.That means db4o cannot deal with a highly concurrent access, since it blocks on all operations. When you expect a high load and concurrent access, then you should consider a larger database like the \href{http://www.versant.com/}{Versant object database}.
+db4o is explicitly single-threaded. Concurrent accesses will be synchronized against a global database lock. That means db4o cannot deal with a highly concurrent access, since it blocks on all operations. When you expect a high load and concurrent access, then you should consider a larger database system.
 
 \subsection{Loading-Performance: Monitor Your Activation}
 \label{ref:troubleshoot-speed-issues-html:loadingissues}
@@ -126,7 +126,7 @@ Another parameter which can influences performance quite bit is the size of the 
 
 When you are using  native queries you should ensure that the query is optimized. First check that the required jars are referenced.
 
-For native queries you need to add these jars: db4o-X.XX-nqopt-javax.jar, db4o-X.XX-instrumentation-javax.jar, bloat-1.0.jar. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
+For native queries you need to add these jars: db4o-8.1-nqopt.jar, db4o-8.1-instrumentation.jar, db4o-8.1-bloat.jar. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
 
 \paragraph*{Check that the Query is Optimized}
 

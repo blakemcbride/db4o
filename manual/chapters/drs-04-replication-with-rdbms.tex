@@ -22,17 +22,17 @@ First you need to add Hibernate. Read the \href{http://www.hibernate.org/docs}{H
 
 \subsection*{Adding The Dependencies}
 
-In order to replicate against Hibernate you need to add the Hibernate jars. The dRS distribution contains a copy of Hibernate. dRS is only tested against that Hibernate version. You need to add following dependencies to your project.
+In order to replicate against Hibernate you need to add the Hibernate jars. The drs/lib directory of the repository contains a copy of Hibernate. dRS is only tested against that Hibernate version. You need to add following dependencies to your project.
 
 \begin{itemize}
-\item db4o-X.XX-core-java5.jar or db4o-X.XX-all-java5.jar
-\item dRS-X.XX-core.jar
+\item db4o-8.1-core.jar or db4o-8.1-all.jar
+\item dRS-8.1-core.jar
 \item All Hibernate dependencies: hibernate3.jar, antlr-2.7.7.jar, jta.jar, commons-logging.jar, commons-collections.jar, dom4j.jar. All other jars are for optional Hibernate features.
 \end{itemize}
 
 \subsection*{Configure Hibernate}
 
-Hibernate needs some configuration. You need to configure the database-driver, the database-connection and the SQL dialect. Read more on the \href{http://docs.jboss.org/hibernate/stable/core/reference/en/html/session-configuration.html\#configuration-xmlconfig}{official Hibernate documentation}.
+Hibernate needs some configuration. You need to configure the database-driver, the database-connection and the SQL dialect. Read more on the \href{https://hibernate.org/orm/documentation/}{official Hibernate documentation}.
 
 \begin{lstlisting}
 <hibernate-configuration>
@@ -67,7 +67,7 @@ Hibernate needs some configuration. You need to configure the database-driver, t
 
 \subsection*{Configure The Object Relation Mapping}
 
-In order to store objects in Hibernate, you need define the mapping between the tables and the objects you store. There's only one requirement for the db4o replication: Each object needs a long field for the id. This id is used by dRS to recognize the object. For example we map the Pilot class to the pilots tables. Read more on the \href{http://docs.jboss.org/hibernate/stable/core/reference/en/html/mapping.html\#mapping-declaration}{official Hibernate documentation}.
+In order to store objects in Hibernate, you need define the mapping between the tables and the objects you store. There's only one requirement for the db4o replication: Each object needs a long field for the id. This id is used by dRS to recognize the object. For example we map the Pilot class to the pilots tables. Read more on the \href{https://hibernate.org/orm/documentation/}{official Hibernate documentation}.
 
 \begin{lstlisting}
 <hibernate-mapping default-access="field" default-lazy="false" default-cascade="save-update">

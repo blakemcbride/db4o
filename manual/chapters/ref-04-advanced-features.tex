@@ -294,14 +294,14 @@ for (Person person : persons) {
 \section{Consistency Check and File Statistics}
 \label{ref:advanced-topics-consistency-check}
 
-Both, the consistency check and the file statistics are part of the db4o-X.XX-optional-java5 jar-file. To run the tool you need to have it and the core jar in the class-path. As alternative use the db4o-X.XX-all-java5 jar, which contains all dependencies.
+Both, the consistency check and the file statistics are part of the db4o-8.1-optional.jar. To run the tool you need to have it and the core jar in the class-path. As alternative use the db4o-8.1-all.jar, which contains all dependencies.
 
 \subsection*{Consistency Check}
 
 To run consistency checks use the com.db4o.consistency.ConsistencyChecker class, like this:
 
 \begin{lstlisting}
-java -cp db4oX-X.XX-all-java5.jar com.db4o.consistency.ConsistencyChecker databaseFile.db4o
+java -cp db4o-8.1-all.jar com.db4o.consistency.ConsistencyChecker databaseFile.db4o
 \end{lstlisting}
 
 This consistency check doesn't check the content of objects. It only checks if the overall structure of the database file is still intact. Also it doesn't offer any repair functionality. It only tells you if the file is corrupted or not.
@@ -311,7 +311,7 @@ This consistency check doesn't check the content of objects. It only checks if t
 To run consistency checks use the com.db4o.filestats.FileUsageStatsCollector class, like this:
 
 \begin{lstlisting}
-java -cp db4oX-X.XX-all-java5.jar com.db4o.filestats.FileUsageStatsCollector databaseFile.db4o
+java -cp db4o-8.1-all.jar com.db4o.filestats.FileUsageStatsCollector databaseFile.db4o
 \end{lstlisting}
 
 The file statistics return the space usage of objects, indexes etc in bytes. It also returns the statistics for internal objects, managed by db4o.
@@ -1085,10 +1085,10 @@ This topic explains the individual elements of the ant task.
 For transparent activation/persistence you need following dependencies at compile time. (see also the \hyperref[ref:dependency-overview]{dependency overview} (p.~\pageref{ref:dependency-overview}))
 
 \begin{itemize}
-\item bloat-1.0.jar
-\item db4o-X.XX-instrumentation.jar
-\item db4o-X.XX-taj.jar
-\item db4o-X.XX-tools.jar
+\item db4o-8.1-bloat.jar
+\item db4o-8.1-instrumentation.jar
+\item db4o-8.1-taj.jar
+\item db4o-8.1-tools.jar
 \end{itemize}
 
 \subsubsection*{The Example Script}
@@ -2814,7 +2814,7 @@ Currently following options are available:
 
 \subsubsection*{Monitor With JConsole}
 
-As said, the statistics are published through the JMX-interface (Java Management Extensions). Therefore you can use any JMX-client to monitor db4o. The JDK brings its own JMX-client with it: The \href{http://java.sun.com/javase/6/docs/technotes/guides/visualvm/intro.html}{JConsole}-application is located in the bin-folder of the JDK-installation. Start the JConsole and connect your running db4o application. Then you will find the db4o related readings on the "MBeans" tab. In the treeview on the left, you will see "com.db4o.monitoring".
+As said, the statistics are published through the JMX-interface (Java Management Extensions). Therefore you can use any JMX-client to monitor db4o. The JDK brings its own JMX-client with it: The \href{https://docs.oracle.com/javase/8/docs/technotes/guides/management/jconsole.html}{JConsole}-application is located in the bin-folder of the JDK-installation. Start the JConsole and connect your running db4o application. Then you will find the db4o related readings on the "MBeans" tab. In the treeview on the left, you will see "com.db4o.monitoring".
 
 Below this tree node you will find all open ObjectContainers that have JMX monitoring enabled. For each of them the respective runtime statistics categories will be listed. If you select the "Attributes" node for any of them, the corresponding set of attribute values will be shown along with their most recent reading.
 

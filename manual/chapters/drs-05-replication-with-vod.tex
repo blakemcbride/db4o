@@ -18,7 +18,7 @@ After everything is up and running you can start to replicate between db4o and V
 
 This guide shows how to setup JDO for VOD.
 
-This topic assumes that you've already installed the VOD database. Visit the \href{http://www.versant.com/developer/downloads/}{official website to download} VOD and follow the installation guide.
+This topic assumes that you've already installed the VOD database. VOD is a separate, commercial product, now sold by Actian; follow its installation guide.
 
 \subsection{Create A Database}
 \label{drs:db4o-replication-system-drs-vod-setup:createdb}
@@ -199,7 +199,7 @@ persistence.close();
 {\small\itshape StoreObjectsWithJDO.java: Use the persistence manager to store objects\par}
 \medskip
 
-For more information and help on JDO read the official VOD documentation and take a look the \href{http://www.datanucleus.org/products/accessplatform_2_1/jdo/api.html}{JOD API}.
+For more information and help on JDO read the official VOD documentation and take a look the \href{https://www.datanucleus.org/products/accessplatform/jdo/}{JOD API}.
 
 \section{Setup Event Processing}
 \label{drs:db4o-replication-system-drs-vod-setup-event-processing}
@@ -223,11 +223,11 @@ From the VOD distribution
 \item jvi80.jar
 \end{itemize}
 
-From the db4o / dRS distribution
+From db4o / dRS
 
 \begin{itemize}
-\item db4o-X.XX-core-java5.jar (or db4o-X.XX-all-java5.jar)
-\item dRS-X.XX-core.jar
+\item db4o-8.1-core.jar (or db4o-8.1-all.jar)
+\item dRS-8.1-core.jar
 \end{itemize}
 
 \begin{itemize}
@@ -331,9 +331,9 @@ Windows:
 
 \begin{lstlisting}
 REM Specify the directory where the DRS and db4o jars are
-REM This directory should contain the dRS distribution.
-REM Or more specific it needs the dRS-X.XX-core.jar, 
-REM db4o-X.XX-core-java5.jar or db4o-X.XX-core-java5.jar, commons-cli-1.2.jar
+REM This directory should contain the db4o and dRS jars.
+REM Or more specific it needs the dRS-8.1-core.jar, 
+REM db4o-8.1-core.jar or db4o-8.1-core.jar, commons-cli-1.2.jar
 SET LIB_DIR=./lib
 
 REM Specify the VOD database name
@@ -355,9 +355,9 @@ Linux:
 
 \begin{lstlisting}
 # Specify the directory where the DRS and db4o jars are
-# This directory should contain the dRS distribution.
-# Or more specific it needs the dRS-X.XX-core.jar, 
-# db4o-X.XX-core-java5.jar or db4o-X.XX-core-java5.jar, commons-cli-1.2.jar
+# This directory should contain the db4o and dRS jars.
+# Or more specific it needs the dRS-8.1-core.jar, 
+# db4o-8.1-core.jar or db4o-8.1-core.jar, commons-cli-1.2.jar
 LIB_DIR=./lib
 
 # Specify the VOD database name
@@ -423,11 +423,11 @@ From the VOD distribution
 \item jvi80.jar
 \end{itemize}
 
-From the db4o / dRS distribution
+From db4o / dRS
 
 \begin{itemize}
-\item db4o-X.XX-core-java5.jar (or db4o-X.XX-all-java5.jar)
-\item dRS-X.XX-core.jar
+\item db4o-8.1-core.jar (or db4o-8.1-all.jar)
+\item dRS-8.1-core.jar
 \end{itemize}
 
 \subsection{Prepare db4o}
@@ -587,15 +587,15 @@ From the VOD distribution
 \item jvi80.jar
 \end{itemize}
 
-From the db4o / dRS distribution
+From db4o / dRS
 
 \begin{itemize}
-\item db4o-X.XX-core-java5.jar (or db4o-X.XX-all-java5.jar)
-\item dRS-X.XX-core.jar
+\item db4o-8.1-core.jar (or db4o-8.1-all.jar)
+\item dRS-8.1-core.jar
 \end{itemize}
 
 \begin{itemize}
-\item db4o-X.XX-cs-java5.jar (not needed when you use the db4o-X.XX-all-java5.jar)
+\item db4o-8.1-cs.jar (not needed when you use the db4o-8.1-all.jar)
 \end{itemize}
 
 After that you can start a db4o server. Note that it is a pure in memory server, since it does not act a persistent store. For more details take a look at the db4o reference documentation.
@@ -652,9 +652,9 @@ private void runReplication() {
 Now the client doesn't need any VOD dependencies, since we replicate via a db4o server. It needs these dependencies:
 
 \begin{itemize}
-\item db4o-X.XX-core-java5.jar (or db4o-X.XX-all-java5.jar)
-\item dRS-X.XX-core.jar
-\item db4o-X.XX-cs-java5.jar (not needed when you use the db4o-X.XX-all-java5.jar)
+\item db4o-8.1-core.jar (or db4o-8.1-all.jar)
+\item dRS-8.1-core.jar
+\item db4o-8.1-cs.jar (not needed when you use the db4o-8.1-all.jar)
 \end{itemize}
 
 Additionally the client needs the classes of the stored objects, but the not enhanced version of the classes. So you have to make sure that you've the original classes on the client and the enhanced classes on the server.
