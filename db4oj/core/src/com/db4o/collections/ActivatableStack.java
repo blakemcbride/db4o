@@ -196,6 +196,12 @@ public class ActivatableStack<E> extends Stack<E> implements ActivatableList<E> 
 	}
 	
 	@Override
+	public boolean retainAll(Collection<?> c) {
+		activate(ActivationPurpose.WRITE);
+		return super.retainAll(c);
+	}
+	
+	@Override
 	public E push(E item) {
 		activate(ActivationPurpose.WRITE);
 		return super.push(item);

@@ -80,9 +80,11 @@ public class ExcludingClassLoader extends URLClassLoader {
                 ||((name.startsWith("com.db4o.") && name.indexOf("test.")<0 && name.indexOf("com.db4o.db4ounit.")<0 && name.indexOf("samples.")<0));
     }
 
+    // jdk.* holds the JDK's internal classes since Java 9 (e.g. jdk.internal.reflect).
+    // The JVM refuses to let another loader define them.
     private static boolean isPlatformClassName(String name) {
         return name.startsWith("java.") || name.startsWith("javax.")
-                || name.startsWith("sun.");
+                || name.startsWith("sun.") || name.startsWith("jdk.");
     }
 
     private Class findRawClass(String className) throws ClassNotFoundException {

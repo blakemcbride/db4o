@@ -107,58 +107,17 @@ public class WorkspaceServices {
 		return file;
 	}
 	
-	public static String machinePropertiesPath(){
-		return propertiesPath("machine.properties");
-	}
-	
-	public static String antPropertiesPath(){
-		return propertiesPath("ant.properties");
-	}
-
-	private static String propertiesPath(String fileName) {
-		String path = workspacePath("db4obuild/" + fileName);
-		Assert.isTrue(File4.exists(path));
-		return path;
-	}
-	
-	public static String readAntProperty(String property, boolean lenient)
-	{
-		return readProperty(antPropertiesPath(), property, lenient);
-	}
-	
-	
-	public static String readMachineProperty(String property, boolean lenient)
-	{
-		return readProperty(machinePropertiesPath(), property, lenient);
-	}
-
-	
-	public static String readMachineProperty(String property)
-	{
-		return readProperty(machinePropertiesPath(), property);
-	}
-	
-	public static String readMachinePathProperty(String property)
-	{
-		String path = readMachineProperty(property);
-		assertFileExists(path);
-		return path;
-	}
-	
-	private static void assertFileExists(String path){
-		Assert.isTrue(File4.exists(path), "File '" + path + "' could not be found ");
-	}
-	
+	/**
+	 * The javac of the running JDK, so that compiled classes match the running VM.
+	 */
 	public static String javacPath()
 	{
-		String filePropertyName = "file.compiler.jdk1.5";
-		String path = readMachineProperty(filePropertyName, true);
-		if(path != null){
-			return path;
-		}
-		path = readAntProperty(filePropertyName, true);
-		if(path != null){
-			return path;
+		String bin = Path4.combine(System.getProperty("java.home"), "bin");
+		for (String name : new String[] { "javac", "javac.exe" }) {
+			String path = Path4.combine(bin, name);
+			if (File4.exists(path)) {
+				return path;
+			}
 		}
 		return "javac";
 	}

@@ -5,7 +5,6 @@ package com.db4o.db4ounit.util;
 import java.io.*;
 import java.util.*;
 
-import com.db4o.Db4oVersion;
 import com.db4o.foundation.*;
 import com.db4o.foundation.io.*;
 
@@ -40,12 +39,10 @@ public class JavaServices {
 	        				File.pathSeparator,
 	        				new String[]{
 	        						currentClassPath(),
-	        						db4oCoreJarPath(), 
-	        						db4oJarPath("-optional"),
-	        						db4oJarPath("-cs"),
+	        						db4oClassesPath("core"), 
+	        						db4oClassesPath("optional"),
+	        						db4oClassesPath("cs"),
 	        				}, runningOnWindows()),
-	        		"-source", "1.3",
-	        		"-target", "1.3",
 	        		srcFile};
 
 			return IOServices.exec(WorkspaceServices.javacPath(),javacArgs);
@@ -76,9 +73,9 @@ public class JavaServices {
     	cp.add(JavaServices.javaTempPath());
     	cp.add(currentClassPath());
     	if (includeDb4oJars) {
-    		cp.add(db4oCoreJarPath());
-    		cp.add(db4oJarPath("-optional"));
-    		cp.add(db4oJarPath("-cs"));
+    		cp.add(db4oClassesPath("core"));
+    		cp.add(db4oClassesPath("optional"));
+    		cp.add(db4oClassesPath("cs"));
     	}
     	
     	allArgs[1] = IOServices.joinArgs(
@@ -121,7 +118,8 @@ public class JavaServices {
             return  Path4.combine(Path4.combine(javaHome(), "bin"), "java");
         }
         public boolean identified() {
-            return System.getProperty("java.vm.name").contains("Java");
+            // Any VM other than Dalvik; VM names vary ("Java HotSpot(TM) ...", "OpenJDK ...", ...).
+            return ! DalvikRuntime.isDalvik();
         }
     }
     
@@ -130,26 +128,19 @@ public class JavaServices {
             return  Path4.combine(Path4.combine(javaHome(), "bin"), "dalvikvm");
         }
         public boolean identified() {
+            return isDalvik();
+        }
+        static boolean isDalvik() {
             return "Dalvik".equals(System.getProperty("java.vm.name"));
         }
     }
     
-    public static String db4oCoreJarPath()
-    {
-        return db4oJarPath("-core");
-    }
-
-	public static String db4oJarPath(String extension)
+	/**
+	 * The compiled classes of a db4o module, as built by BLD ("./bld build").
+	 */
+	public static String db4oClassesPath(String module)
 	{
-		String db4oVersion =  
-				Db4oVersion.MAJOR + "." + Db4oVersion.MINOR + "." + 
-            Db4oVersion.ITERATION + "." + Db4oVersion.REVISION;
-		String distDir = WorkspaceServices.readProperty(WorkspaceServices.machinePropertiesPath(), "dir.dist", true);
-		if(distDir == null || distDir.length() == 0)
-		{
-			distDir = "db4obuild/dist";
-		}
-		return WorkspaceServices.workspacePath(distDir + "/java/lib/db4o-" + db4oVersion + extension + "-java1.2.jar");
+		return WorkspaceServices.workspacePath("target/classes/" + module);
 	}
 	
 	public static String javaTempPath()
