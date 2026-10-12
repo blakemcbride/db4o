@@ -31,13 +31,13 @@ public abstract class MBeanTestCaseBase extends AbstractDb4oTestCase {
 	}
 
 	protected void exercisePerSecondCounter(final String beanAttributeName, final Runnable counterIncrementTrigger) {
-		Assert.areEqual(0.0, bean().getAttribute(beanAttributeName));
+		Assert.areEqual(Double.valueOf(0.0), bean().getAttribute(beanAttributeName));
 		
 		for (int i=0; i<3; ++i) {
 			counterIncrementTrigger.run();
 			counterIncrementTrigger.run();
 			advanceClock(1000);
-			Assert.areEqual(2.0, bean().getAttribute(beanAttributeName));
+			Assert.areEqual(Double.valueOf(2.0), bean().getAttribute(beanAttributeName));
 		}
 	}
 

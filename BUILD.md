@@ -39,6 +39,7 @@ files that changed. After changing a class that other modules use, run
 | `./bld build` | Compile all modules into `target/classes/<module>` |
 | `./bld jar` | Build the jars in `target/` |
 | `./bld javadoc` | Build the core API javadoc in `target/javadoc` |
+| `./bld test` | Build and run the db4o test suite (see [Tests](#tests)) |
 | `./bld manual` | Build the PDF manual, `manual/db4o-manual.pdf` (needs LaTeX: `latexmk`, `pdflatex`) |
 | `./bld clean` | Remove `target/` |
 | `./bld realclean` | Also remove the compiled build system |
@@ -100,9 +101,37 @@ java -cp target/db4o-8.1-all.jar:. Hello
 
 ## Tests
 
-The unit tests live in `db4oj.tests` and use the bundled `db4ounit` framework
-(`db4ounit`, `db4ounit.extensions`). They are not part of the build yet,
-because they do not compile with a modern `javac`: 11
-`Assert.areEqual(double, Object)` calls in
-`db4oj.tests/src/com/db4o/db4ounit/optional/monitoring` are ambiguous under
-Java 8+ overload resolution and need an explicit cast.
+```sh
+./bld test
+```
+
+This compiles the test framework (`db4ounit`, `db4ounit.extensions`) and the
+test suite (`db4oj.tests`) into `target/test-classes`, then runs
+`com.db4o.db4ounit.jre5.AllTestsDb4oUnitJdk5`, the main suite of about 9,000
+tests. It takes 15 to 20 minutes and prints a lot of output; the summary
+(`GREEN` or `RED (n out of m tests failed)`) comes just before the list of
+failures. The suite runs in `target/test-run`, where it leaves its log
+(`db4ounit.log`) and database files.
+
+On JDK 21, 18 of the 9,085 tests fail. They are:
+- client/server reflection reaching into JDK internals (7)
+- defragmenting databases whose classes are unavailable (4)
+- `retainAll` on db4o's activatable `Stack` (3)
+- file locking across VMs, where the test helper does not recognize current JVM names (3)
+- a schema-update test that needs the removed `db4obuild/machine.properties` (1)
+
+## Running on Java 9 and later
+
+db4o uses reflection to store JDK classes such as `Hashtable`, `HashSet`,
+`BigInteger` and `BigDecimal`. Since Java 9 the module system blocks this
+unless the packages are opened, so applications that store such objects need
+these JVM options:
+
+```sh
+--add-opens java.base/java.lang=ALL-UNNAMED
+--add-opens java.base/java.util=ALL-UNNAMED
+--add-opens java.base/java.math=ALL-UNNAMED
+--add-opens java.base/java.io=ALL-UNNAMED
+```
+
+`./bld test` passes them. Without them about 1,800 of the tests fail.

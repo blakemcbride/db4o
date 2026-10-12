@@ -49,14 +49,14 @@ public class QueryMonitoringSupportTestCase extends QueryMonitoringTestCaseBase 
 	
 	public void testAverageQueryExecutionTime() {
 		
-		Assert.areEqual(0.0, bean().getAttribute("AverageQueryExecutionTime"));
+		Assert.areEqual(Double.valueOf(0.0), bean().getAttribute("AverageQueryExecutionTime"));
 		
 		triggerQueryExecutionTime(1000);
-		Assert.areEqual(1000.0, bean().getAttribute("AverageQueryExecutionTime"));
+		Assert.areEqual(Double.valueOf(1000.0), bean().getAttribute("AverageQueryExecutionTime"));
 		
 		triggerQueryExecutionTime(200);
 		triggerQueryExecutionTime(500);
-		Assert.areEqual(350.0, bean().getAttribute("AverageQueryExecutionTime"));
+		Assert.areEqual(Double.valueOf(350.0), bean().getAttribute("AverageQueryExecutionTime"));
 		
 	}
 

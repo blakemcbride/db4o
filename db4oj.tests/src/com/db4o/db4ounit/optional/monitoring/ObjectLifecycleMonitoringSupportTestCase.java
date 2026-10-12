@@ -25,14 +25,14 @@ public class ObjectLifecycleMonitoringSupportTestCase extends MBeanTestCaseBase 
 	}
 
 	public void testObjectsStored(){
-		Assert.areEqual(0.0, bean().getAttribute("ObjectsStoredPerSec"));
+		Assert.areEqual(Double.valueOf(0.0), bean().getAttribute("ObjectsStoredPerSec"));
 		Item item = new Item(new Item(null));
 		store(item);
 		_clock.advance(1000);
-		Assert.areEqual(2.0, bean().getAttribute("ObjectsStoredPerSec"));
+		Assert.areEqual(Double.valueOf(2.0), bean().getAttribute("ObjectsStoredPerSec"));
 		store(item);
 		_clock.advance(1000);
-		Assert.areEqual(1.0, bean().getAttribute("ObjectsStoredPerSec"));
+		Assert.areEqual(Double.valueOf(1.0), bean().getAttribute("ObjectsStoredPerSec"));
 	}
 	
 	public void testObjectsDeleted() {
@@ -42,7 +42,7 @@ public class ObjectLifecycleMonitoringSupportTestCase extends MBeanTestCaseBase 
 		db().delete(item);
 		db().commit();
 		_clock.advance(1000);
-		Assert.areEqual(2.0, fileSessionBean().getAttribute("ObjectsDeletedPerSec"));
+		Assert.areEqual(Double.valueOf(2.0), fileSessionBean().getAttribute("ObjectsDeletedPerSec"));
 	}
 	
 	public void testObjectsActivated() throws Exception{
@@ -51,7 +51,7 @@ public class ObjectLifecycleMonitoringSupportTestCase extends MBeanTestCaseBase 
 			objectSet.next();
 		}
 		_clock.advance(1000);
-		Assert.areEqual(2.0, bean().getAttribute("ObjectsActivatedPerSec"));
+		Assert.areEqual(Double.valueOf(2.0), bean().getAttribute("ObjectsActivatedPerSec"));
 	}
 	
 	public void testObjectsDeactivated() throws Exception{
@@ -60,7 +60,7 @@ public class ObjectLifecycleMonitoringSupportTestCase extends MBeanTestCaseBase 
 			db().deactivate(objectSet.next());
 		}
 		_clock.advance(1000);
-		Assert.areEqual(2.0, bean().getAttribute("ObjectsDeactivatedPerSec"));
+		Assert.areEqual(Double.valueOf(2.0), bean().getAttribute("ObjectsDeactivatedPerSec"));
 	}
 
 	private ObjectSet<Item> storedItems() throws Exception {
