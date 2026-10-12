@@ -1,3 +1,7 @@
 # Code-RAG local index files (written by bld; machine-local, not part of the project)
 .mcp.json
 CLAUDE.local.md
+
+# Java build output and the compiled BLD build system (see BUILD.md)
+/target/
+/builder/*.class
