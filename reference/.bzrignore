@@ -1,11 +1,5 @@
 *.csproj.user
 *.iml
-DB4OFlare/Analyzer/**
-DB4OFlare/Output/**
-DRSFlare/Analyzer/**
-DRSFlare/Output/**
-TutorialCode/Analyzer/**
-TutorialCode/Output/**
 *.idea
 **/bin
 **/obj

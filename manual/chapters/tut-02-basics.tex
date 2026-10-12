@@ -1,0 +1,163 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Basics}
+\label{tut:basics}
+
+Let's start with the basics. First we create a tiny domain model, consisting out of drivers and cars.
+
+\begin{lstlisting}
+public class Car {
+    private String carName;
+
+    public Car(String carName) {
+        this.carName = carName;
+    }
+
+}
+\end{lstlisting}
+
+{\small\itshape Car.java: Domain model for cars\par}
+\medskip
+
+\begin{lstlisting}
+public class Driver {
+    private String name;
+    private Car mostLovedCar;
+
+    public Driver(String name) {
+        this.name = name;
+    }
+
+    public Driver(String name, Car mostLovedCar) {
+        this.name = name;
+        this.mostLovedCar = mostLovedCar;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Car getMostLovedCar() {
+        return mostLovedCar;
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Driver.java: Domain model for drivers\par}
+\medskip
+
+\section{Open a Database}
+\label{tut:basics:opendb}
+
+For all operations we need to open the database first. To open the database we pass a file-path to db4o. db4o will open or create that database-file an return an object container. The object container is the connection to our database. All operations go through it.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile("database.db4o");
+try{
+    // use the object container in here
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape BasicOperations.java: Open and close db4o\par}
+\medskip
+
+\section{Store an Object}
+\label{tut:basics:storeobject}
+
+To store an object in the database, we simply call the store-method on the object container.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile("databaseFile.db4o");
+try {
+    Driver driver = new Driver("Joe");
+    container.store(driver);
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape BasicOperations.java: Store an object\par}
+\medskip
+
+\section{Query the Database}
+\label{tut:basics:querydb}
+
+After storing objects we want to query for our stored objects. We can do this with native queries.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile("databaseFile.db4o");
+try {
+    List<Driver> drivers = container.query(new Predicate<Driver>() {
+        public boolean match(Driver d) {
+            return d.getName().equals("Joe");
+        }
+    });
+    System.out.println("Stored Pilots:");
+    for (Driver driver : drivers) {
+        System.out.println(driver.getName());
+    }
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape BasicOperations.java: Query for objects\par}
+\medskip
+
+\section{Update an Object}
+\label{tut:basics:updateobject}
+
+In order to update an object we first query for it. Then we change it and store it again. db4o will recognize the updated object and store the changes in the database.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile("databaseFile.db4o");
+try {
+    List<Driver> drivers = container.query(new Predicate<Driver>() {
+        public boolean match(Driver d) {
+            return d.getName().equals("Joe");
+        }
+    });
+    Driver driver = drivers.get(0);
+    System.out.println("Old name" +driver.getName());
+    driver.setName("John");
+    System.out.println("New name" +driver.getName());
+    // update the pilot
+    container.store(driver);
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape BasicOperations.java: Update an object\par}
+\medskip
+
+\section{Delete an Object}
+\label{tut:basics:deleteobject}
+
+Deleting an object is easy. First we query for the object and then delete it.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile("databaseFile.db4o");
+try {
+    List<Driver> drivers = container.query(new Predicate<Driver>() {
+        public boolean match(Driver d) {
+            return d.getName().equals("Joe");
+        }
+    });
+    Driver driver = drivers.get(0);
+    System.out.println("Deleting " +driver.getName());
+    container.delete(driver);
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape BasicOperations.java: Delete an object\par}
+\medskip
+

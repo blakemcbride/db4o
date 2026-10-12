@@ -20,7 +20,7 @@ import com.db4o.io.*;
  * The benchmark can also run in delayed mode which allows simulating the I/O behaviour of a slower machine
  * on a faster one.
  * 
- * For further information and usage instructions please refer to README.htm.
+ * For further information and usage instructions please refer to README.html.
  * @sharpen.ignore
  */
 

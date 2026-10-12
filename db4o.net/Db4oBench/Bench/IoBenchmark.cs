@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Bench
 	/// IoBenchmark is a benchmark that measures I/O performance as seen by db4o.
 	/// The benchmark can also run in delayed mode which allows simulating the I/O behaviour of a slower machine
 	/// on a faster one.
-	/// For further information and usage instructions please refer to README.htm.
+	/// For further information and usage instructions please refer to README.html.
 	/// </remarks>
 	public class IoBenchmark
 	{

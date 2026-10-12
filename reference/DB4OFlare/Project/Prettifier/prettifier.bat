@@ -1,1 +1,0 @@
-prettifier.vbs "C:\Users\tetyana\Documents\My Projects\Reference\Copy\Reference\Reference\Output\tetyana\JavaWeb\Content"

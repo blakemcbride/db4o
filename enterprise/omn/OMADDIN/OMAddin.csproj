@@ -107,11 +107,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\support1.gif" />
-    <Content Include="ContactSales\ContactSales.htm" />
+    <Content Include="ContactSales\ContactSales.html" />
     <Content Include="ContactSales\ContactSales_files\filelist.xml" />
     <Content Include="ContactSales\ContactSales_files\image001.jpg" />
     <Content Include="ContactSales\ContactSales_files\image002.jpg" />
-    <Content Include="FAQ\FAQ.htm" />
+    <Content Include="FAQ\FAQ.html" />
     <EmbeddedResource Include="FAQ\FAQ_files\filelist.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -146,7 +146,7 @@
     <Content Include="OMAddin.AddIn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ReadMe_vs2008\ReadMe_vs2008.htm" />
+    <Content Include="ReadMe_vs2008\ReadMe_vs2008.html" />
     <Content Include="ReadMe_vs2008\ReadMe_vs2008_files\filelist.xml" />
     <Content Include="ReadMe_vs2008\ReadMe_vs2008_files\image001.jpg" />
     <Content Include="ReadMe_vs2008\ReadMe_vs2008_files\image002.jpg" />

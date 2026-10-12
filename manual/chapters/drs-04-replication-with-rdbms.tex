@@ -1,0 +1,254 @@
+% Converted from reference/DRSFlare (MadCap Flare, Java target)
+
+\chapter{Replication With RDBMS}
+\label{drs:db4o-replication-system-drs-replication-with-rdbms}
+
+The Java version of the db4o replication system allows you to replicate to a relational database using \href{http://www.hibernate.org/}{Hibernate}.
+
+Note that dRS needs event handlers which are added to the Hibernate session. It only works when you persist your data through Hibernate.
+
+First you need to setup Hibernate and db4o to support replication. \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-getting-started]{See "Getting Started"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-getting-started})
+
+The simplest use case is to replicate from db4o to Hibernate. \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-db4o-to-rdbms]{See "Replicate From db4o To Hibernate"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-db4o-to-rdbms}). However most of the time bidirectional replication is the interesting scenario. \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-bi-directional]{See "Bidirectional Replication"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-bi-directional})
+
+The enable replication the system has to store additional meta data. \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-drs-internals]{See "dRS Internals"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-drs-internals})
+
+Note that the db4o to Hibernate replication has still major limitations. \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-limitations]{See "Limitations"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-limitations})
+
+\section{Getting Started}
+\label{drs:db4o-replication-system-drs-db4o-rdbms-getting-started}
+
+First you need to add Hibernate. Read the \href{http://www.hibernate.org/docs}{Hibernate documentation} to configure Hibernate properly. This reference documentation only shows the essentials to get started.
+
+\subsection*{Adding The Dependencies}
+
+In order to replicate against Hibernate you need to add the Hibernate jars. The dRS distribution contains a copy of Hibernate. dRS is only tested against that Hibernate version. You need to add following dependencies to your project.
+
+\begin{itemize}
+\item db4o-X.XX-core-java5.jar or db4o-X.XX-all-java5.jar
+\item dRS-X.XX-core.jar
+\item All Hibernate dependencies: hibernate3.jar, antlr-2.7.7.jar, jta.jar, commons-logging.jar, commons-collections.jar, dom4j.jar. All other jars are for optional Hibernate features.
+\end{itemize}
+
+\subsection*{Configure Hibernate}
+
+Hibernate needs some configuration. You need to configure the database-driver, the database-connection and the SQL dialect. Read more on the \href{http://docs.jboss.org/hibernate/stable/core/reference/en/html/session-configuration.html\#configuration-xmlconfig}{official Hibernate documentation}.
+
+\begin{lstlisting}
+<hibernate-configuration>
+    <session-factory>
+        <!-- Specify the database driver -->
+        <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+
+        <!-- The JDBC connection string -->
+        <property name="hibernate.connection.url">jdbc:hsqldb:mem:database.hsql</property>
+
+        <!-- User name an password for the database -->
+        <property name="hibernate.connection.username">sa</property>
+        <property name="hibernate.connection.password"></property>
+
+        <!-- Specify the SQl-dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
+
+        <property name="hibernate.show_sql">true</property>
+        <!-- Update the database schema if out of date -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Add the mapping files for your classes -->
+        <mapping resource="com/db4odoc/drs/rdms/Car.cfg.xml"/>
+        <mapping resource="com/db4odoc/drs/rdms/Pilot.cfg.xml"/>
+
+    </session-factory>
+</hibernate-configuration>
+\end{lstlisting}
+
+{\small\itshape hibernate.cfg.xml: Example Hibernate Configuration\par}
+\medskip
+
+\subsection*{Configure The Object Relation Mapping}
+
+In order to store objects in Hibernate, you need define the mapping between the tables and the objects you store. There's only one requirement for the db4o replication: Each object needs a long field for the id. This id is used by dRS to recognize the object. For example we map the Pilot class to the pilots tables. Read more on the \href{http://docs.jboss.org/hibernate/stable/core/reference/en/html/mapping.html\#mapping-declaration}{official Hibernate documentation}.
+
+\begin{lstlisting}
+<hibernate-mapping default-access="field" default-lazy="false" default-cascade="save-update">
+    <class name="com.db4odoc.drs.rdms.Pilot" table="pilots">
+        <id column="typed_id" type="long">
+            <generator class="native"/>
+        </id>
+
+        <property name="name"/>
+        <property name="points"/>
+
+    </class>
+</hibernate-mapping>
+\end{lstlisting}
+
+{\small\itshape Pilot.cfg.xml: Mapping the Pilot class\par}
+\medskip
+
+\section{Replicate From db4o To Hibernate}
+\label{drs:db4o-replication-system-drs-db4o-rdbms-db4o-to-rdbms}
+
+After \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-getting-started]{setting up} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-getting-started}) Hibernate you can start replicating objects. First you need to configure Hibernate to support the replication system. Additionally you need to enable UUIDs and version numbers on the db4o side.
+
+\begin{lstlisting}
+Configuration hibernateConfig
+        = new Configuration().configure("com/db4odoc/drs/rdms/hibernate.cfg.xml");
+ReplicationConfigurator.configure(hibernateConfig);
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Prepare the Hibernate configuration\par}
+\medskip
+
+\begin{lstlisting}
+configuration.file().generateUUIDs(ConfigScope.GLOBALLY);
+configuration.file().generateCommitTimestamps(true);
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Configure db4o to generate UUIDs and commit timestamps\par}
+\medskip
+
+\subsection*{Start The Replication}
+
+After configuring Hibernate and db4o, the system is ready for replication. Like the \hyperref[drs:db4o-replication-system-drs-db4o-databases-replication-simple-example]{db4o to db4o} (p.~\pageref{drs:db4o-replication-system-drs-db4o-databases-replication-simple-example}) replication you start by creating a replication-session.
+
+\begin{lstlisting}
+ObjectContainer container = openDB();
+
+Db4oEmbeddedReplicationProvider providerA = new Db4oEmbeddedReplicationProvider(container);
+HibernateReplicationProvider providerB = new HibernateReplicationProvider(hibernateConfig);
+
+ReplicationSession replicationSession = Replication.begin(providerA, providerB);
+replicationSession.setDirection(replicationSession.providerA(),replicationSession.providerB());
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Prepare replication\par}
+\medskip
+
+After that you can request for the changed objects and replicate object by object to Hibernate:
+
+\begin{lstlisting}
+final ObjectSet changesInHibernate =
+        replicationSession.providerA().objectsChangedSinceLastReplication();
+for (Object changedObject : changesInHibernate) {
+    replicationSession.replicate(changedObject);
+}
+
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Replicate from db4o to Hibernate\par}
+\medskip
+
+\section{Bidirectional Replication}
+\label{drs:db4o-replication-system-drs-db4o-rdbms-bi-directional}
+
+In order to replicate objects from Hibernate to db4o you need to do some additional work. dRS needs to know which objects have changed since the last replication. For this some \hyperref[drs:db4o-replication-system-drs-db4o-rdbms-drs-internals]{meta data} (p.~\pageref{drs:db4o-replication-system-drs-db4o-rdbms-drs-internals}) is maintained.You need to register a dRS event handler on every Hibernate-session you're using. This listener will maintain the meta-data. If an object is stored on a session without this listener, the update is not replicated. That also means dRS replication only works when you persist all object through Hibernate
+
+\begin{lstlisting}
+SessionFactory sessionFactory = hibernateConfig.buildSessionFactory();
+Session session = sessionFactory.openSession();
+ReplicationConfigurator.install(session, hibernateConfig);
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Install the listeners to the session\par}
+\medskip
+
+After that dRS is ready to replicate in both directions. Again, set up the replication-session. After that you can replicate the changes of the two providers in both directions.
+
+\begin{lstlisting}
+Configuration hibernateConfig
+        = new Configuration().configure("com/db4odoc/drs/rdms/hibernate.cfg.xml");
+ObjectContainer container = openDB();
+
+Db4oEmbeddedReplicationProvider providerA = new Db4oEmbeddedReplicationProvider(container);
+HibernateReplicationProvider providerB = new HibernateReplicationProvider(hibernateConfig);
+
+ReplicationSession replicationSession = Replication.begin(providerA, providerB);
+
+final ObjectSet changesInDb4o = replicationSession.providerA()
+        .objectsChangedSinceLastReplication();
+for (Object changedObject : changesInDb4o) {
+    replicationSession.replicate(changedObject);
+}
+final ObjectSet changesInHibernate = replicationSession.providerB()
+        .objectsChangedSinceLastReplication();
+for (Object changedObject : changesInHibernate) {
+    replicationSession.replicate(changedObject);
+}
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Bidirectional replication\par}
+\medskip
+
+\section{dRS Internals}
+\label{drs:db4o-replication-system-drs-db4o-rdbms-drs-internals}
+
+How does dRS work to replicate between Hibernate and db4o? This topic gives some insights.
+
+\subsection*{Meta Data}
+
+In order to know which version the objects have and the state of the replication peers dRS needs additional information. For this the dRS system adds extra tables which contain this meta data. These meta data has to maintained, otherwise dRS doesn't replicate the changes. To enable this meta-data tracking you need to add a listener to every Hibernate session:
+
+\begin{lstlisting}
+SessionFactory sessionFactory = hibernateConfig.buildSessionFactory();
+Session session = sessionFactory.openSession();
+ReplicationConfigurator.install(session, hibernateConfig);
+\end{lstlisting}
+
+{\small\itshape Db4oRDBMSReplicationExamples.java: Install the listeners to the session\par}
+\medskip
+
+\subsubsection*{The Providers}
+
+The providers are the peers which replicate to each others. Each database has a unique identity so that the different providers can be distinguished. This data is kept in the 'drs\_providers' table.
+
+{\small
+\begin{longtable}{|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|}
+\hline
+\textbf{Column} & \textbf{Type} & \textbf{Purpose} \\ \hline
+id & long & Synthetic, auto-increment primary key. \\ \hline
+is\_my\_sig & char(1) & 't' when MySignature, 'f' when PeerSignature. \\ \hline
+signature & binary & Holds the unique identifier - byte array. \\ \hline
+created & long & Legacy field for older versions. \\ \hline
+\end{longtable}}
+
+\paragraph*{The History}
+
+The dRS keeps a history of replication with each pair. This history is used to find out when the last replication took place and which objects have changed since the last replication. This data is kept in the 'drs\_history' table.
+
+{\small
+\begin{longtable}{|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|}
+\hline
+\textbf{Column} & \textbf{Type} & \textbf{Purpose} \\ \hline
+provider\_id & long & Primary key, same as the primary key of a provider. \\ \hline
+time & long & The last version of the last replication session. \\ \hline
+\end{longtable}}
+
+\subsubsection*{The Object Meta Data}
+
+For each object there's meta data. This meta data contains a UUID, the version and some additional information. This data is kept in the 'drs\_objects' table.
+
+{\small
+\begin{longtable}{|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|}
+\hline
+\textbf{Column} & \textbf{Type} & \textbf{Purpose} \\ \hline
+id & long & Synthetic, auto-increment primary key. \\ \hline
+created & long & The UUID long part of this ObjectReference. \\ \hline
+provider\_id & long & Specifies the originating replication provider of this object. \\ \hline
+class\_name & varchar & The type of the referenced object. \\ \hline
+typed\_id & long & The id used by Hibernate, which is only unique within its type. \\ \hline
+modified & long & The version of the referenced object \\ \hline
+\end{longtable}}
+
+\subsection*{Collections}
+
+db4o treats collections like regular objects which have a identity. Hibernate however maps collections to joins and therefore collections don't have an identity. To bridge this gap, dRS treats collections as special objects and does not assign UUIDs to them. However this also means that dRS cannot detect changed collections. So currently you cannot replicate collection-updates between db4o and Hibernate.
+
+\section{Limitations}
+\label{drs:db4o-replication-system-drs-db4o-rdbms-limitations}
+
+\subsection*{Collections Limitation}
+
+Collections are treated differently by Hibernate and db4o. In db4o a collection is a regular object. In Hibernate collections are representation of join-operations. This means that collections in Hibernate don't have a identity. That why dRS currently doesn't not track updates on collections when replicating against Hibernate. You only can replicate a collection initially, but cannot replicate updates.
+

@@ -1,0 +1,142 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Transactions}
+\label{tut:transactions}
+
+db4o has ACID properties and supports transactions. Now we take a look at db4o's transaction support.
+
+\begin{lstlisting}
+@TransparentPersisted
+public class Car {
+    private String carName;
+
+    public Car(String carName) {
+        this.carName = carName;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Car.java: Domain model for cars\par}
+\medskip
+
+\begin{lstlisting}
+@TransparentPersisted
+public class Driver {
+    private String name;
+    private Car mostLovedCar;
+
+    public Driver(String name) {
+        this.name = name;
+    }
+
+    public Driver(String name, Car mostLovedCar) {
+        this.name = name;
+        this.mostLovedCar = mostLovedCar;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Car getMostLovedCar() {
+        return mostLovedCar;
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Driver.java: Domain model for drivers\par}
+\medskip
+
+\section{Commit and Rollback}
+\label{tut:transactions:commitrollback}
+
+db4o starts a transaction as soon as you open an object container and implicitly commits it when you close the object container. In between we can control the transaction explicitly by calling the commit or rollback method. After the commit everything is persisted and another transaction is started.
+
+\begin{lstlisting}
+container.commit();
+\end{lstlisting}
+
+{\small\itshape Transactions.java: Committing changes\par}
+\medskip
+
+The same applies to rollbacks. We can rollback the transaction any time. After a rollback the next transaction is started.
+
+\begin{lstlisting}
+container.rollback();
+\end{lstlisting}
+
+{\small\itshape Transactions.java: Rollback changes\par}
+\medskip
+
+\section{Object State After Rollback}
+\label{tut:transactions:objectstate}
+
+What happens to objects in memory when we rollback a transaction? By default the objects in memory keep their state. If you want to rollback the objects in memory you need to reload them.
+
+\begin{lstlisting}
+Driver driver = queryForDriver(container);
+driver.setName("New Name");
+System.out.println("Name before rollback " + driver.getName());
+container.rollback();
+// Without transparent persistence objects keep the state in memory
+System.out.println("Name after rollback " + driver.getName());
+// After refreshing the object is has the state like in the database
+container.ext().refresh(driver, Integer.MAX_VALUE);
+System.out.println("Name after rollback " + driver.getName());
+\end{lstlisting}
+
+{\small\itshape Transactions.java: Without transparent persistence objects in memory aren't rolled back\par}
+\medskip
+
+\subsection*{With Transparent Persistence}
+
+With transparent activation we can use a rollback strategy. That way we can rollback the state of the objects in memory.
+
+\begin{lstlisting}
+EmbeddedConfiguration configuration = Db4oEmbedded.newConfiguration();
+configuration.common().add(new TransparentPersistenceSupport(new DeactivatingRollbackStrategy()));
+\end{lstlisting}
+
+{\small\itshape Transactions.java: Rollback strategy for the transaction\par}
+\medskip
+
+\begin{lstlisting}
+Driver driver = queryForDriver(container);
+driver.setName("New Name");
+System.out.println("Name before rollback " + driver.getName());
+container.rollback();
+// Thanks to transparent persistence with the rollback strategy
+// the object state is rolled back
+System.out.println("Name after rollback " + driver.getName());
+\end{lstlisting}
+
+{\small\itshape Transactions.java: Transparent persistence rolls back objects in memory\par}
+\medskip
+
+\section{Multiple Transactions}
+\label{tut:transactions:multipletx}
+
+For more complex applications we can use multiple transactions. For that we need to create multiple object containers, each having its own transaction.
+
+When we have multiple object containers, an object always needs to be loaded and stored in the same object container.
+
+\begin{lstlisting}
+ObjectContainer container = rootContainer.ext().openSession();
+try{
+    // We do our operations in this transaction
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape Transactions.java: Opening a new transaction\par}
+\medskip
+

@@ -1,0 +1,332 @@
+% Converted from reference/DB4OFlare (MadCap Flare, Java target)
+
+\chapter{Best Practices}
+\label{ref:best-practises}
+
+This topic is a collection of best practices for db4o.
+
+db4o doesn't have any support for limiting the result size or skipping objects in the result set. You can do this on top of db4o with little effort. \hyperref[ref:best-practises-paging]{See "Paging"} (p.~\pageref{ref:best-practises-paging})
+
+How should you scope the lifetime of an object container? See this guide-line: \hyperref[ref:best-practises-lifetime-of-a-objectcontainer]{See "Lifetime Of On Object Container"} (p.~\pageref{ref:best-practises-lifetime-of-a-objectcontainer})
+
+Deleting object is always a delicate process. \hyperref[ref:best-practises-deleting-objects]{See "Deleting Objects"} (p.~\pageref{ref:best-practises-deleting-objects})
+
+If you upgrade to new major db4o version you should do these steps to update the file format. \hyperref[ref:best-practises-updating-db4o-version]{See "Upgrade db4o Version"} (p.~\pageref{ref:best-practises-updating-db4o-version})
+
+\section{Managing Relations}
+\label{ref:best-practises-managing-relations}
+
+In db4o you manage relations by storing references to other objects. In db4o navigational access is usually a lot faster than queries. Therefore think about how you navigate to the right information. This topic gives an overview how to manage different relations.
+
+\subsection{1-N Relation: Navigating from 1 to N}
+\label{ref:best-practises-managing-relations:1ton-nav}
+
+As example we use shopping cards which hold items. In most use cases you need to know which items are on a card. For that you navigate from the card (the 1-part) to the items (the N-part). In this case you simply can use a collection on the shopping card which references all items.
+
+Keep in mind that a \hyperref[ref:basics-querying-soda-soda-performance-characteristics]{contains-query on collections is very slow} (p.~\pageref{ref:basics-querying-soda-soda-performance-characteristics}). Finding out which items are on a certain shopping cards is very slow. If you want to know that, take a look at the suggestions below.
+
+\begin{lstlisting}
+Set<Item> items = new HashSet<Item>();
+
+public void add(Item terrain) {
+    items.add(terrain);
+}
+
+public void remove(Item o) {
+    items.remove(o);
+}
+\end{lstlisting}
+
+{\small\itshape ShoppingCard.java: Simple 1-n relation. Navigating from the card to the items\par}
+\medskip
+
+\subsection{1-N Relation: Navigating from N to 1}
+\label{ref:best-practises-managing-relations:nto1-nav}
+
+Imagine that you store people and in which country a person is born. Here you usually navigate from the person (the N-part) to the country (the 1-part). Therefore you can have a field which refers to the country.
+
+In the rare case where you want to know all people born in a certain country you can do a query. When the country reference is \hyperref[ref:basics-indexing]{indexed} (p.~\pageref{ref:basics-indexing}), then that query is fast.
+
+\begin{lstlisting}
+// Optionally we can index this field, when we want to find all people for a certain country
+private Country bornIn;
+
+public Country getBornIn() {
+    return bornIn;
+}
+\end{lstlisting}
+
+{\small\itshape Person.java: Simple 1-n relation. Navigating from the person to the countries\par}
+\medskip
+
+Getting all people of a country is not that hard and fast when the `bornIn' field is indexed.
+
+\begin{lstlisting}
+final Country country = loadCountry(container,"USA");
+final ObjectSet<Person> peopleBurnInTheUs = container.query(new Predicate<Person>() {
+    @Override
+    public boolean match(Person p) {
+        return p.getBornIn() == country;
+    }
+});
+\end{lstlisting}
+
+{\small\itshape RelationManagementExamples.java: Query for people burn in a country\par}
+\medskip
+
+\subsection{1-N Relation: Bidirectional}
+\label{ref:best-practises-managing-relations:1ton-bidirect}
+
+When you want to navigate a 1-N relationship bidirectional you can use the method above, because the query if fast enough. Just ensure that you index the field holding the reference.
+
+Alternatively you also can add an additional collection which holds the items. However in that case you need to manually manage the consistency of the relation.
+
+For example the relationship between dogs and their owners. The dog has a field with its owner, while the person has a collection of his dogs. The setters then manage the relationship and ensure that it is always consistent.
+
+\begin{lstlisting}
+private Person owner;
+
+// This setter ensures that the model is always consistent
+public void setOwner(Person owner) {
+    if(null!=this.owner){
+        Person oldOwner = this.owner;
+        this.owner = null;
+        oldOwner.removeOwnerShipOf(this);
+    }
+    if(null!=owner && !owner.ownedDogs().contains(this)) {
+        owner.addOwnerShipOf(this);
+    }
+    this.owner = owner;
+}
+
+public Person getOwner() {
+    return owner;
+}
+\end{lstlisting}
+
+{\small\itshape Dog.java: Bidirectional 1-N relations. The dog has a owner\par}
+\medskip
+
+\begin{lstlisting}
+private Set<Dog> owns = new HashSet<Dog>();
+
+// The add and remove method ensure that the relations is always consistent
+public void addOwnerShipOf(Dog dog) {
+    owns.add(dog);
+    dog.setOwner(this);
+}
+
+public void removeOwnerShipOf(Dog dog) {
+    owns.remove(dog);
+    dog.setOwner(null);
+}
+
+public Collection<Dog> ownedDogs() {
+    return Collections.unmodifiableCollection(owns);
+}
+\end{lstlisting}
+
+{\small\itshape Person.java: Bidirectional 1-N relations. The person has dogs\par}
+\medskip
+
+\subsection{N-N Relations: One Way Navigation}
+\label{ref:best-practises-managing-relations:nton-nav}
+
+Like 1-N relations N-N relations also can be one directional. For example a person can have multiple citizenships in different countries. Let's suppose that you only want to know the citizenship of a person and not the citizens of a country. Then you navigate from people to countries. You can store that in a simple collection.
+
+Keep in mind that a \hyperref[ref:basics-querying-soda-soda-performance-characteristics]{contains-query on a collection is very slow} (p.~\pageref{ref:basics-querying-soda-soda-performance-characteristics}). Finding the people of a certain country will be very slow.
+
+\begin{lstlisting}
+private Set<Country> citizenIn = new HashSet<Country>();
+
+public void removeCitizenship(Country o) {
+    citizenIn.remove(o);
+}
+
+public void addCitizenship(Country country) {
+    citizenIn.add(country);
+}
+\end{lstlisting}
+
+{\small\itshape Person.java: One directional N-N relation\par}
+\medskip
+
+\subsection{N-N Relations: Bidirectional Navigation}
+\label{ref:best-practises-managing-relations:nton-bidirect}
+
+For managing bidirectional N-N relations you can use collections, but maintain a collection on both sides. For example a club has a member-list and each member has a list of clubs where he is a member.
+
+Keep in mind that a \hyperref[ref:basics-querying-soda-soda-performance-characteristics]{contains-query on a collection is very slow} (p.~\pageref{ref:basics-querying-soda-soda-performance-characteristics}). That's why you maintain two collections, so that you can navigate to the club-members or club-membership.
+
+\begin{lstlisting}
+private Set<Person> members = new HashSet<Person>();
+
+public void addMember(Person person) {
+    if (!members.contains(person)) {
+        members.add(person);
+        person.join(this);
+    }
+}
+
+public void removeMember(Person person) {
+    if (members.contains(person)) {
+        members.remove(person);
+        person.leave(this);
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Club.java: Bidirectional N-N relation\par}
+\medskip
+
+\begin{lstlisting}
+private Set<Club> memberIn = new HashSet<Club>();
+
+public void join(Club club) {
+    if (!memberIn.contains(club)) {
+        memberIn.add(club);
+        club.addMember(this);
+    }
+}
+
+public void leave(Club club) {
+    if (memberIn.contains(club)) {
+        memberIn.remove(club);
+        club.removeMember(this);
+    }
+}
+
+public Collection<Club> memberOf() {
+    return Collections.unmodifiableCollection(memberIn);
+}
+\end{lstlisting}
+
+{\small\itshape Person.java: Bidirectional N-N relation\par}
+\medskip
+
+\section{Paging}
+\label{ref:best-practises-paging}
+
+Currently db4o doesn't provide any paging mechanism at all. However all db4o query results are lazy loaded. db4o returns a result list which only contains the ids of the objects and will load the object as soon as you access it. This means you can page by only accessing the indexes of the range you're interested in.
+
+Since the result sets of db4o implement the Java List interface it has the sub list method. With this method you easily get only a sub set of the result. Or you can build your own paging-method based on the sub list method on the lists.
+
+\begin{lstlisting}
+public static <T> List<T> paging(List<T> listToPage, int limit){
+    return paging(listToPage,0,limit);
+}
+
+public static <T> List<T> paging(List<T> listToPage, int start, int limit){
+    if(start>listToPage.size()){
+        throw new IllegalArgumentException("You cannot start the paging outside the list." +
+                " List-size: "+listToPage.size()+" start: "+start);
+    }
+    int end = calculateEnd(listToPage, start, limit);
+    return listToPage.subList(start, end);
+
+}
+
+private static <T> int calculateEnd(List<T> resultList, int start, int limit) {
+    int end = start + limit;
+    if(end>=resultList.size()){
+        return resultList.size();
+    }
+    return end;
+}
+\end{lstlisting}
+
+{\small\itshape PagingUtility.java: Paging utility methods\par}
+\medskip
+
+And then of course you can use the utility methods on the result-sets of db4o.
+
+\begin{lstlisting}
+final ObjectSet<StoredItems> queryResult = container.query(StoredItems.class);
+List<StoredItems> pagedResult = PagingUtility.paging(queryResult, 2, 2);
+\end{lstlisting}
+
+{\small\itshape TestPagingUtility.java: Use the paging utility\par}
+\medskip
+
+\section{Upgrade db4o Version}
+\label{ref:best-practises-updating-db4o-version}
+
+How do you upgrade to a newer version safely? By default db4o can read an older version of a database and operate on it without any issues. However for major version updates you should consider doing this updating procedure. This ensures that the database uses the newest file format and performance optimizations.
+
+\subsection*{The safest update procedure:}
+
+\begin{enumerate}
+\item \hyperref[ref:advanced-topics-defragment]{Defragment} (p.~\pageref{ref:advanced-topics-defragment}) the database with the current version. This will automatically also create a backup.
+\item Upgrade to the new db4o version.
+\item After that immediately \hyperref[ref:advanced-topics-defragment]{defragment} (p.~\pageref{ref:advanced-topics-defragment}) the database with the current version. This will create another backup. After that the database file uses the most current database format.
+\item Make sure that you can read the data from the database. If everything works you can delete the backups.
+\end{enumerate}
+
+\section{Lifetime Of An Object Container}
+\label{ref:best-practises-lifetime-of-a-objectcontainer}
+
+The main interface to your database is the \hyperref[ref:basics-object-container]{object container} (p.~\pageref{ref:basics-object-container}). You do all major operations with a object container instance. Now how long should you keep a object container open? Is it better to close the object container after each operation. Or keep the object container open? This topic is a small guideline on the lifetime of an object container.
+
+\subsection*{Understanding Object Containers}
+
+The lifetime of a object container heavily depends on your application scenario. Therefore it's vital to understand what a object container represents. A object container consist of a \hyperref[ref:basics-acid-and-transactions]{transaction} (p.~\pageref{ref:basics-acid-and-transactions}) and a \hyperref[ref:basics-indentity-concept-reference-cache]{reference} (p.~\pageref{ref:basics-indentity-concept-reference-cache}) cache and is thread safe. This means that a object container is isolated from other containers. Furthermore an object container has a cache, so you don't want to throw a object container away if you don't have to.
+
+\subsection*{One Object Container Per Unit Of Work}
+
+This means in fact that you should use one object container per unit of work. You can use a object container for succeeding units of work. But you should never use the same object container for concurrent or independent units of work. You can create \hyperref[ref:advanced-topics-session-containers]{new object containers at any time} (p.~\pageref{ref:advanced-topics-session-containers}).
+
+\subsection*{Desktop Application}
+
+What does this mean for a desktop application? Well in a simple desktop application you might can use only one object container. Since there only one user doing something at a time you can use the same object container for all operations.
+
+For complexes desktop application multiple object container can be an option. For example a object container per tab, per wizard etc.
+
+Be aware only because object container is thread safe it doesn't make your object model thread safe. If multiple threads are using the same object container they will use the same objects and modify the same object concurrently. You need to use an appropriate model for the concurrent access.
+
+\subsection*{Web Application}
+
+In a web application you should use a \hyperref[ref:platform-specific-issues-web-web-isolation]{object container per request} (p.~\pageref{ref:platform-specific-issues-web-web-isolation}). Each request is it unit of work. Maybe there are multiple unit of work successively in a request, but a request represents the top level unit of work.
+
+\section{Deleting Objects}
+\label{ref:best-practises-deleting-objects}
+
+Deleting object is always a delicate process. Deleting the wrong object can be catastrophic. Here are some best practices for deleting objects.
+
+\subsection*{Delete Flag}
+
+When a end user deletes a object it's often better to use a deleted-flag instead of actually deleting the data. This has the advantage that you can undo the delete operation at any time. Also you don't break the model in cases where the user deleted the wrong object. However it has also some disadvantages. You need to honor the deleted-flag in your queries.
+
+You can set the delete flag in a \hyperref[ref:advanced-topics-callbacks]{callback} (p.~\pageref{ref:advanced-topics-callbacks}) and use the regular db4o delete operation:
+
+\begin{lstlisting}
+EventRegistry events = EventRegistryFactory.forObjectContainer(container);
+events.deleting().addListener(new EventListener4<CancellableObjectEventArgs>() {
+    public void onEvent(Event4<CancellableObjectEventArgs> events,
+                        CancellableObjectEventArgs eventArgument) {
+        Object obj = eventArgument.object();
+        // if the object has a deletion-flag:
+        // set the flag instead of deleting the object
+        if (obj instanceof Deletable) {
+            ((Deletable) obj).delete();
+            eventArgument.objectContainer().store(obj);
+            eventArgument.cancel();
+        }
+    }
+});
+\end{lstlisting}
+
+{\small\itshape DeletionStrategies.java: Deletion-Flag\par}
+\medskip
+
+However you need to filter the deleted objects in every query.
+
+\subsection*{Be Very Careful}
+
+db4o doesn't support any referential integrity. When you delete a object and there's still a reference to that object this reference is set to null. This means if you delete a object you may break the consistency of you're object model.
+
+This means also that you need to implement any consistency check yourself on top of db4o. You can use db4o \hyperref[ref:advanced-topics-callbacks]{callbacks} (p.~\pageref{ref:advanced-topics-callbacks}) for doing so.
+
+\subsection*{Use Cascade Deletion Wisely}
+
+You can configure db4o the cascade delete referenced objects. You can configure that for \hyperref[ref:configuration-objectclass-cascade-on-delete]{certain type} (p.~\pageref{ref:configuration-objectclass-cascade-on-delete}) or \hyperref[ref:configuration-objectfield-configuration]{certain fields} (p.~\pageref{ref:configuration-objectfield-configuration}). As said there's no referential integrity checks for db4o, so you have to extreamly conscious where to use this feature. It makes sense to configure cascade deletion for composition roots, where you are sure that the children cannot be referenced from another location. In all other places it's a bad idea most of the time.
+

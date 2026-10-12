@@ -1,0 +1,214 @@
+% Converted from reference/DB4OFlare (MadCap Flare, Java target)
+
+\chapter{Usage Pitfalls}
+\label{ref:usage-pitfalls}
+
+The db4o team tries hard to make the db4o as easy to use as possible. However there are still some pitfalls.
+
+When objects are only partially loaded and you run into null pointer exceptions, then you ran into not activated objects. This is a common issue. \hyperref[ref:usage-pitfalls-activation-depth]{See "The Activation Pitfall"} (p.~\pageref{ref:usage-pitfalls-activation-depth})
+
+When updates are not stored then you have issues with the update-depth. \hyperref[ref:usage-pitfalls-update-depth]{See "Update Depth Pitfall"} (p.~\pageref{ref:usage-pitfalls-update-depth})
+
+db4o tries hard to store every object without any mapping. However in practice the mapping is not perfect. For UUID you should add a configuration to support them propertly. \hyperref[ref:advanced-topics-type-handling-uuid-support]{See "UUID Support"} (p.~\pageref{ref:advanced-topics-type-handling-uuid-support}). For big math types you need some additional configuration \hyperref[ref:usage-pitfalls-storing-bigdecimal]{See "Storing BigDecimal And BigInteger"} (p.~\pageref{ref:usage-pitfalls-storing-bigdecimal}). Also be careful with collections and avoid SQL-Types. \hyperref[ref:usage-pitfalls-special-type-handling]{See "Special Type Handling"} (p.~\pageref{ref:usage-pitfalls-special-type-handling})
+
+In more complex Java environments you may run into class loading issues. \hyperref[ref:usage-pitfalls-classloader-and-generic-classes]{See "Classloader And Generic Classes"} (p.~\pageref{ref:usage-pitfalls-classloader-and-generic-classes})
+
+There are a few dangerous practices which you really should avoid. \hyperref[ref:usage-pitfalls-dangerous-practices]{See "Dangerous Practices"} (p.~\pageref{ref:usage-pitfalls-dangerous-practices})
+
+db4o has database size limit, which is by default 2 GByte. See how you can increase it. \hyperref[ref:usage-pitfalls-working-with-large-amounts-of-data]{See "Working With Large Amounts Of Data"} (p.~\pageref{ref:usage-pitfalls-working-with-large-amounts-of-data})
+
+\section{Activation Depth Pitfall}
+\label{ref:usage-pitfalls-activation-depth}
+
+In order to work effectively with db4o you should understand the concept of \hyperref[ref:basics-activation]{Activation} (p.~\pageref{ref:basics-activation}). Activation controls the amount of objects loaded into the memory. There are two main pitfalls that you should be aware about.
+
+\subsection*{Accessing Not Activated Objects}
+
+One common pitfall is to access unactivated objects. This usually results in null pointer exceptions or invalid values. This happens when you navigate beyond the activated object-graph area. For example, we have a complex relationships and follow them:
+
+\begin{lstlisting}
+final Person jodie = queryForJodie(container);
+Person julia = jodie.mother().mother().mother().mother().mother();
+// This will print null
+// Because julia is not activated
+// and therefore all fields are not set
+System.out.println(julia.getName());
+// This will throw a NullPointerException.
+// Because julia is not activated
+// and therefore all fields are not set
+String joannaName = julia.mother().getName();
+\end{lstlisting}
+
+{\small\itshape ActivationDepthPitfall.java: Run into not activated objects\par}
+\medskip
+
+This will result in a exception. Because by default db4o only activates objects up the a depth of 5. This means that when you load an object, that object and all objects which are reachable via 4 references are activated.
+
+There are multiple solutions to this issue.
+
+\begin{itemize}
+\item Activate the object explicitly as you dive deeper into the object graph.
+\item Increase the \hyperref[ref:configuration-common-activation-depth]{global activation-depth} (p.~\pageref{ref:configuration-common-activation-depth}).
+\item Increase the activation-depth \hyperref[ref:configuration-objectclass-minimum-activation-depth]{for certain types} (p.~\pageref{ref:configuration-objectclass-minimum-activation-depth}).
+\item Use wisely the \hyperref[ref:configuration-objectclass-cascade-on-activate]{cascading activation} (p.~\pageref{ref:configuration-objectclass-cascade-on-activate}).
+\item The most elegant solution is \hyperref[ref:basics-activation-concept-transparent-activation-framework]{transparent activation} (p.~\pageref{ref:basics-activation-concept-transparent-activation-framework}). With transparent activation db4o takes care of activating object as you access them.
+\end{itemize}
+
+\subsection*{To High Activation Depth Or Two Many Cascade Activation}
+
+Having a high activation-depth makes working with db4o much easier. However activation can take a long time with deeper object graphs and become a serious performance bottleneck. The same applies when using cascade activation on almost all types. To reduce the time spend on activating objects, you need to be more selective about what to activate and what not.
+
+\begin{itemize}
+\item Activate the object explicitly as you dive deeper into the object graph.
+\item The most elegant solution is \hyperref[ref:basics-activation-concept-transparent-activation-framework]{transparent activation} (p.~\pageref{ref:basics-activation-concept-transparent-activation-framework}). With transparent activation db4o takes care of activating object as you access them.
+\end{itemize}
+
+\section{Update Depth Pitfall}
+\label{ref:usage-pitfalls-update-depth}
+
+db4o update behavior is regulated by \hyperref[ref:basics-update-concept]{Update Depth} (p.~\pageref{ref:basics-update-concept}). Understanding update depth will help you to improve performance and avoid unnecessary memory usage. A common pitfall is that the update-depth is to small and that the objects are not updated. In such cases you either need to explicitly store the related objects individually or \hyperref[ref:configuration-common-update-depth]{increase the update-depth} (p.~\pageref{ref:configuration-common-update-depth}).
+
+For example in this code we add a new friend and store the object. Since a collection is also handled like a regular object, it is affected by the update-depth. In this example we only store the person-object, but not the friend-collection-object. Therefore with the default-update depth of one the update isn't store. In order to update this properly, you either need to set the update depth to two or store the friend-list explicitly.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile(DATABASE_FILE);
+try {
+    Person jodie = queryForJodie(container);
+    jodie.add(new Person("Jamie"));
+    // Remember that a collection is also a regular object
+    // so with the default-update depth of one, only the changes
+    // on the person-object are stored, but not the changes on
+    // the friend-list.
+    container.store(jodie);
+} finally {
+    container.close();
+}
+container = Db4oEmbedded.openFile(DATABASE_FILE);
+try {
+    Person jodie = queryForJodie(container);
+    for (Person person : jodie.getFriends()) {
+        // the added friend is gone, because the update-depth is to low
+        System.out.println("Friend="+person.getName());
+    }
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape UpdateDepthPitfall.java: Update doesn't work on collection\par}
+\medskip
+
+So for this example setting the update-depth to two will fix the issue. For lots of operation a update-depth of two is pretty reasonable. This allows you to update collections without storing them explicitly.
+
+\begin{lstlisting}
+EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+config.common().updateDepth(2);
+ObjectContainer container = Db4oEmbedded.openFile(config,DATABASE_FILE);
+\end{lstlisting}
+
+{\small\itshape UpdateDepthPitfall.java: A higher update depth fixes the issue\par}
+\medskip
+
+When the update depth is set to a big value on objects with a deep reference hierarchy it will cause each update on the top-level object to trigger updates on the lower-level objects, which can impose a huge performance penalty.
+
+Try \hyperref[ref:basics-update-concept-transparent-persistence]{transparent persistence} (p.~\pageref{ref:basics-update-concept-transparent-persistence}), which removes the issue of the update-depth completly.
+
+\section{Storing BigDecimal And BigInteger}
+\label{ref:usage-pitfalls-storing-bigdecimal}
+
+\subsection*{Problem}
+
+BigDecimal or BigInteger objects can't be stored by db4o with the default configuration because those object contains some transient state. You need to add big decimal support to db4o to store a BigDecimal or a BigInteger. \hyperref[ref:advanced-topics-type-handling-bigmath]{See "BigMath"} (p.~\pageref{ref:advanced-topics-type-handling-bigmath})
+
+\section{Special Type Handling}
+\label{ref:usage-pitfalls-special-type-handling}
+
+For some often used types db4o implements a special type-handling. This can inflict some issues.
+
+\subsection*{SQL-Date cannot be stored properly}
+
+The java.sql.Date extends the standard java.util.Date-type. The date-type is treated like other value-types such as strings, integers etc. Unfortunatly this isn't true for the java.sql.Date-type. This also means that the SQL-date type cannot be store correctly. When you retrieve a SQL-Date type it will contain the wrong date.
+
+The solution is to use only the normal JDK-Date. Theirs no reason to use the java.sql.Date-type.
+
+\subsection*{Be Careful with own Collection-Types}
+
+db4o uses \hyperref[ref:advanced-topics-type-handling-typehandlers]{special type-handlers} (p.~\pageref{ref:advanced-topics-type-handling-typehandlers}) for collections to improve efficiency. This also means that db4o makes some assumptions about the collection. It assumes that all collection-methods are implemented and work properly. This isn't true for special collections like the JDK unemployable collections or maybe for you own special collection.
+
+For example this simple collection which doesn't implement all methods:
+
+\begin{lstlisting}
+class MyFixedSizeCollection<E> extends AbstractCollection<E>{
+    private E[] items;
+
+    public MyFixedSizeCollection(E[] items) {
+        this.items = items;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return Arrays.asList(items).iterator();
+    }
+
+    @Override
+    public int size() {
+        return items.length;
+    }
+}
+\end{lstlisting}
+
+{\small\itshape MyFixedSizeCollection.java: This collection doesn't implement all collection methods\par}
+\medskip
+
+This collection will create exceptions when you try to load it. Because db4o uses the clear and add-methods on the collection.
+
+\begin{lstlisting}
+try {
+    ObjectSet<CollectionHolder> holders = container.query(CollectionHolder.class);
+    MyFixedSizeCollection<String> collection = holders.get(0).getNames();
+} catch (Exception e) {
+    // this will fail! The db4o collection-storage
+    // assumes that collections support all operations of the collection interface.
+    // db4o uses the regular collection-methods to restore the instance.
+    e.printStackTrace();
+}
+\end{lstlisting}
+
+{\small\itshape TypeHandlingEdgeCases.java: db4o fails to load partially implemented collections\par}
+\medskip
+
+\section{Classloader And Generic Classes}
+\label{ref:usage-pitfalls-classloader-and-generic-classes}
+
+db4o uses class information available from the classloader to store and recreate class objects. When a class definition is not available from the classloader db4o resolves to \hyperref[ref:advanced-topics-db4o-reflection-api-genericreflector]{Generic Objects} (p.~\pageref{ref:advanced-topics-db4o-reflection-api-genericreflector}), which represent the class information stored in object arrays. With this approach db4o is ready to function both with and without \hyperref[ref:client-server-server-without-persistent-classes-deployed]{class definitions available} (p.~\pageref{ref:client-server-server-without-persistent-classes-deployed}). However, the problem can appear when your application and db4o use different classloaders, because in this case db4o won't match objects in the database to their definitions in the runtime. In order to avoid this:
+
+\begin{enumerate}
+\item Make sure that your db4o lib is not in JRE or JDK lib folder. Libraries in these folders get a special classloader, which is unaware of your application classes. Instead put db4o library into any other suitable for you location and make it available to your application through CLASSPATH or using IDE provided methods.
+\item If your application design does not guarantee that application classes and db4o will be loaded by the same classloader, specify the right classloader with setting \hyperref[ref:configuration-common-reflector]{the reflector explicitly.} (p.~\pageref{ref:configuration-common-reflector})
+\end{enumerate}
+
+The above-mentioned cases should be distinguished from a case when Java application uses a db4o database created from a .NET application. In this particular case .NET class definitions should be replaced by Java class definitions with the help of \hyperref[ref:configuration-common-alias]{Aliases} (p.~\pageref{ref:configuration-common-alias}).
+
+\section{Dangerous Practices}
+\label{ref:usage-pitfalls-dangerous-practices}
+
+Db4o databases are well protected against corruption. However some specific configurations can make your database file vulnerable.
+
+\begin{itemize}
+\item \hyperref[ref:configuration-file-lock-database]{Disabling the file-lock} (p.~\pageref{ref:configuration-file-lock-database}). When two db4o instance write to the same database file at the same time, the database will be corrupted. Therefore you should avoid disabling this setting. You can safely disable the file-lock, when you're using the database in a \hyperref[ref:configuration-file-read-only]{read-only} (p.~\pageref{ref:configuration-file-read-only}) mode.
+\item Using the \hyperref[ref:configuration-file-storage-nonflushingstorage]{non-flushing storage} (p.~\pageref{ref:configuration-file-storage-nonflushingstorage}). This storage will disable the flush-operation to the disk. While this improves the performance, it endangers consistent commits in a crash.
+\item db4o cannot deal with some class-hierarchy-changes. You cannot add a class between two existing classes in the class-hierarchy. Or remove a class from the top of the class-hierarchy. \hyperref[ref:advanced-topics-refactoring-and-schema-evolution-refactoring-class-hierarchy]{See "Refactoring Class Hierarchy"} (p.~\pageref{ref:advanced-topics-refactoring-and-schema-evolution-refactoring-class-hierarchy})
+\item You cannot change a field from a array to a simple field of the same type and back.This only applies when you change it from a type to the same array-type. So for example from a string to an array of strings. A change from string to an array of integer is fine. \hyperref[ref:advanced-topics-refactoring-and-schema-evolution-field-refactoring-limitation]{See "Field Refactoring Limitation"} (p.~\pageref{ref:advanced-topics-refactoring-and-schema-evolution-field-refactoring-limitation})
+\end{itemize}
+
+\section{Working With Large Amounts Of Data}
+\label{ref:usage-pitfalls-working-with-large-amounts-of-data}
+
+The following paragraphs highlight some information important for using db4o with large data.
+
+\subsection*{Size of Database Files}
+
+In the default setting, the maximum database file size is 2GB. You can increase this value by \hyperref[ref:configuration-file-block-size]{configuring the internal db4o block size} (p.~\pageref{ref:configuration-file-block-size}). The maximum possible size is 254GB.
+
+You cannot change this setting for an existing database. In order to change it for an existing database, you need to \hyperref[ref:troubleshoot-increasing-the-maximum-database-file-size]{defragment the database} (p.~\pageref{ref:troubleshoot-increasing-the-maximum-database-file-size}).
+

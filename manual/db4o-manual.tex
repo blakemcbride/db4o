@@ -1,0 +1,67 @@
+% db4o 8.1 Manual (Java)
+% Build: latexmk -pdf db4o-manual.tex   (or: make)
+\documentclass[11pt,openany]{book}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage{xurl}
+\setlength{\emergencystretch}{3em}
+\usepackage[framemethod=default]{mdframed}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!60!black]{hyperref}
+
+% Scale images down to the text width, never up.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\makeatother
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\titleformat{\paragraph}{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{2ex plus 1ex}{0.5ex}
+\titleformat{\subparagraph}{\normalfont\normalsize\bfseries\itshape}{\thesubparagraph}{1em}{}
+\titlespacing*{\subparagraph}{0pt}{1.5ex plus 1ex}{0.5ex}
+
+\lstset{
+  language=Java,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!60!black}\bfseries,
+  commentstyle=\color{green!40!black}\itshape,
+  stringstyle=\color{red!50!black},
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black!25},
+  backgroundcolor=\color{black!3},
+  xleftmargin=2pt, xrightmargin=2pt,
+  upquote=true,
+}
+
+\newmdenv[linecolor=blue!40,backgroundcolor=blue!4,leftline=true,rightline=false,
+  topline=false,bottomline=false,linewidth=2pt]{notebox}
+
+\title{\Huge db4o 8.1\\[1ex]\LARGE Tutorial, Reference and Replication Manual\\[1ex]\large Java Edition}
+\author{Converted from the original db4o documentation (Versant Corp.)}
+\date{}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\mainmatter
+\input{chapters}
+\end{document}

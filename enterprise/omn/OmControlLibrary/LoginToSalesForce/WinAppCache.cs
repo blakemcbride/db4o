@@ -92,7 +92,7 @@ namespace OMControlLibrary.LoginToSalesForce
 			string filepath = Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8);
 
 			filepath = filepath.Remove(filepath.Length - 21, 21);
-			filepath = filepath + @"/ContactSales/ContactSales.htm";
+			filepath = filepath + @"/ContactSales/ContactSales.html";
 			System.Diagnostics.Process.Start(filepath);
 
 		}

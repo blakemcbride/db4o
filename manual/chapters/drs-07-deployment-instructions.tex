@@ -1,0 +1,35 @@
+% Converted from reference/DRSFlare (MadCap Flare, Java target)
+
+\chapter{Deployment Instructions}
+\label{drs:db4o-replication-system-drs-deployment-instructions}
+
+The dRS version corresponds to the db4o version. Ensure that the db4o and the dRS version are the same.
+
+\section*{db4o to db4o Replication Only}
+
+For a simple db4o to db4o replication scenario you will only need the add the \textbf{dRS-8.1-core.jar.} to the classpath.
+
+\section*{RDBMS Replication}
+
+The RDBMS Replication needs dRS, Hibernate and its dependencies. You need to add the following jars to the classpath:
+
+\begin{itemize}
+\item \textbf{dRS-8.1}-core.jar.\textbf{}
+\item hibernate3.jar
+\item antlr-2.7.6.jar
+\item asm.jar
+\item asm-attrs.jar
+\item cglib-2.1.3.jar
+\item commons-collections-2.1.1.jar
+\item commons-logging-1.0.4.jar
+\item dom4j-1.6.1.jar
+\item ehcache-1.2.jar
+\item jta.jar
+\item log4j-1.2.13.jar
+\item xerces-2.6.2.jar
+\end{itemize}
+
+Please, refer to the \href{http://www.hibernate.org/}{Hibernate} documentation for an explanation of these dependencies.
+
+If you are going to use dRS with HSQLDB you will need hsqldb-1.8.0.7.jar in addition to Hibernate.
+

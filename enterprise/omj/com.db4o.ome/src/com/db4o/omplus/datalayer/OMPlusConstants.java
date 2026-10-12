@@ -60,25 +60,25 @@ public class OMPlusConstants
 	//Browser URL's
 	public static final String EXTREME_CONNECT_URL = "https://customer.db4o.com/Peer/Default.aspx";
 	public static final String SUPPORT_CASES_URL = "https://customer.db4o.com/Support/Default.aspx";
-	//public static final String HELP_BROWSER_STRING = "FAQ/FAQ.htm";
+	//public static final String HELP_BROWSER_STRING = "FAQ/FAQ.html";
 	public static final String DB4O_HOMEPAGE_URL = "http://db4o.com/";
 	public static final String DB4O_DEVELOPER_COMMUNITY_URL = "http://developer.db4o.com/";
 	public static final String DB4O_DOWNLOADS_URL = "http://developer.db4o.com/files/default.aspx";
 	
 	
-	public static final String HELP_BROWSER_LOCATION = "FAQ/FAQ.htm";
-	public static final String WEB_SERVICE_CANCEL_BROWSER_LOCATION = "ContactSales/ContactSales.htm";
+	public static final String HELP_BROWSER_LOCATION = "FAQ/FAQ.html";
+	public static final String WEB_SERVICE_CANCEL_BROWSER_LOCATION = "ContactSales/ContactSales.html";
 	/*//public static final String PATH_SEPARATOR = System.getProperty("file.separator");
 	public static final String HELP_BROWSER_STRING = "file:///"+System.getProperty("user.dir")+
 														PATH_SEPARATOR+"plugins"+
 														PATH_SEPARATOR+ ECLIPSE_PLUGIN_DATA_FOLDE_NAME+
-														PATH_SEPARATOR + "FAQ/FAQ.htm";
-	//public static final String WEB_SERVICE_CANCEL_BROWSER_STRING = "ContactSales/ContactSales.htm";
+														PATH_SEPARATOR + "FAQ/FAQ.html";
+	//public static final String WEB_SERVICE_CANCEL_BROWSER_STRING = "ContactSales/ContactSales.html";
 	public static final String WEB_SERVICE_CANCEL_BROWSER_STRING = "file:///"+
 															System.getProperty("user.dir")+
 															PATH_SEPARATOR+"plugins"+
 															PATH_SEPARATOR+ ECLIPSE_PLUGIN_DATA_FOLDE_NAME+
-															PATH_SEPARATOR + "ContactSales/ContactSales.htm";*/
+															PATH_SEPARATOR + "ContactSales/ContactSales.html";*/
 	public static final String FORGOT_PASSWORD_URL = "http://www.db4o.com/users/retrievePassword.aspx";
 	
 	//Browser tool tips

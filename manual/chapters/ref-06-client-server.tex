@@ -1,0 +1,501 @@
+% Converted from reference/DB4OFlare (MadCap Flare, Java target)
+
+\chapter{Client-Server}
+\label{ref:client-server}
+
+db4o's is an embedded database which usually runs in process. Nevertheless db4o also supports a client server setup. There's no ready to use db4o server, instead you embedded the db4o server in a regular application. This gives you full how you want to run the db4o server.
+
+In order to use the db4o client server mode you need to include the db4o-X.XX-cs-javaC.jar if your not using the db4o-X.XX-all-javaX.jar in your project. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
+
+\section*{Start The Server}
+
+You start the server by creating a object server instance with the client server factory. Pass the database file path and the port to the factory. After that you need to specify a user-name and password which clients can use to login to this server. You can add multiple users by calling the grant access method multiple times.
+
+\begin{lstlisting}
+ObjectServer server = Db4oClientServer.openServer("database.db4o",8080);
+try{
+    server.grantAccess("user","password");
+
+    // Let the server run.
+    letServerRun();
+} finally {
+    server.close();
+}
+\end{lstlisting}
+
+{\small\itshape ServerExample.java: Start a db4o server\par}
+\medskip
+
+\section*{Connect To The Server}
+
+After the server is up an running you can connect to it. Pass the URL, port, user name and password to the client server factory. This will return a client object container. After that the container is ready to use.
+
+\begin{lstlisting}
+final ObjectContainer container
+        = Db4oClientServer.openClient("localhost", 8080, "user", "password");
+try{
+    // Your operations
+}finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape Db4oClientExample.java: Connect to the server\par}
+\medskip
+
+\section*{Client-Server Setup}
+
+When using a client server setup you should check following things:
+
+\begin{itemize}
+\item Ensure that the client and server use the same db4o version.
+\item Both, the server and client should have access to classes of the stored objects. When the classes differ between the client and server or are missing unspecified behavior can occur.
+\end{itemize}
+
+\section{Reference Cache In Client-Server Mode}
+\label{ref:client-server-reference-cache-in-client-server-mode}
+
+db4o uses an \hyperref[ref:basics-indentity-concept-reference-cache]{object reference cache} (p.~\pageref{ref:basics-indentity-concept-reference-cache}) for easy access to persistent objects during one transaction. In client/server mode each client has its own reference cache, which helps to achieve good performance. However it gets complicated, when different clients work on the same object, as this object's cached value is used on each side. It means, that even when the operations go serially, the object's value won't be updated serially unless it is refreshed before each update.
+
+\begin{lstlisting}
+Person personOnClient1 = queryForPerson(client1);
+Person personOnClient2 = queryForPerson(client2);
+System.out.println(queryForPerson(client2).getName());
+
+personOnClient1.setName("New Name");
+client1.store(personOnClient1);
+client1.commit();
+
+// The other client still has the old data in the cache
+System.out.println(queryForPerson(client2).getName());
+
+client2.ext().refresh(personOnClient2,Integer.MAX_VALUE);
+
+// After refreshing the date is visible
+System.out.println(queryForPerson(client2).getName());
+\end{lstlisting}
+
+{\small\itshape ReferenceCacheExamples.java: Reference cache in client server\par}
+\medskip
+
+There are multiple strategies to deal with this.
+
+\begin{itemize}
+\item If you client's are not updating the same object or it very unlikely that it happens, you don't need to take any action.
+\item You can refresh objects as they are updated on all clients. However this need a lot of communication between the server and client. \hyperref[ref:client-server-refreshing-objects]{See "Refreshing Objects"} (p.~\pageref{ref:client-server-refreshing-objects})
+\item You can do short unit of work on the client, to minimize the chance of outdated objects.
+\end{itemize}
+
+\subsection*{Clean Cache For Work}
+
+Often you don't want to refresh object by object. Instead you want to work with a clean cache. You can do this by using a separate 'session' on the client. This container brings its own cache with it. So you can create a new container which a clean cache.
+
+Note that open session on the client doesn't create a separate transaction. Instead it only creates a fresh cache. The transaction is always the same.
+
+\begin{lstlisting}
+ObjectContainer container = client.ext().openSession();
+try{
+    // do work
+}finally {
+    container.close();
+}
+// Start with a fresh cache:
+container = client.ext().openSession();
+try{
+    // do work
+}finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape ReferenceCacheExamples.java: Clean cache for each unit of work\par}
+\medskip
+
+\subsection{Refreshing Objects}
+\label{ref:client-server-refreshing-objects}
+
+When working with multiple client object-containers each container has its own reference cache. When you query for objects, you get always the cached objects. This means, that objects probably have been updated in the mean-time but the client still sees the old state.
+
+For some scenarios you might need to refresh to objects to bring it up to date. There are two strategies for this. You can explicit refresh a object at any time. Or you can use callbacks to refresh object on each commit. Both methods have their advantage.
+
+{\small
+\begin{longtable}{|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|p{\dimexpr(\linewidth-4\arrayrulewidth)*1/3-2\tabcolsep\relax}|}
+\hline
+ & Explicit Refreshing & Using Callbacks \\ \hline
+Advantage & \begin{itemize}
+\item Selective refreshing possible, which reduces network traffic.
+\item Can decide when a refresh is required. If no refresh is required, you can save the network traffic.
+\end{itemize} & \begin{itemize}
+\item The objects are always up to date.
+\item There's no need to explicitly refresh-calls in your data-access layer.
+\end{itemize} \\ \hline
+Disadvantage & \begin{itemize}
+\item Partial refreshed objects may lead to a inconsistent object-graph.
+\item Probably a lot of refresh-calls spread over the code-base.
+\end{itemize} & \begin{itemize}
+\item A lot of network traffic is required to send the committing-events and object to the clients.
+\end{itemize} \\ \hline
+\end{longtable}}
+
+\subsubsection*{Explicitly Refreshing Objects}
+
+You can refresh objects with the refresh-method on the object-container. The pass the object to refresh and the refresh-depth to the method:
+
+\begin{lstlisting}
+db.ext().refresh(objToRefresh,Integer.MAX_VALUE);
+\end{lstlisting}
+
+{\small\itshape RefreshingObjects.java: refresh a object\par}
+\medskip
+
+\subsubsection*{Using Callbacks For Refreshing Objects}
+
+You can use the committed-event to refresh objects as soon as another client commits. Take a look at the example: \hyperref[ref:advanced-topics-callbacks-possible-usecases-committed-event-example]{See "Committed Event Example"} (p.~\pageref{ref:advanced-topics-callbacks-possible-usecases-committed-event-example})
+
+\section{Embedded Clients}
+\label{ref:client-server-embedded}
+
+db4o supports embedded containers or session container. It's a separate object-container with its own transaction and own reference cache. \hyperref[ref:advanced-topics-session-containers]{See "Session Containers"} (p.~\pageref{ref:advanced-topics-session-containers})
+
+Now if you're using the client-server mode for db4o, you also can create such sessions directly from the server. When you pass a 0 to the open server method, the server only supports embedded clients. With any other port you can connect with \hyperref[ref:client-server]{regular clients} (p.~\pageref{ref:client-server}) and also create embedded clients.
+
+\begin{lstlisting}
+ObjectServer server = Db4oClientServer.openServer(DATABASE_FILE_NAME, 0);
+
+// open the db4o-embedded client. For example at the beginning for a web-request
+ObjectContainer container = server.openClient();
+try {
+    // do the operations on the session-container
+    container.store(new Person("Joe"));
+} finally {
+    // close the container. For example when the request ends
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape Db4oSessions.java: Embedded client\par}
+\medskip
+
+\subsection*{OpenSession On A Client}
+
+You might noted that the open-session is available on any object-container. Normally this creates a \hyperref[ref:advanced-topics-session-containers]{session-container} (p.~\pageref{ref:advanced-topics-session-containers}) with its own transaction and reference cache. However on a db4o-client this is not true. There it only creates a container with new cache, but shares the transaction with the client. The only use case for this is to implement connection pooling.\hyperref[ref:client-server-pooling]{See "Client-Container Pooling"} (p.~\pageref{ref:client-server-pooling})
+
+\section{Native Queries}
+\label{ref:client-server-native-queries}
+
+Native Queries are optimized to SODA under the hood. Therefore they can be normally used in a client-server environment. However, there is a catch: as soon as the native query is not optimized there will be two things required on the server:
+
+\begin{itemize}
+\item The persistent classes definitions will be required because the objects will need to be instantiated to execute the query code.
+\item The native predicate class will be required to run on the server to do the actual job.
+\end{itemize}
+
+To meet these requirements you can keep your persistent classes and NQ predicates in separate libraries, which will make it easy to deploy it on both the client and the server side. Otherwise you may try to express the unoptimised query in \hyperref[ref:basics-querying-soda-query]{SODA} (p.~\pageref{ref:basics-querying-soda-query}), this option will make it more performant, but the disadvantage is less robust and maintainable code.
+
+\section{Anonymous Classes In Client Server Mode}
+\label{ref:client-server-anonymous-classes}
+
+Anonymous classes are used to implement Native Query predicates, Comparators and Evaluations. In this case it is important to remember that in client/server mode they will be marshaled and sent together with the graph of referenced objects to the server. The catch here is that anonymous classes contain a reference to their parent class, meaning that the parent class will be marshalled as well!
+
+This has two issues:
+
+\begin{itemize}
+\item All the stuff referenced by the parent class will be marshaled and sent too. This means additional traffic between the server and the client.
+\item The parent class maybe contains stuff which cannot be serialized.
+\item You can only use anonymous classes when the client and the server have all classes available refered by the anonymous class. This means in fact that the server should have the same classes available as the client.
+\end{itemize}
+
+Note that when a native query can be optimized, the anonymous class isn't used, but rather \hyperref[ref:basics-querying-soda-query]{SODA} (p.~\pageref{ref:basics-querying-soda-query}). In such cases this issues don't apply.
+
+\section{Server Without Persistent Classes Deployed}
+\label{ref:client-server-server-without-persistent-classes-deployed}
+
+We recommend to ensure that the client and server have classes of the stored objects available. So you need to include the classes of the stored object in the server process.
+
+Running the server without classes is can cause unexpected behavior and should only be used when you are up to experiments.
+
+When classes are unknown GenericReflector creates generic objects, which hold simulated "field values" in an array of objects. This is done automatically by db4o engine and does not require any additional settings from your side: you can save, retrieve and modify objects just as usual. An example of this functionality is db4o's \hyperref[ref:object-manager-enterprise]{Object Manager} (p.~\pageref{ref:object-manager-enterprise}).
+
+Unfortunately in a server without persistent classes mode there are still some limitations:
+
+\begin{itemize}
+\item Evaluation queries won't work. This also implies that native queries which cannot be optimized don't work.
+\item Native queries will only work if they can be optimized
+\item Multidimensional arrays can not be stored.
+\end{itemize}
+
+\subsection*{Native Queries}
+
+Native queries are \hyperref[ref:basics-querying-native-queries-native-query-optimization]{usually translated to SODA} (p.~\pageref{ref:basics-querying-native-queries-native-query-optimization}) queries. When a native query can be translated to SODA, it will run fine on a server without persisted classes. However when the query cannot be optimized the server needs the native query instance and the data model which isn't available on a server without persistent classes. Therefore native queries only work when it can be optimized. You can fallback to pure \hyperref[ref:basics-querying-soda-query]{SODA queries} (p.~\pageref{ref:basics-querying-soda-query}) in such cases.
+
+\section{Events In Client Server-Mode}
+\label{ref:client-server-events-in-cs-mode}
+
+Events of course also work in client server mode. This topic only applies to the networked client/server mode. Embedded client/server-mode isn't affected. There the events work the same way as in the embedded-mode. \hyperref[ref:advanced-topics-callbacks-event-registry-api]{See "Event Registry API"} (p.~\pageref{ref:advanced-topics-callbacks-event-registry-api})
+
+\subsection*{Separate Event Registry For Each Client}
+
+Each client has its own event registry. When you register to a event on the client-event-registry, events will be fired for actions on the client. You won't receive events for actions on other clients.
+
+Furthermore you cannot register for the delete-events, the delete events is only on the server available.
+
+\subsection*{The Server Event Registry}
+
+The server has its own event registry. When you register to an event on the server registry, events will be fired for all action of the clients and the server itself. So you can monitor all operations on the server.
+
+Note that in some events the server isn't involved. For example when a client activates some object, the server is no involved, an therefore no event is fired on the server.
+
+Use central server object container to register for the events on the server.
+
+\begin{lstlisting}
+ObjectServer server = 
+        Db4oClientServer.openServer(DATABASE_FILE_NAME, PORT_NUMBER);
+EventRegistry eventsOnServer =
+        EventRegistryFactory.forObjectContainer(server.ext().objectContainer());
+\end{lstlisting}
+
+{\small\itshape EventRegistryExamples.java: register for events on the server\par}
+\medskip
+
+\subsection*{Committed Event On All Parties}
+
+The committed event is an exception. When a client or the server commits, every client and the server will fire the committed event. This way a client can inform itself that another client has made changes to the database.
+
+However this involves communication overhead to send the message to all the clients. Therefore you should use this event only when absolutely necessary on the clients.
+
+\subsection*{Events Are Fired Asynchronous}
+
+In client-server-mode the events are fired asynchronous. This means that you event-handler is invoked in a separate thread. You need to ensure that you lock any shared data-structure you access from the event-handlers.
+
+\section{Client-Container Pooling}
+\label{ref:client-server-pooling}
+
+When a client connects to the server, there's overhead to establish the connection. First the regular TCP-connection needs to be established. Then the server and client exchange meta data and finally the connection is ready. If you don't need a single or a few long during connections but rather short units of work on the client it is quite inefficient to open a client connection for each unit of work. In such scenarios you should consider to pool the client-containers.
+
+Now simply pooling the raw client container might lead to issues. Each object-container has a \hyperref[ref:basics-indentity-concept-reference-cache]{reference-cache} (p.~\pageref{ref:basics-indentity-concept-reference-cache}). When you pool the object-container and reuse it for some other work, this cache isn't cleared. This means that you might get dirty objects from the reference cache. You want to avoid this and have a clean cache when reusing the client container.
+
+There's a way to archive that. On the client container the open session method creates a fresh object container with a clean reference cache which is sharing the transaction with the client. With this building block you can build a proper container pool.
+
+First you need to create client connections on demand which will be pooled.
+
+\begin{lstlisting}
+ObjectContainer client = Db4oClientServer.openClient("localhost",PORT,
+                USER_AND_PASSWORD, USER_AND_PASSWORD);
+\end{lstlisting}
+
+{\small\itshape ConnectionPoolExamples.java: Open clients for the pool\par}
+\medskip
+
+On a request for a object container, get a client container from the pool. Rollback the transaction on it to ensure that it is in a clean state.Then open a session container on it and use this session. The session-container ensures that the reference-cache is empty. Make sure that each client container is always used only once at any time, which means that there's always only one session-container open per client-container. The session-containers share the transaction with the client and you don't want to share transactions across multiple object containers.
+
+\begin{lstlisting}
+// Obtain a client container. Either take one from the pool or allocate a new one
+ObjectContainer client = obtainClientContainer();
+// Make sure that the transaction is in clean state
+client.rollback();
+// Then create a session on that client container and use it for the database operations.
+// The client-container is now in use. Ensure that it isn't leased twice.
+final ObjectContainer sessionContainer = client.ext().openSession();
+\end{lstlisting}
+
+{\small\itshape ConnectionPool.java: Obtain a pooled container\par}
+\medskip
+
+Now when you're done with your operations, you can return the client to your pool of object containers. First close the session-container, which commits the changes and releases the resources. Then get the underlying client-container for that session and return it to the pool.
+
+\begin{lstlisting}
+// First you need to get the underlying client for the session
+final ObjectContainer client = clientForSession(session);
+// then the client is ready for reuse
+returnToThePool(client);
+\end{lstlisting}
+
+{\small\itshape ConnectionPool.java: Returning to pool\par}
+\medskip
+
+\section{Concurrency Control}
+\label{ref:client-server-concurrency-control}
+
+As soon as you will start using db4o with multiple client connections you will recognize the necessity of implementing a concurrency control system. db4o itself works as an overly optimistic scheme, i.e. an object is locked for read and write, but no collision check is made. This approach makes db4o very flexible and gives you an opportunity to organize a concurrency control system, which will suit your needs the best. Your main tools to build your concurrency control system would be:
+
+\begin{itemize}
+\item \hyperref[ref:client-server-semaphores]{Semaphores} (p.~\pageref{ref:client-server-semaphores})
+\item \hyperref[ref:advanced-topics-callbacks]{Callbacks} (p.~\pageref{ref:advanced-topics-callbacks})
+\end{itemize}
+
+The articles in this topic set will show you how to implement locking and will give you an advice which strategy to use in different situations.
+
+\subsection{Semaphores}
+\label{ref:client-server-semaphores}
+
+db4o semaphores are named flags that can only be owned by one object container at one time. They are supplied to be used as locks for exclusive access to code blocks in applications and to signal states from one client to the server and to all other clients.
+
+The naming of semaphores is up to the application. Any string can be used.
+
+Semaphores are freed automatically when a client disconnects correctly or when a clients presence is no longer detected by the server, that constantly monitors all client connections.
+
+\begin{lstlisting}
+// Grab the lock. Specify the name and a timeout in milliseconds
+boolean hasLock = container.ext().setSemaphore("LockName", 1000);
+try {
+    // you need to check the lock
+    if (hasLock) {
+        System.out.println("Could get lock");
+    } else{
+        System.out.println("Couldn't get lock");
+    }
+} finally {
+    // release the lock
+    container.ext().releaseSemaphore("LockName");
+}
+\end{lstlisting}
+
+{\small\itshape SemaphoreExamples.java: Grab a semaphore\par}
+\medskip
+
+\subsubsection*{Building Block}
+
+Semaphores are a low level building block. Usually they are not used directly. Instead you can build the abstractions you need with semaphores. For example you can build object-locking, critical sections etc with semaphores.
+
+\section{Messaging}
+\label{ref:client-server-messaging}
+
+In client/server it possible to send messages between a client and the server. Possible use cases could be:
+
+\begin{itemize}
+\item Shutting down and restarting the server.
+\item Triggering server backup.
+\item Using a customized login strategy to restrict the number of allowed client connections.
+\item Running special code on the server. For example batch updates.
+\end{itemize}
+
+\subsection*{Sending and Receiving Messages}
+
+First you need to decide on a class that you want to use as the message. Any object that is storable in db4o can be used as a message. Of course you use multiple classes for representing different messages. Let's create a dedicated class.
+
+\begin{lstlisting}
+public class HelloMessage {
+    private final String message;
+
+    public HelloMessage(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return message;
+    }
+}
+\end{lstlisting}
+
+{\small\itshape HelloMessage.java: The message class\par}
+\medskip
+
+Now you need to register a handler to handle arriving messages. This can be done by configuring a message recipient on the server. Let's simply print out the arriving message. Additionally we answer to the client with another message.
+
+\begin{lstlisting}
+ServerConfiguration configuration = Db4oClientServer.newServerConfiguration();
+configuration.networking().messageRecipient(new MessageRecipient() {
+    public void processMessage(MessageContext messageContext, Object o) {
+        System.out.println("The server received a '" + o + "' message");
+        // you can respond to the client
+        messageContext.sender().send(new HelloMessage("Hi Client!"));
+    }
+});
+ObjectServer server = Db4oClientServer.openServer(configuration, DATABASE_FILE, PORT_NUMBER);
+\end{lstlisting}
+
+{\small\itshape MessagingExample.java: configure a message receiver for the server\par}
+\medskip
+
+The same can be done on the client. Register a handler for the received messages.
+
+\begin{lstlisting}
+ClientConfiguration configuration = Db4oClientServer.newClientConfiguration();
+configuration.networking().messageRecipient(new MessageRecipient() {
+    public void processMessage(MessageContext messageContext, Object o) {
+        System.out.println("The client received a '" + o + "' message");
+    }
+});
+\end{lstlisting}
+
+{\small\itshape MessagingExample.java: configure a message receiver for a client\par}
+\medskip
+
+Now on the client we can get a message sender. The message sender allows you to send a message to the server. In this example we send a hello message.
+
+\begin{lstlisting}
+MessageSender sender = configuration.messageSender();
+ObjectContainer container = Db4oClientServer.openClient(configuration, "localhost", PORT_NUMBER, USER_AND_PASSWORD, USER_AND_PASSWORD);
+
+sender.send(new HelloMessage("Hi Server!"));
+\end{lstlisting}
+
+{\small\itshape MessagingExample.java: Get the message sender and use it\par}
+\medskip
+
+\section{Using SSL For Client-Server Communication}
+\label{ref:client-server-pluggable-sockets-using-ssl-for-client-server-communication}
+
+With the default settings db4o client-server communication is not encrypted and thus can potentially be a dangerous security hole. db4o supports SSL for client server communication. The implementation uses the \hyperref[ref:configuration-networking-pluggable-sockets]{pluggable socket} (p.~\pageref{ref:configuration-networking-pluggable-sockets}) to provide secure sockets.
+
+The SSL-communication uses the standard Java Secure Socket Extensions, which are part of the normal JRE. You take a look a to \href{http://java.sun.com/javase/technologies/security/}{full documentation here}.
+
+You simply need to add the SSLSupport on the server and the clients and you done. The default-implementation uses the default SSLContext for the client and the server.
+
+\begin{lstlisting}
+ServerConfiguration configuration = Db4oClientServer.newServerConfiguration();
+configuration.common().add(new SSLSupport());
+\end{lstlisting}
+
+{\small\itshape SSLExample.java: Add SSL-support to the server\par}
+\medskip
+
+\begin{lstlisting}
+ClientConfiguration configuration = Db4oClientServer.newClientConfiguration();
+configuration.common().add(new SSLSupport());
+\end{lstlisting}
+
+{\small\itshape SSLExample.java: Add SSL-support to the client\par}
+\medskip
+
+Of course you also can build your own SSLContext with the Java API. After you've build the SSL-Context, you can pass it to the SSLSupport-constructor. Read in the Java documentation how to \href{http://java.sun.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html}{build a proper SSLContext:}
+
+\begin{lstlisting}
+// You can build your own SSLContext and use all features of Java's SSL-support.
+// To keep this example small, we just use the default-context instead of building one.
+SSLContext context = SSLContext.getDefault();
+
+ServerConfiguration configuration = Db4oClientServer.newServerConfiguration();
+configuration.common().add(new SSLSupport(context));
+\end{lstlisting}
+
+{\small\itshape SSLExample.java: You can build up a regular SSL-Context and us it\par}
+\medskip
+
+\section{Client-Server Timeouts}
+\label{ref:client-server-client-server-timeouts}
+
+Every client/server application has to face a problem of network communications. Luckily modern protocols screen the end-application from all fixable problems. However there are still physical reasons that can't be fixed by a protocol: disconnections, power failures, crash of a system on the other end of communication channel etc. In these cases it is still the responsibility of the client-server application to exit the connection gracefully, releasing all resources and protecting data.
+
+In order to achieve an efficient client/server communication and handling of connection problems the following requirements were defined for db4o:
+
+\begin{itemize}
+\item The connection should not be terminated when both client and server are still alive, even if either of the machines is running under heavy load.
+\item Whenever a client dies, peacefully or with a crash, the server should clean up all resources that were reserved for the client.
+\item Whenever a server goes offline, it should be possible for the client to detect that there is a problem.
+\item Since many clients may be connected at the same time, it makes sense to be careful with the resources the server reserves for each client.
+\item A client can be a very small machine, so it would be good if the client application can work with a single thread.
+\end{itemize}
+
+The current approach tries to keep things as simple as possible: any connection is closed immediately upon a timeout. In order to prevent closing connections when there is no communication between client and server due to reasons different from connection problems a separate timer thread was created to send messages to the server at a regular basis. The server must reply to the thread immediately, if this does not happen the communication channel gets closed.
+
+This approach works effectively for both client and server side. However there's are small downside to this. When a server operation takes longer than the timeout, the connection will be closed. You can configure the timeouts for the \hyperref[ref:configuration-client-timeout-client-socket]{client} (p.~\pageref{ref:configuration-client-timeout-client-socket}) and the \hyperref[ref:configuration-server-configuration]{server} (p.~\pageref{ref:configuration-server-configuration}).
+
+An easy rule of thumb:
+
+\begin{itemize}
+\item If you experience clients disconnecting, raise the timeout value.
+\item If you have a system where clients crash frequently or where the network is very instable, lower the values, so resources for disconnected clients are freed faster.
+\end{itemize}
+

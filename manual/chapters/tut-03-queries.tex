@@ -1,0 +1,177 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Queries}
+\label{tut:queries}
+
+Let's take a look at a few examples queries.
+
+\begin{lstlisting}
+public class Car {
+    private String carName;
+    private int horsePower;
+
+    public Car(String carName, int horsePower) {
+        this.carName = carName;
+        this.horsePower = horsePower;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public int getHorsePower() {
+        return horsePower;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "carName='" + carName + '\'' +
+                ", horsePower=" + horsePower +
+                '}';
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Car.java: Domain model for cars\par}
+\medskip
+
+\begin{lstlisting}
+public class Driver {
+    private String name;
+    private int age;
+    private Car mostLovedCar;
+
+    public Driver(String name,int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public Driver(String name,int age, Car mostLovedCar) {
+        this.name = name;
+        this.age = age;
+        this.mostLovedCar = mostLovedCar;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Car getMostLovedCar() {
+        return mostLovedCar;
+    }
+
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", mostLovedCar=" + mostLovedCar +
+                '}';
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Driver.java: Domain model for drivers\par}
+\medskip
+
+\section{Native Queries}
+\label{tut:queries:nativequeries}
+
+Native queries are the preferred way to query a db4o database. To query the database, we pass in a predicate which filters objects by their properties. Here are two example queries:
+
+\subsection*{Query for a Certain Person}
+
+This query finds all drivers named Joe:
+
+\begin{lstlisting}
+List<Driver> drivers = container.query(new Predicate<Driver>() {
+    @Override
+    public boolean match(Driver driver) {
+        return driver.getName().equals("Joe");
+    }
+});
+\end{lstlisting}
+
+{\small\itshape Queries.java: Query for drivers named Joe\par}
+\medskip
+
+\subsection*{More Complex Query}
+
+We can combine many criteria in a query by using logical operators. For example we query for all adult drivers with powerful cars by combining multiple criteria.
+
+\begin{lstlisting}
+List<Driver> drivers = container.query(new Predicate<Driver>() {
+    @Override
+    public boolean match(Driver driver) {
+        return driver.getMostLovedCar().getHorsePower()>=150 && driver.getAge()>=18;
+    }
+});
+\end{lstlisting}
+
+{\small\itshape Queries.java: Query for people with powerful cars\par}
+\medskip
+
+\subsection*{Native Query Optimization}
+
+db4o tries to optimize native queries by translating them to the db4o low level query API. In cases which that doesn't work db4o actually instantiates all objects and runs them through the predicate. Unfortunately that's an order of magnitude slower than an optimized query.
+
+How do we find out that a query couldn't be optimized? The simplest way is to use the debugger. We add a break-point in query method. When the debugger stops there, then query couldn't be optimized. In that case try to simplify our query or use the low level query API directly.
+
+\begin{lstlisting}
+List<Driver> drivers = container.query(new Predicate<Driver>() {
+    @Override
+    public boolean match(Driver driver) {
+        // Add a break point here. If the debugger stops, the query couldn't be optimized
+        // That means it runs very slowly and we should find an alternative.
+        // This example query cannot be optimized because the hash code isn't a stored in database
+        return driver.hashCode() == 42;
+    }
+});
+\end{lstlisting}
+
+{\small\itshape Queries.java: Unoptimized query\par}
+\medskip
+
+\section{SODA}
+\label{tut:queries:soda}
+
+SODA is db4o's low level query API. Prefer native queries over this API. We create SODA queries by creating a query object. Then we add different criteria to that query object. Finally we execute the query and get the result. Let's take a look at two example queries:
+
+\subsection*{Query for a Certain Person}
+
+Here we query for a driver named Joe with SODA:
+
+\begin{lstlisting}
+Query query = container.query();
+query.constrain(Driver.class);
+query.descend("name").constrain("Joe");
+List<Driver> drivers = query.execute();
+\end{lstlisting}
+
+{\small\itshape Queries.java: Query for drivers named Joe with SODA\par}
+\medskip
+
+\subsection*{More Complex Query}
+
+Here's a more complex query in SODA. We query for all adult drivers with powerful cars:
+
+\begin{lstlisting}
+Query query = container.query();
+query.constrain(Driver.class);
+query.descend("mostLovedCar").descend("horsePower").constrain(150).greater();
+query.descend("age").constrain(18).greater().equal();
+List<Driver> drivers = query.execute();
+\end{lstlisting}
+
+{\small\itshape Queries.java: Query for people with powerful cars with SODA\par}
+\medskip
+

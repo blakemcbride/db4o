@@ -123,8 +123,8 @@ namespace OMAddin
 
 		private const string CREATE_DEMO_DB = "Create Demo Database";
 
-		private const string CONTACT_SALES = @"/ContactSales/ContactSales.htm";
-		private const string FAQ_PATH = @"FAQ/FAQ.htm";
+		private const string CONTACT_SALES = @"/ContactSales/ContactSales.html";
+		private const string FAQ_PATH = @"FAQ/FAQ.html";
 
 		private const string URL_DB4O_DEVELOPER = "http://developer.db4o.com";
 		private const string URL_DB4O_DOWNLOADS = "http://developer.db4o.com/Downloads.aspx";

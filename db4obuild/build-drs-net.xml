@@ -38,21 +38,8 @@
     </target>
       
 	
-	<target name="flare-drs-net" if="flare.executable">
-
-		<flare output="${dir.dist.flare.temp}" target="NetPdf" projectDirectory="${flare.project.drs.folder}" />
-		<copy file="${dir.dist.flare.temp}/Output/NetPdf/drs-reference-net.pdf" todir="${drs.net.dir}/docs/reference" />
-		
-		<flare output="${dir.dist.flare.temp}" target="NetWeb" projectDirectory="${flare.project.drs.folder}"  />
-		<copy todir="${drs.net.dir}/docs/reference">
-			<fileset dir="${dir.dist.flare.temp}/Output/NetWeb">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-
-	</target>
 	
-	<target name="package" depends="clean, init, build, ndoc, flare-drs-net, run-tests">
+	<target name="package" depends="clean, init, build, ndoc, run-tests">
     	<antcall target="package-api" />    	
 		<copy file="${dir.config}/db4o.license.html" todir="${drs.net.bin.dir}"/>		
 		<copy file="${drs.net.dir}/compatibility.net.html" tofile="${drs.net.dir}/compatibility.html" >

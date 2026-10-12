@@ -1,0 +1,229 @@
+% Converted from reference/DB4OFlare (MadCap Flare, Java target)
+
+\chapter{Troubleshooting}
+\label{ref:trouble-shooting}
+
+Here are a few tips on troubleshooting issues with db4o.
+
+\section{General Diagnostics}
+\label{ref:trouble-shooting:general}
+
+To get more diagnostics information you can register diagnostics listeners.
+
+\begin{itemize}
+\item \hyperref[ref:advanced-topics-diagnostics]{See "Diagnostics"} (p.~\pageref{ref:advanced-topics-diagnostics})
+\item \hyperref[ref:advanced-topics-runtime-statistics]{See "Runtime Monitoring"} (p.~\pageref{ref:advanced-topics-runtime-statistics})
+\end{itemize}
+
+\section*{Investigate a Corrupt Database}
+
+Take a look at this small guide which gives tips on how to deal with a corrupt database. \hyperref[ref:troubleshoot-corrupt-db]{See "Deal With a Corrupt Database"} (p.~\pageref{ref:troubleshoot-corrupt-db})
+
+\section*{Performance and Scalability Issues}
+
+If you experience issues with the performance of db4o take a look at this topic: \hyperref[ref:troubleshoot-speed-issues-html]{See "Performance and Scalability Issues"} (p.~\pageref{ref:troubleshoot-speed-issues-html})
+
+\section{Ask for Help and Advice on the db4o Forums}
+\label{ref:trouble-shooting:ask}
+
+If you hit a problem you can ask for help in the \href{http://community.versant.com/Forums.aspx}{db4o forums}. You can find the forums here: \href{http://community.versant.com/Forums.aspx}{http://community.versant.com/Forums.aspx}
+
+\section{Investigate a Corrupt Database}
+\label{ref:troubleshoot-corrupt-db}
+
+In general you should do regular \hyperref[ref:advanced-topics-backup]{backups} (p.~\pageref{ref:advanced-topics-backup}) of your database. db4o tries to do its best to never corrupt the database. However due to bugs or external reasons corruption can occur. Check also your configuration to not use \hyperref[ref:basics-acid-and-transactions-dangerous-practises]{any risky settings} (p.~\pageref{ref:basics-acid-and-transactions-dangerous-practises}).
+
+If you have a corrupted database you may think about reporting it: \hyperref[ref:community-report-bugs]{See "Report Bugs"} (p.~\pageref{ref:community-report-bugs})
+
+The fist step is to run the consistency check on your database. If the database is really corrupt you can try to restore at least some your data.
+
+\subsection*{Consistency Check}
+
+To run consistency checks use the com.db4o.consistency.ConsistencyChecker class, like this:
+
+\begin{lstlisting}
+java -cp db4oX-X.XX-all-java5.jar com.db4o.consistency.ConsistencyChecker databaseFile.db4o
+\end{lstlisting}
+
+This consistency check doesn't check the content of objects. It only checks if the overall structure of the database file is still intact. Also it doesn't offer any repair functionality. It only tells you if the file is corrupted or not.
+
+When the tool reports inconsistencies you've defiantly have a corrupted database. Then you should fall back to the latest backup or try to recover parts of the database.
+
+In case the tool doesn't report any issues you maybe still have a corrupted object in your database. In that case you usually can read all intact objects and copy them to a new database.
+
+\subsection*{Try to Restore Intact Objects}
+
+When you cannot read some particular object then you can try to read and copy the intact objects over to a new database. You can get the id of all objects for a certain type. With these ids you then can load each single object. When loading an object fails then that object is lost. However you still can store the intact objects to another storage.
+
+\begin{lstlisting}
+final long[] idsOfPersons = container.ext().storedClass(Person.class).getIDs();
+for (long id : idsOfPersons) {
+    try{
+        final Person person = (Person)container.ext().getByID(id);
+        container.ext().activate(person,1);
+        // store the person to another database
+        System.out.println("This object is ok "+person);
+    } catch (Exception e){
+        System.out.println("We couldn't read the object with the id "+id +" anymore." +
+                " It is lost");
+        e.printStackTrace();
+    }
+}
+\end{lstlisting}
+
+{\small\itshape TryToReadSingleObjects.java: Try to read the intact objects\par}
+\medskip
+
+\section{Speed and Scalability Issues}
+\label{ref:troubleshoot-speed-issues-html}
+
+You are experiencing speed or scalability problems with db4o? In this section gives an overview of the common issues.
+
+\subsection{Understand db4o's Limits}
+\label{ref:troubleshoot-speed-issues-html:limits}
+
+db4o is built for embedded use cases with small databases. It isn't optimized for database larger than a few gigabytes. \hyperref[ref:troubleshoot-increasing-the-maximum-database-file-size]{See "Increasing The Maximum Database File Size"} (p.~\pageref{ref:troubleshoot-increasing-the-maximum-database-file-size})
+
+db4o is explicitly single-threaded. Concurrent accesses will be synchronized against a global database lock.That means db4o cannot deal with a highly concurrent access, since it blocks on all operations. When you expect a high load and concurrent access, then you should consider a larger database like the \href{http://www.versant.com/}{Versant object database}.
+
+\subsection{Loading-Performance: Monitor Your Activation}
+\label{ref:troubleshoot-speed-issues-html:loadingissues}
+
+One of the most common performance issues is that too many objects are \hyperref[ref:basics-activation]{activated} (p.~\pageref{ref:basics-activation}). You should try to keep activation to a minimum. You can monitor activation of your objects either by installing a \hyperref[ref:advanced-topics-callbacks]{event handler} (p.~\pageref{ref:advanced-topics-callbacks}) or by using the \hyperref[ref:advanced-topics-runtime-statistics]{monitoring capabilities} (p.~\pageref{ref:advanced-topics-runtime-statistics}).
+
+Check your configuration for the \hyperref[ref:configuration-common-activation-depth]{global activation} (p.~\pageref{ref:configuration-common-activation-depth}) depth and \hyperref[ref:configuration-objectclass-cascade-on-activate]{cascading activations} (p.~\pageref{ref:configuration-objectclass-cascade-on-activate}). These settings are often responsible for activating too many objects. In general consider \hyperref[ref:basics-transparent-persistence]{transparent activation} (p.~\pageref{ref:basics-transparent-persistence}) to avoid activating unnecessary objects.
+
+\subsection*{Query Performance}
+
+If you have trouble with query performance take \hyperref[ref:troubleshoot-queries]{a look here} (p.~\pageref{ref:troubleshoot-queries}).
+
+\subsection*{Degrading Performance over Time}
+
+If your performance degrades over time you might need to defragement your database. \hyperref[ref:advanced-topics-defragment]{See "Defragment"} (p.~\pageref{ref:advanced-topics-defragment})
+
+\subsection*{Database Size Issues.}
+
+By default db4o databases can only grow up to two Gigabytes. For increasing that size take a look \hyperref[ref:troubleshoot-increasing-the-maximum-database-file-size]{here} (p.~\pageref{ref:troubleshoot-increasing-the-maximum-database-file-size}). Also take a look what contributes to the \hyperref[ref:troubleshoot-database-size]{database file size} (p.~\pageref{ref:troubleshoot-database-size}).
+
+\subsection*{Tune Storage Adapters}
+
+A big performance point is how db4o stores the data to disk. By default db4o uses a relatively small file cache. A \hyperref[ref:configuration-file-storage-cachingstorage]{bigger cache} (p.~\pageref{ref:configuration-file-storage-cachingstorage}) might improve the performance. In general choosing the \hyperref[ref:configuration-file-storage]{right storage} (p.~\pageref{ref:configuration-file-storage}) can increase performance significantly.
+
+\subsection*{In Client-Server Mode: Tune Prefetching Options}
+
+In client server mode a major performance bottleneck are network roundtrip's. You can reduce these by prefetching objects. Try to tune the \hyperref[ref:configuration-client-configuration]{prefetch options} (p.~\pageref{ref:configuration-client-configuration}) on the client settings.
+
+\subsection*{Tune B-Tree Node Size}
+
+Another parameter which can influences performance quite bit is the size of the B-tree nodes. You can tune this parameter in the \hyperref[ref:configuration-common-btree-node-size]{common-configuration} (p.~\pageref{ref:configuration-common-btree-node-size}).
+
+\subsection{Query Performance}
+\label{ref:troubleshoot-queries}
+
+\subsubsection*{Native Queries}
+
+\paragraph*{Check the Required Dependencies}
+
+When you are using  native queries you should ensure that the query is optimized. First check that the required jars are referenced.
+
+For native queries you need to add these jars: db4o-X.XX-nqopt-javax.jar, db4o-X.XX-instrumentation-javax.jar, bloat-1.0.jar. \hyperref[ref:dependency-overview]{See "Dependency Overview"} (p.~\pageref{ref:dependency-overview})
+
+\paragraph*{Check that the Query is Optimized}
+
+Native queries try to translate the original query to a SODA query. If this optimization fails the query runs an order of magnitude slower, because it cannot use indexes and instantiates all objects.
+
+For the native queries see: \hyperref[ref:basics-querying-native-queries-native-query-optimization]{See "Native Query Optimization"} (p.~\pageref{ref:basics-querying-native-queries-native-query-optimization})
+
+\paragraph*{Avoid Calling Methods in Queries}
+
+The optimizer only can optimize simple access patterns. When you call a complex method within a query the optimization almost certainly fails and the query runs slowly. For example when you call your equals method on your objects. Only calling the equals method of built in types will be recognized by the optimizer. However the optimizer almost certainly cannot find out what your equals method does.
+
+\paragraph*{Overview of Fast/Slow Queries}
+
+Also take a look at this overview to see which kind of queries run fast and which ones slowly \hyperref[ref:basics-querying-native-queries-nq-performance-characteristics]{See "Native Queries Performance Characteristics"} (p.~\pageref{ref:basics-querying-native-queries-nq-performance-characteristics}).
+
+\subsubsection*{Check That Fields Are Indexed}
+
+Ensure that fields which you are using in queries are  \hyperref[ref:basics-indexing]{indexed} (p.~\pageref{ref:basics-indexing}). Without an index db4o has to scan through all objects in order to find the right object.
+
+Note also that currently you cannot index arrays and collections. That means that queries which do checks on array or collection members will be slow.
+
+Also db4o currently cannot use the index for advanced operations on strings, like end-with, contains or start-with comparisons.
+
+\subsubsection*{SODA-Queries}
+
+Take a look at this overview to see which kind of queries run fast and which ones slowly. \hyperref[ref:basics-querying-soda-soda-performance-characteristics]{See "SODA Performance Characteristics"} (p.~\pageref{ref:basics-querying-soda-soda-performance-characteristics})
+
+\subsection{Increasing The Maximum Database File Size}
+\label{ref:troubleshoot-increasing-the-maximum-database-file-size}
+
+To increase the database size you need to increase the block size. This configuration setting has only an effect when you create a new database or when you defragment an existing database. \hyperref[ref:configuration-file-block-size]{See "Block Size"} (p.~\pageref{ref:configuration-file-block-size})
+
+When you want to know what contributes to the \hyperref[ref:troubleshoot-database-size]{database file size see here} (p.~\pageref{ref:troubleshoot-database-size}).
+
+\begin{lstlisting}
+EmbeddedConfiguration configuration = Db4oEmbedded.newConfiguration();
+configuration.file().blockSize(8);
+\end{lstlisting}
+
+{\small\itshape FileConfiguration.java: Increase block size for larger databases\par}
+\medskip
+
+\subsubsection*{Advantage}
+
+Increasing the block size from the default of one to a higher value permits you to store more data in a db4o database.
+
+\subsubsection*{Effect}
+
+By default db4o databases can have a maximum size of 2GB. By increasing the block size, the upper limit for database files sizes can be raised to multiples of 2GB. Any value between 1 byte (2GB) to 127 bytes (254GB) can be chosen as the block size.
+
+Because of possible padding for objects that are not exact multiples in length of the block size, database files will naturally tend to be bigger when a higher value is chosen. It may also leads to more file cache misses and therefore can decrease performance.
+
+A very good choice for this value is 8, because that corresponds to the slot length of the pointers (address + length) that db4o internally uses.
+
+\subsubsection{What Contributes to the Database Size}
+\label{ref:troubleshoot-database-size}
+
+If you are concerned about the size of your database file, it is important to understand what contributes to it and what the strategies to keep it down are.
+
+\paragraph*{Object Overhead}
+
+When you create a new db4o database file it contains only the header. As soon as you start storing information the file will grow. The size overhead per object depends on the object type.
+
+In general an object consists of value types, i.e. integers, arrays and references to other objects. If you decide to use UUIDs and version number for your objects, you will get an additional overhead.
+
+\paragraph*{Your Objects Data}
+
+Of course your objects consume the space which is needed to store the data. For strings this space heavily depends on the encoding. If you want to keep the database size down consider using the \hyperref[ref:configuration-common-string-encoding]{UTF8 encoding} (p.~\pageref{ref:configuration-common-string-encoding}).
+
+\paragraph*{Indexes}
+
+Indexes consume additional space. Therefore you should only index fields which you actually use in queries. Furthermore you might want to remove a \hyperref[ref:configuration-objectclass-diable-class-index]{class-index} (p.~\pageref{ref:configuration-objectclass-diable-class-index}) when you never query for that type.
+
+\paragraph*{Block Size}
+
+Block Size is a configurable value, which defines the way information is stored in db4o database. Using bigger block sizes can result in unnecessary growth of the database. For more information see \hyperref[ref:troubleshoot-increasing-the-maximum-database-file-size]{Increasing The Maximum Database File Size} (p.~\pageref{ref:troubleshoot-increasing-the-maximum-database-file-size})
+
+\paragraph*{Freespace}
+
+Freespace appears in db4o database after unneeded objects have been deleted. The amount of the freespace can be controlled from the configuration. Another option to get rid of the freespace is \hyperref[ref:advanced-topics-defragment]{Defragment} (p.~\pageref{ref:advanced-topics-defragment}). It is a good practice to run Defragment regularly to maintain the minimum database file size.
+
+\paragraph*{Lost Space on Crash / Process Killed}
+
+When you are using the default freespace manager the \hyperref[ref:configuration-file-freespace-configuration]{free space is lost} (p.~\pageref{ref:configuration-file-freespace-configuration}) when the database crashes or the process is killed. This is especially true when you kill your process with the debugger while developing. In regular operations you should always try to close the database regularly. When you \hyperref[ref:advanced-topics-defragment]{defragment} (p.~\pageref{ref:advanced-topics-defragment}) the database the lost freespace is reclaimed.
+
+\subsection{Commit Strategies}
+\label{ref:troubleshoot-commit-strategies}
+
+Objects stored or updated within one db4o transaction are written to a temporary transaction area in the database file and are only durable after the transaction is committed.
+
+Commit is a costly operation as it includes disk writes and flushes caches. Too many commits can decrease your application's performance. On the other hand long transaction increases the risk of losing your data in case of a system or a hardware failure.
+
+\subsubsection*{Best Strategies}
+
+\begin{itemize}
+\item You should call commit() at the end of every logical operation, at a point where you want to make sure that all the changes are permanently stored to the database.
+\item When you are doing a bulk insert of many (say \textgreater{}100 000) objects, it is a good idea to commit after every few thousand inserts, depending on the complexity of your objects. If you don't do that, there is not only a risk of losing the objects in a case of a failure, but also a good chance of running out of memory. The exact amount of inserts that can be done safely and effectively within one transaction should be tested for the concrete system and will depend on available system resources, size and complexity of objects.
+\item Don't forget to close db4o object container before the application exits to make sure that all the changes will be saved to disk during implicit commit.
+\end{itemize}
+

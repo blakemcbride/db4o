@@ -215,7 +215,7 @@ namespace OMNPostInstaller
 
 		internal static void InvokeReadMe(string basePath)
 		{
-			String readmeFilePath = Path.Combine(basePath, @"ReadMe\ReadMe.htm");
+			String readmeFilePath = Path.Combine(basePath, @"ReadMe\ReadMe.html");
 
 			if (File.Exists(readmeFilePath))
 			{

@@ -1,0 +1,38 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Indexes}
+\label{tut:indexes}
+
+With indexes we can speed up queries. As soon as we have lots of objects and query them we need indexes.
+
+Indexes are a tradeoff: An index makes queries orders of magnitudes faster, but it slows down updates and inserts of those objects.
+
+\section*{Index Annotation}
+
+We can add an Annotation on a field in order to index that field.
+
+\begin{lstlisting}
+public class Car {
+    @Indexed
+    private String carName;
+    private int horsePower;
+
+    public Car(String carName, int horsePower) {
+        this.carName = carName;
+        this.horsePower = horsePower;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public int getHorsePower() {
+        return horsePower;
+    }
+
+}
+\end{lstlisting}
+
+{\small\itshape Car.java: Indexing the car name\par}
+\medskip
+

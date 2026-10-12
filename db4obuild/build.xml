@@ -27,14 +27,6 @@
 	sharpen.core.dir=<OPTIONAL: if you keep sharpen in a different location>
 	
  	##################################
- 	#          Flare Support         # 
-    ##################################
-    
-	flare.executable=<OPTIONAL: path to the flare executable, usually its installation folder/Flare.app/madbuild.exe
-								if this property is missing, flare wont be executed. so the reference documentation
-								will not be generated>
-
- 	##################################
  	#          Maven Support         # 
     ##################################
     
@@ -99,8 +91,6 @@
 	csc.executable.path.net35=C:/WINDOWS/Microsoft.NET/Framework/v3.5/
 	eclipse.startup.jar=${eclipse.home}/plugins/org.eclipse.equinox.launcher_1.0.0.v20070606.jar
 	java.vmargs=-Ddb4ounit.file.path=/mnt/rd0/db4ounit -Djava.io.tmpdir=/mnt/rd0/tmp
-	
-	flare.executable=C:/Program Files/MadCap Software/MadCap Flare V5/Flare.app/madbuild.exe
 	
 	android.apilevel=android-7
 	emulator.device=android-2.1

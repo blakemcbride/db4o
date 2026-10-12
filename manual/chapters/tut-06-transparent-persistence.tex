@@ -1,0 +1,272 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Transparent Persistence}
+\label{tut:transparentpersistence}
+
+In the previous topics we've seen that \hyperref[tut:activation]{activation} (p.~\pageref{tut:activation}) and the \hyperref[tut:update-concept]{update depth} (p.~\pageref{tut:update-concept}) can be annoying and cause unexpected errors. That's why we want to get rid of it. That's where transparent persistence comes to our rescue. It manages the activation and updating of our updates. Let's get started.
+
+\section{Enhance Persistent Classes}
+\label{tut:transparentpersistence:enhance}
+
+The first step for transparent persistence it to enhance the persisted classes. For that we introduce an Annotation:
+
+\begin{lstlisting}
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Target(ElementType.TYPE)
+public @interface TransparentPersisted {
+}
+\end{lstlisting}
+
+{\small\itshape TransparentPersisted.java: Annotation to mark persisted classes\par}
+\medskip
+
+After that we can mark the persistent classes with the Annotation.
+
+\begin{lstlisting}
+@TransparentPersisted
+public class Car {
+    private String carName;
+
+    public Car(String carName) {
+        this.carName = carName;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Car.java: Domain model for cars\par}
+\medskip
+
+\begin{lstlisting}
+@TransparentPersisted
+public class Driver {
+    private String name;
+    private final List<Car> ownedCars = new ArrayList<Car>();
+    private Car mostLovedCar;
+
+    public Driver(String name) {
+        this.name = name;
+    }
+
+    public Driver(String name, Car mostLovedCar) {
+        this.name = name;
+        this.mostLovedCar = mostLovedCar;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Car getMostLovedCar() {
+        return mostLovedCar;
+    }
+    public Iterable<Car> getOwnedCars() {
+        return ownedCars;
+    }
+
+    public boolean addOwnedCar(Car car) {
+        return ownedCars.add(car);
+    }
+}
+\end{lstlisting}
+
+{\small\itshape Driver.java: Domain model for drivers\par}
+\medskip
+
+The next step it to create a class filter which reports all classes which should be enhanced. In our example we check for the presence of the annotation. In practice you can implement your own class filter as you like.
+
+\begin{lstlisting}
+public final class AnnotationFilter implements ClassFilter{
+
+    public boolean accept(Class<?> aClass) {
+        if(null==aClass || aClass.equals(Object.class)){
+            return false;
+        }
+        return hasAnnotation(aClass)
+                || accept(aClass.getSuperclass());
+    }
+
+    private boolean hasAnnotation(Class<?> aClass) {
+        // We compare by name, to be class-loader independent
+        Annotation[] annotations = aClass.getAnnotations();
+        for (Annotation annotation : annotations) {
+            if(annotation.annotationType().getName()
+                    .equals(TransparentPersisted.class.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+\end{lstlisting}
+
+{\small\itshape AnnotationFilter.java: Build a filter\par}
+\medskip
+
+\subsection*{Enhancing Classes Using Ant}
+
+The next step is to run the enhancement step when compiling the source. You can do this with a Ant task.
+
+\begin{lstlisting}
+<target name="enhance">
+    <!-- Change these according to your project -->
+    <property name="target" value="./target/classes/"/>
+    <property name="libraries" value="./lib/"/>
+
+    <path id="project.classpath">
+        <pathelement path="${target}"/>
+        <fileset dir="${libraries}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- We enhance with an additional Ant-run step. You can put this also in an extra file -->
+    <typedef resource="instrumentation-def.properties"
+             classpathref="project.classpath"
+             loaderRef="instrumentation.loader"/>
+
+    <!-- We filter by our annotation -->
+    <typedef name="annotation-filter"
+             classname="com.db4odoc.tutorial.transparentpersistence.AnnotationFilter"
+             classpathref="project.classpath"
+             loaderRef="instrumentation.loader"/>
+
+    <db4o-instrument classTargetDir="${target}">
+        <classpath refid="project.classpath"/>
+        <sources dir="${target}">
+            <include name="**/*.class"/>
+        </sources>
+
+        <transparent-activation-step>
+            <annotation-filter/>
+        </transparent-activation-step>
+    </db4o-instrument>
+</target>
+\end{lstlisting}
+
+{\small\itshape enhance.xml: Ant target for enhancing your classes after building them\par}
+\medskip
+
+We can configure Eclipse to run the Ant build with each compile step. Right click on our project and choose 'Properties'. Then switch to 'Builders' and add a new one. The we choose the 'Ant Builder'. On the new window we choose the build-file which contains the example-code.Then switch to the 'Targets'-Tab. There we choose the enhance-target for the 'Auto-Build'. Now the enhancer-task will be run by Eclipse automatically.
+
+\subsection*{Enhance Classes Using Maven}
+
+The next step is to run the enhancement step when compiling the source. You can do this by adding a small Ant task to your Maven file:
+
+\begin{lstlisting}
+<plugin>
+    <artifactId>maven-antrun-plugin</artifactId>
+    <version>1.6</version>
+    <dependencies>
+        <!-- We need the db4o tooling for enhancing stuff -->
+        <dependency>
+            <groupId>com.db4o</groupId>
+            <artifactId>db4o-tools-java5</artifactId>
+            <version>8.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <executions>
+        <execution>
+            <phase>compile</phase>
+            <configuration>
+                <target>
+                    <!-- We enhance with an additional Ant-run step. You can put this also in an extra file -->
+                    <typedef resource="instrumentation-def.properties"
+                             classpathref="maven.compile.classpath"/>
+
+                    <!-- We filter by our annotation -->
+                    <typedef name="annotation-filter"
+                             classname="com.db4odoc.tutorial.transparentpersistence.AnnotationFilter"
+                             classpathref="maven.compile.classpath"/>
+
+                    <db4o-instrument classTargetDir="target/classes">
+                        <classpath refid="maven.compile.classpath"/>
+                        <sources dir="target/classes">
+                            <include name="**/*.class"/>
+                        </sources>
+
+                        <transparent-activation-step>
+                            <annotation-filter/>
+                        </transparent-activation-step>
+                    </db4o-instrument>
+                </target>
+            </configuration>
+            <goals>
+                <goal>run</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+\end{lstlisting}
+
+{\small\itshape pom.xml: Enhance persisted classes during the build\par}
+\medskip
+
+\subsection*{Check Enhancement}
+
+Finally we check if the enhancement actually worked. We just check if the classes implement the interface. If the interface is present everything worked. We can make this check a part of our test suite.
+
+\begin{lstlisting}
+if (!Activatable.class.isAssignableFrom(Car.class)) {
+    throw new AssertionError("Expect that the " + Car.class + " implements " + Activatable.class);
+}
+\end{lstlisting}
+
+{\small\itshape TransparentPersistence.java: Check for enhancement\par}
+\medskip
+
+\section{Using Transparent Persistence}
+\label{tut:transparentpersistence:usingit}
+
+In order to use transparent persistence we need to configure it first:
+
+\begin{lstlisting}
+final EmbeddedConfiguration configuration = Db4oEmbedded.newConfiguration();
+configuration.common().add(new TransparentPersistenceSupport(new DeactivatingRollbackStrategy()));
+ObjectContainer container = Db4oEmbedded.openFile(configuration, DATABASE_FILE_NAME);
+\end{lstlisting}
+
+{\small\itshape TransparentPersistence.java: Configure transparent persistence\par}
+\medskip
+
+After that transparent persistence is active and manages the activation and updates for us.
+
+\begin{lstlisting}
+Driver driver = queryForDriver(container);
+// Transparent persistence will activate objects as needed
+System.out.println("Is activated? "+container.ext().isActive(driver));
+String nameOfDriver = driver.getName();
+System.out.println("The name is "+nameOfDriver);
+System.out.println("Is activated? "+container.ext().isActive(driver));
+\end{lstlisting}
+
+{\small\itshape TransparentPersistence.java: Transparent persistence manages activation\par}
+\medskip
+
+Transparent persistence also manages updates. You just can change existing objects as you please. Later when you commit the transaction all updates are persisted. You don't need to store objects in order to update them. You only need to call store once for objects which are new and are not referenced by an existing object.
+
+\begin{lstlisting}
+Driver driver = queryForDriver(container);
+driver.getMostLovedCar().setCarName("New name");
+driver.setName("John Turbo");
+driver.addOwnedCar(new Car("Volvo Combi"));
+// Just commit the transaction. All modified objects are stored
+container.commit();
+\end{lstlisting}
+
+{\small\itshape TransparentPersistence.java: Just update and commit. Transparent persistence manages all updates\par}
+\medskip
+

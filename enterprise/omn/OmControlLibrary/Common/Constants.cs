@@ -229,7 +229,7 @@ namespace OMControlLibrary.Common
 		#endregion
 
 		//ObjectBrowser
-		public const string OBJECTMANAGER_CONTACT_US_FILE_PATH = @"/ContactSales/ContactSales.htm";
+		public const string OBJECTMANAGER_CONTACT_US_FILE_PATH = @"/ContactSales/ContactSales.html";
 
 		//DataGridViewGroup 
 

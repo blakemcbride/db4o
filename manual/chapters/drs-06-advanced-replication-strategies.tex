@@ -1,0 +1,137 @@
+% Converted from reference/DRSFlare (MadCap Flare, Java target)
+
+\chapter{Advanced Replication Strategies}
+\label{drs:db4o-replication-system-drs-advanced-replication-strategies}
+
+This topic deals with more complex replication scenarios:
+
+dRS supports events, which you can use to integrate additional logic into the replication. \hyperref[drs:db4o-replication-system-drs-advanced-replication-strategies-events]{See "Events"} (p.~\pageref{drs:db4o-replication-system-drs-advanced-replication-strategies-events})
+
+Sometimes changes on different databases result in a conflict. Then you need to take care it. \hyperref[drs:db4o-replication-system-drs-advanced-replication-strategies-dealing-with-conflicts]{See "Dealing with Conflicts"} (p.~\pageref{drs:db4o-replication-system-drs-advanced-replication-strategies-dealing-with-conflicts})
+
+Maybe you have an existing database which you want to replicate. \hyperref[drs:db4o-replication-system-drs-advanced-replication-strategies-prepare-old-databases-for-replication]{See "Prepare Old Databases for Replication"} (p.~\pageref{drs:db4o-replication-system-drs-advanced-replication-strategies-prepare-old-databases-for-replication})
+
+\section{Events}
+\label{drs:db4o-replication-system-drs-advanced-replication-strategies-events}
+
+Often you need more information about the replication process or even need to intervene it. dRS allows the registration of a event listener in order to perform such tasks.
+
+When you create the replication session you can pass such a listener instance. The listener will be called for each object which is replicated.
+
+\begin{lstlisting}
+ReplicationSession replicationSession = Replication.begin(providerA, providerB,
+        new ReplicationEventListener() {
+            public void onReplicate(ReplicationEvent replicationEvent) {
+                ObjectState stateInDesktop = replicationEvent.stateInProviderA();
+                if (stateInDesktop.isNew()) {
+                    System.out.println("Object '"
+                            + stateInDesktop.getObject()
+                            + "' is new on desktop database");
+                }
+                if (stateInDesktop.wasModified()) {
+                    System.out.println("Object '"
+                            + stateInDesktop.getObject()
+                            + "' was modified on desktop database");
+                }
+            }
+        });
+\end{lstlisting}
+
+{\small\itshape AdvancedReplicationExamples.java: Register a listener for information about the replication process\par}
+\medskip
+
+\section{Dealing with Conflicts}
+\label{drs:db4o-replication-system-drs-advanced-replication-strategies-dealing-with-conflicts}
+
+When replicated objects are changed independent and the replicated again, conflict are inevitable. The default behavior of dRS is to throw a ReplicationConflictException in such a situation. This prevents corruption, but doesn't help to resolve the conflict. Fortunately dRS allows you to handle such a conflict situation properly.
+
+To deal with conflicts you use a event listener. \hyperref[drs:db4o-replication-system-drs-advanced-replication-strategies-events]{See "Events"} (p.~\pageref{drs:db4o-replication-system-drs-advanced-replication-strategies-events}) . The event has also information about conflicts. When a change conflicts with another change, the conflict flag is set on the replication event. Then you can decide which state is actually replicated. For example: When a conflict occurs you could always take the state of one replication partner.
+
+\begin{lstlisting}
+ReplicationSession replicationSession = Replication.begin(providerA, providerB,
+        new ReplicationEventListener() {
+            public void onReplicate(ReplicationEvent replicationEvent) {
+                if (replicationEvent.isConflict()) {
+                    ObjectState stateOfTheDesktop = replicationEvent.stateInProviderA();
+                    replicationEvent.overrideWith(stateOfTheDesktop);
+                }
+            }
+        });
+\end{lstlisting}
+
+{\small\itshape AdvancedReplicationExamples.java: Deal with conflicts\par}
+\medskip
+
+Of course there are more advanced strategies possible. For example can compare the timestamp's of the conflicting changes and take the newer change. Note that the clocks of disconnected devices are not perfectly synchronized.
+
+\begin{lstlisting}
+ReplicationSession replicationSession = Replication.begin(providerA, providerB,
+        new ReplicationEventListener() {
+            public void onReplicate(ReplicationEvent replicationEvent) {
+                if (replicationEvent.isConflict()) {
+                    ObjectState stateDesktop = replicationEvent.stateInProviderA();
+                    ObjectState stateMobile = replicationEvent.stateInProviderB();
+
+                    if (stateDesktop.modificationDate() >= stateMobile.modificationDate()) {
+                        replicationEvent.overrideWith(stateDesktop);
+                    } else {
+                        replicationEvent.overrideWith(stateMobile);
+                    }
+                }
+            }
+        });
+\end{lstlisting}
+
+{\small\itshape AdvancedReplicationExamples.java: Take latest change\par}
+\medskip
+
+\section{Prepare Old Databases for Replication}
+\label{drs:db4o-replication-system-drs-advanced-replication-strategies-prepare-old-databases-for-replication}
+
+Sometimes replication is a new requirement for a existing application. Therefore existing databases have to be replicated. However the required UUIDs and timestamps haven't been enabled so far. How do you migrate the older databases to enable replication?
+
+The first step is to enable the UUIDs and timestamps.
+
+\begin{lstlisting}
+configuration.file().generateUUIDs(ConfigScope.GLOBALLY);
+configuration.file().generateCommitTimestamps(true);
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Configure db4o to generate UUIDs and commit timestamps\par}
+\medskip
+
+The next issue is that the all objects stored don't have a UUID nor a version numbers. The easiest way to have such a number is to load and update each object in the database. Because when you update a object the new configuration takes effect.
+
+\begin{lstlisting}
+ObjectSet<Object> allObjects = desktopDatabase.query(Object.class);
+for (Object objectToUpdate : allObjects) {
+    desktopDatabase.store(objectToUpdate);
+}
+desktopDatabase.commit();
+\end{lstlisting}
+
+{\small\itshape AdvancedReplicationExamples.java: Updating all objects ensures that it has a UUID and timestamp\par}
+\medskip
+
+Updating all object is maybe not an option. It's also possible to do this during the first replication. First query the objects which are target of the replication. Then do the replication. When a object doesn't have a UUID yet, update the object to ensure it has an UUID. Make also sure that the update-depth is high enough so that child objects also have an UUID.
+
+\begin{lstlisting}
+Db4oEmbeddedReplicationProvider providerA = new Db4oClientServerReplicationProvider(desktopDatabase);
+Db4oEmbeddedReplicationProvider providerB = new Db4oEmbeddedReplicationProvider(mobileDatabase);
+
+ReplicationSession replicationSession = Replication.begin(providerA, providerB);
+ObjectSet initialReplication = desktopDatabase.query(Car.class);
+
+for (Object changedObjectOnDesktop : initialReplication) {
+    ObjectInfo infoAboutObject = desktopDatabase.ext().getObjectInfo(changedObjectOnDesktop);
+    if (null == infoAboutObject.getUUID()) {
+        desktopDatabase.ext().store(changedObjectOnDesktop, 2);
+    }
+    replicationSession.replicate(changedObjectOnDesktop);
+}
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape AdvancedReplicationExamples.java: Migrate on the fly\par}
+\medskip
+

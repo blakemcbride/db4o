@@ -91,55 +91,6 @@
 	<property name="eclipse.startup.jar" location="${eclipse.home}/startup.jar" />
 	
 
-	<macrodef name="flare">
-		<attribute name="output"/>
-		<attribute name="target" />
-		<attribute name="projectDirectory"/>
-		<sequential>
-			
-			<echo>Producing Flare output</echo>
-			<echo>  Output: @{output}</echo>
-			<echo>  Target: @{target}</echo>
-			<echo>  Flare Source Directory: @{projectDirectory}</echo>
-			
-			<delete quiet="true">
-				<fileset dir="@{projectDirectory}/Output">
-					<include name="**/*" />
-				</fileset>
-			</delete>
-			
-			<mkdir dir="@{output}"/>
-			
-			<delete >
-				<fileset dir="@{output}">
-					<include name="**/*" />
-				</fileset>
-			</delete>
-			
-			<xslt in="@{projectDirectory}/Project/Targets/@{target}.fltar" out="${dir.dist.flare.temp}/@{target}.fltar.tmp"
-			      style="${dir.config}/flare/flare_output_folder.xslt">
-				<param name="flareOutputPath" expression="@{output}"/>
-			</xslt>
-			
-			<copy file="${dir.dist.flare.temp}/@{target}.fltar.tmp" tofile="@{projectDirectory}/Project/Targets/@{target}.fltar" />
-
-			<delete file="${dir.dist.flare.temp}/@{target}.fltar.tmp" />
-			
-			<exec executable="${flare.executable}" failonerror="true">
-				<arg line="-project @{projectDirectory}/Reference.flprj -target @{target}"/>
-			</exec>
-
-			<echo>  Delete: @{projectDirectory}/Output</echo>
-			<delete quiet="true">
-				<fileset dir="@{projectDirectory}/Output">
-					<include name="**/*" />
-				</fileset>
-			</delete>
-			
-			<copy file="${dir.config}/flare/index_fix.html" tofile="@{output}/Output/@{target}/index.html" overwrite="true"/>
-			
-		</sequential>
-	</macrodef>
 	
 	
 	<macrodef name="sharpen">

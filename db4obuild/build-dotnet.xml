@@ -322,34 +322,9 @@
 	</target>
 	
 	
-	<target name="package-docs" depends="package-api,flare-tutorial-net, flare-net">
+	<target name="package-docs" depends="package-api">
 	</target>
 
-	<target name="flare-net" depends="init" if="flare.executable">
-
-		<flare output="${dir.dist.flare.temp}" target="NetPdf" projectDirectory="${flare.project.db4o.folder}"  />
-		<copy file="${dir.dist.flare.temp}/Output/NetPdf/db4o-reference-net.pdf" todir="${dir.dist.net.build.reference}" />
-		
-		<flare output="${dir.dist.flare.temp}" target="NetWeb" projectDirectory="${flare.project.db4o.folder}"  />
-		<copy todir="${dir.dist.net.build.reference}">
-			<fileset dir="${dir.dist.flare.temp}/Output/NetWeb">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-	</target>
-	<target name="flare-tutorial-net" depends="init" if="flare.executable">
-
-		<flare output="${dir.dist.flare.temp}" target="NetPdf" projectDirectory="${flare.project.db4otutorial.folder}" />
-		<copy file="${dir.dist.flare.temp}/Output/NetPdf/db4o-tutorial-net.pdf" todir="${dir.dist.net.build.tutorial}" />
-		
-		<flare output="${dir.dist.flare.temp}" target="NetWeb" projectDirectory="${flare.project.db4otutorial.folder}"  />
-		<copy todir="${dir.dist.net.build.tutorial}">
-			<fileset dir="${dir.dist.flare.temp}/Output/NetWeb">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-
-	</target>
 	
 	<!-- this assumes all the .net artifacts were correctly generated on -->
 	<target name="build-zip" depends="properties" >

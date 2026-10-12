@@ -1,0 +1,199 @@
+% Converted from reference/DRSFlare (MadCap Flare, Java target)
+
+\chapter{db4o Databases Replication}
+\label{drs:db4o-replication-system-drs-db4o-databases-replication}
+
+The db4o to db4o replication allows you the keep multiple, independent db4o -databases in sync. A typical scenario is when a mobile device is synchronized periodically with the central server or a desktop application
+
+dRS supports simple unidirectional replication where changes are replicated in one direction. \hyperref[drs:db4o-replication-system-drs-db4o-databases-replication-simple-example]{See "Simple Example"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-databases-replication-simple-example})
+
+In addition dRS support bidirectional replication, where changes are replicated in both directions. \hyperref[drs:db4o-replication-system-drs-db4o-databases-replication-bi-directional-replication]{See "Bidirectional Replication"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-databases-replication-bi-directional-replication})
+
+To avoid replicating the whole database, dRS support also partial replication, where only a subset of all objects are replicated. \hyperref[drs:db4o-replication-system-drs-db4o-databases-replication-selective-replication]{See "Selective Replication"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-databases-replication-selective-replication})
+
+Furthermore dRS can also replicate deletions of objects. \hyperref[drs:db4o-replication-system-drs-db4o-databases-replication-deleted-objects-replication]{See "Replicate Deletions"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-databases-replication-deleted-objects-replication})
+
+\section{Simple Example}
+\label{drs:db4o-replication-system-drs-db4o-databases-replication-simple-example}
+
+A db4o-to-db4o replication is easy to use and easy to set up. There are only two steps required to get the replication started.
+
+First ensure that you have added the dRS-jar to your project. \hyperref[drs:db4o-replication-system-drs-getting-started]{See "Getting Started"} (p.~\pageref{drs:db4o-replication-system-drs-getting-started})
+
+The replication process needs two things. An UUID for each object to identify it across multiple databases. Furthermore every object needs a version-number to detect updates. By default db4o doesn't generate a UUID nor keeps timestamps. So you need to configure this explicitly:
+
+\begin{lstlisting}
+configuration.file().generateUUIDs(ConfigScope.GLOBALLY);
+configuration.file().generateCommitTimestamps(true);
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Configure db4o to generate UUIDs and commit timestamps\par}
+\medskip
+
+After this preparation you can store, retrieve and update normally. To start the replication-process open the two databases which take part in the replication. Then create an replication-session by passing the replication partners to the replication factory.
+
+\begin{lstlisting}
+ObjectContainer desktopDatabase = openDatabase(DESKTOP_DATABASE_NAME);
+ObjectContainer mobileDatabase = openDatabase(MOBILE_DATABASE_NAME);
+
+Db4oEmbeddedReplicationProvider providerA = new Db4oEmbeddedReplicationProvider(desktopDatabase);
+Db4oEmbeddedReplicationProvider providerB = new Db4oEmbeddedReplicationProvider(mobileDatabase);
+
+ReplicationSession replicationSession = Replication.begin(providerA, providerB);
+
+// set the replication-direction from the desktop database to the mobile database. 
+replicationSession.setDirection(replicationSession.providerA(), replicationSession.providerB());
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Prepare unidirectional replication\par}
+\medskip
+
+Now the system is ready for replication. First request all changes from a replication partner. The replication session will return all objects which have been created or updated since the last replication. Then iterate over the returned objects and replicate object by object.
+
+\begin{lstlisting}
+ObjectSet changes = replicationSession.providerA().objectsChangedSinceLastReplication();
+for (Object changedObject : changes) { 
+    replicationSession.replicate(changedObject);
+}
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: One direction replication\par}
+\medskip
+
+To complete the replication, call commit on the replication session. This commit stores all changes in replication partners and finishes the running transactions. Furthermore it marks the objects as replicated to ensure that future replications only include the new changes. Without the commit call the replication-changes will be discarded!
+
+\section{Bidirectional Replication}
+\label{drs:db4o-replication-system-drs-db4o-databases-replication-bi-directional-replication}
+
+It's quite often the case that you need replication in both directions. For example when you have a mobile device which keeps the data in sync with a desktop PC. Changes on the both partners have to be replicated to the other partner.
+
+First, make sure that you've prepared and configured db4o properly. \hyperref[drs:db4o-replication-system-drs-db4o-databases-replication-simple-example]{See "Simple Example"} (p.~\pageref{drs:db4o-replication-system-drs-db4o-databases-replication-simple-example})
+
+Start a replication-session with the two replication partners. Note that no replication direction is set.
+
+\begin{lstlisting}
+ObjectContainer desktopDatabase = openDatabase(DESKTOP_DATABASE_NAME);
+ObjectContainer mobileDatabase = openDatabase(MOBILE_DATABASE_NAME);
+
+Db4oEmbeddedReplicationProvider providerA = new Db4oEmbeddedReplicationProvider(desktopDatabase);
+Db4oEmbeddedReplicationProvider providerB = new Db4oEmbeddedReplicationProvider(mobileDatabase);
+
+ReplicationSession replicationSession = Replication.begin(providerA, providerB);
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Prepare bidirectional replication\par}
+\medskip
+
+Then get the changed objects from both replication partners. Each replication partner returns the updated and created object in a object-set. Then iterate over both object-sets and replicate the changes.
+
+\begin{lstlisting}
+// First get the changes of the two replication-partners
+ObjectSet changesOnDesktop = replicationSession.providerA().objectsChangedSinceLastReplication();
+ObjectSet changesOnMobile = replicationSession.providerB().objectsChangedSinceLastReplication();
+
+// then iterate over both change-sets and replicate it
+for (Object changedObjectOnDesktop : changesOnDesktop) {
+    replicationSession.replicate(changedObjectOnDesktop);
+}
+
+for (Object changedObjectOnMobile : changesOnMobile) {
+    replicationSession.replicate(changedObjectOnMobile);
+}
+
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Bidirectional replication\par}
+\medskip
+
+\section{Selective Replication}
+\label{drs:db4o-replication-system-drs-db4o-databases-replication-selective-replication}
+
+What if the mobile device doesn't have enough memory to store all objects? Or if only a subset of the object need to be in both databases? In this case you can replicate only a subset of all objects.
+
+\subsection*{Filter by Class}
+
+You can ask the dRS to replicate only the objects of a certain class. Instead of getting the change-set with all objects, it will return only the changed objects of that class.
+
+\begin{lstlisting}
+ObjectSet changesOnDesktop =
+    replicationSession.providerA().objectsChangedSinceLastReplication(Pilot.class);
+
+for (Object changedObjectOnDesktop : changesOnDesktop) {
+    replicationSession.replicate(changedObjectOnDesktop);
+}
+
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Selective replication by class\par}
+\medskip
+
+\subsection*{Filter With a Condition}
+
+For more complex cases a simple condition can be a solution. Add a simple condition within the replication loop to select which objects are replicated and which ones not.
+
+\begin{lstlisting}
+ObjectSet changesOnDesktop = replicationSession.providerA().objectsChangedSinceLastReplication();
+
+for (Object changedObjectOnDesktop : changesOnDesktop) {
+    if (changedObjectOnDesktop instanceof Car) {
+        if (((Car) changedObjectOnDesktop).getName().startsWith("M")) {
+            replicationSession.replicate(changedObjectOnDesktop);
+        }
+    }            
+}
+
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Selective replication with a condition\par}
+\medskip
+
+\subsection*{Filter With a Query}
+
+It's also possible to query for the objects and the replicate those objects. However in this case, also unchanged objects are replicated again.
+
+\begin{lstlisting}
+ObjectSet<Car> changesOnDesktop = desktopDatabase.query(new Predicate<Car>() {
+    public boolean match(Car p) {
+        return p.getName().startsWith("M");
+    }
+});
+
+for (Car changedObjectOnDesktop  : changesOnDesktop) {
+    replicationSession.replicate(changedObjectOnDesktop);
+}
+
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Selective replication with a query\par}
+\medskip
+
+\subsection*{Combination}
+
+Of course it possible to use a combination of these three possibilities. For example you can request the changes for a certain class and then filter with a condition.
+
+\section{Replicate Deletions}
+\label{drs:db4o-replication-system-drs-db4o-databases-replication-deleted-objects-replication}
+
+In addition to replicate new and changed objects, dRS is also able to replicate deletions of objects. By default deletions are not replicated across the databases. When an object is deleted since last replication in one database and you would like to replicate these changes to another database you can use the following method to do this.
+
+\begin{lstlisting}
+Db4oEmbeddedReplicationProvider providerA = new Db4oEmbeddedReplicationProvider(desktopDatabase);
+Db4oEmbeddedReplicationProvider providerB = new Db4oEmbeddedReplicationProvider(mobileDatabase);
+
+ReplicationSession replicationSession = Replication.begin(providerA, providerB);
+replicationSession.replicateDeletions(Car.class);
+replicationSession.commit();
+\end{lstlisting}
+
+{\small\itshape Db4oReplicationExamples.java: Replicate deletions\par}
+\medskip
+
+dRS traverses every Car object in both providers. For instance, if a deleted object is found in one provider, the object will be deleted as well in the other provider.By default the deletion replication is bidirectional. For unidirectional replication set the direction on the replication-session.
+
+Note, that the deletions of a Parent will not be cascaded to child objects. For example, if a Car object is deleted, the Pilots referenced by that Car won't be deleted.
+

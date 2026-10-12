@@ -70,21 +70,8 @@
 	</target>
 	
 	
-	<target name="flare-drs-java" if="flare.executable">
 
-		<flare output="${dir.dist.flare.temp}" target="JavaPdf" projectDirectory="${flare.project.drs.folder}" />
-		<copy file="${dir.dist.flare.temp}/Output/JavaPdf/drs-reference-java.pdf" todir="${drs.dir.dist.temp}/doc/reference" />
-		
-		<flare output="${dir.dist.flare.temp}" target="JavaWeb" projectDirectory="${flare.project.drs.folder}"  />
-		<copy todir="${drs.dir.dist.temp}/doc/reference">
-			<fileset dir="${dir.dist.flare.temp}/Output/JavaWeb">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-
-	</target>
-
-	<target name="dist" depends="build-all, javadoc, flare-drs-java">
+	<target name="dist" depends="build-all, javadoc">
 		<property name="zipbasedir" value="drs-${db4o.version.dotted}" />
 		
 		<copy file="${drs.dir.base}/compatibility.java.html" tofile="${drs.dir.dist.temp}/compatibility.html" overwrite="true">

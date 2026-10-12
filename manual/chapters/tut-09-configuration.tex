@@ -1,0 +1,37 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Configuration}
+\label{tut:configuration}
+
+How do we configure db4o? To configure db4o we use db4o's configuration API. The first thing we do is to create a new configuration instance:
+
+\begin{lstlisting}
+EmbeddedConfiguration configuration = Db4oEmbedded.newConfiguration();
+\end{lstlisting}
+
+{\small\itshape ConfigurationExamples.java: Important configuration switches\par}
+\medskip
+
+Now we can configure db4o by using the different methods  on the configuration object. You can read up on the different configuration option on the reference- or the API documentation.
+
+\begin{lstlisting}
+// If you are using BigDecimal or BigInteger, add bigmath-support
+configuration.common().add(new BigMathSupport());
+// If you are using UUIDs, add support for those
+configuration.common().add(new UuidSupport());
+// Add index
+configuration.common().objectClass(Driver.class).indexed(true);
+\end{lstlisting}
+
+{\small\itshape ConfigurationExamples.java: A few examples\par}
+\medskip
+
+The final step is to pass in the configuration object to the object container factory.
+
+\begin{lstlisting}
+ObjectContainer container = Db4oEmbedded.openFile(configuration, "database.db4o");
+\end{lstlisting}
+
+{\small\itshape ConfigurationExamples.java: Finally pass the configuration container factory\par}
+\medskip
+

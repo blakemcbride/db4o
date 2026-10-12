@@ -1,0 +1,75 @@
+% Converted from reference/DB4OTutorial (MadCap Flare, Java target)
+
+\chapter{Client Server Mode}
+\label{tut:client-server}
+
+Let's take a look at the client server modes of db4o.
+
+\section{Embedded Clients aka Session Containers}
+\label{tut:client-server:sessioncontainers}
+
+db4o allows us to open lightweight session containers (aka embedded clients), which have their own transaction. We can use these session containers when we need multiple transactions running at the same time.
+
+\begin{lstlisting}
+ObjectContainer container = rootContainer.ext().openSession();
+try{
+    // We now can use this session container like any other container
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape ClientServer.java: Creating a session container\par}
+\medskip
+
+\section{Network Client Server Mode}
+\label{tut:client-server:networkcs}
+
+db4o supports a client server mode over the network. However db4o was designed for embedded use cases. Therefore the client server mode isn't a core functionality but more an add-on. Not all db4o features work in the client server mode and the performance characteristics of db4o aren't optimized for client server mode.
+
+For all these reasons we should prefer the embedded mode with session containers instead of full blown clients. Nevertheless the client server mode can be useful to for some scenarios.
+
+\subsection*{Starting a Server}
+
+First we start the server:
+
+\begin{lstlisting}
+ObjectServer server = Db4oClientServer.openServer("database.db4o",8080);
+try{
+    // allow access to this server
+    server.grantAccess("user","password");
+
+    // Keep server running as long as you need it
+    System.out.println("Press any key to exit.");
+    System.in.read();
+    System.out.println("Exiting...");
+}finally {
+    server.close();
+}
+\end{lstlisting}
+
+{\small\itshape ClientServer.java: Open server\par}
+\medskip
+
+\subsection*{Connect Clients}
+
+As long as the server is running we can connect to it. We need to specify the host, port, username and the password in order to connect. Afterwards we have a regular object container ready to be used.
+
+\begin{lstlisting}
+ObjectContainer container
+        = Db4oClientServer.openClient("localhost",8080,"user","password");
+try{
+    // Use the client object container as usual
+} finally {
+    container.close();
+}
+\end{lstlisting}
+
+{\small\itshape ClientServer.java: Using the client\par}
+\medskip
+
+\section{Shared Classes}
+\label{tut:client-server:sharedclasses}
+
+The biggest limitation of the client server mode is that the server and the client both need to have the domain model classes available. The server needs the classes of the stored objects. If we change classes, we need to deploy them to the server and the clients. To do that we should pack the domain model into a jar and ensure that the same version is used on the server and client.
+

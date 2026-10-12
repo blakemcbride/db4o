@@ -112,9 +112,9 @@
               <Directory Id="FAQLOCATION" Name="FAQ">
                 <Component Id="FAQComponent" Guid="{F6CDA2C8-DC87-C321-A25D-44190A1C83EE}">
                   <File Id="FAQ.id" 
-                        Name="FAQ.htm" 
+                        Name="FAQ.html" 
                         KeyPath="yes" DiskId="1" 
-                        Source="@dir.omn.faq@\FAQ.htm" />
+                        Source="@dir.omn.faq@\FAQ.html" />
                 </Component>
                 <Directory Id="FAQFILESLOCATION" Name="FAQ Files" >
                   <Component Id="FAQFileComponent" Guid="{4959E673-7137-A838-E506-BFF599503C88}">
