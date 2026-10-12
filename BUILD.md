@@ -113,8 +113,8 @@ tests. It takes 15 to 20 minutes and prints a lot of output; the summary
 failures. The suite runs in `target/test-run`, where it leaves its log
 (`db4ounit.log`) and database files.
 
-On JDK 21, 18 of the 9,085 tests fail. They are:
-- client/server reflection reaching into JDK internals (7)
+On JDK 21, the last full run had 18 of the 9,085 tests failing. The 7
+client/server reflection failures have since been fixed. The others are:
 - defragmenting databases whose classes are unavailable (4)
 - `retainAll` on db4o's activatable `Stack` (3)
 - file locking across VMs, where the test helper does not recognize current JVM names (3)

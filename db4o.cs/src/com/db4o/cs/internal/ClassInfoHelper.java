@@ -65,9 +65,7 @@ public class ClassInfoHelper {
 
 	private FieldInfo[] mapFields(ReflectField[] fields, boolean shouldStoreTransientFields) {
 		
-		if (!shouldStoreTransientFields) {
-			fields = filterTransientFields(fields);
-		}
+		fields = filterFields(fields, shouldStoreTransientFields);
 		
 		FieldInfo[] fieldsMeta = new FieldInfo[fields.length];
 		for (int i = 0; i < fields.length; ++i) {
@@ -82,11 +80,20 @@ public class ClassInfoHelper {
 		return fieldsMeta;
 	}
 
-	private ReflectField[] filterTransientFields(ReflectField[] fields) {		
+	/**
+	 * Keeps the fields db4o stores: static fields are never stored (see
+	 * ClassMetadata.storeField), and transient fields only when configured.
+	 * Skipping static fields also keeps the field walk out of JDK internals,
+	 * which Java 9+ does not allow to be made accessible.
+	 */
+	private ReflectField[] filterFields(ReflectField[] fields, boolean shouldStoreTransientFields) {		
 		List<ReflectField> filteredFields = new ArrayList<ReflectField>();
 		
 		for(ReflectField field : fields) {
-			if (!field.isTransient()) {
+			if (field.isStatic()) {
+				continue;
+			}
+			if (shouldStoreTransientFields || !field.isTransient()) {
 				filteredFields.add(field);
 			}
 		}
