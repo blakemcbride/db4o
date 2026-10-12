@@ -523,7 +523,7 @@ public class BTree extends LocalPersistentBase implements TransactionParticipant
 		final Collection4 allNodeIDs = new Collection4(); 
         traverseAllNodes(systemTrans, new Visitor4() {
             public void visit(Object node) {
-                allNodeIDs.add(new Integer(((BTreeNode)node).getID()));
+                allNodeIDs.add(Integer.valueOf(((BTreeNode)node).getID()));
             }
         });
 		return allNodeIDs.iterator();

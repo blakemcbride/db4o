@@ -53,7 +53,7 @@ public class BigSet<E> implements Set<E>, BigSetPersistence {
     }
 
 	private void add(int id) {
-	    bTreeForUpdate().add(_transaction, new Integer(id));
+	    bTreeForUpdate().add(_transaction, Integer.valueOf(id));
     }
 
 	private int getID(Object obj) {
@@ -94,7 +94,7 @@ public class BigSet<E> implements Set<E>, BigSetPersistence {
 
 	private boolean contains(int id) {
 		synchronized(lock()){
-		    BTreeRange range = bTree().searchRange(transaction(), new Integer(id));
+		    BTreeRange range = bTree().searchRange(transaction(), Integer.valueOf(id));
 			return ! range.isEmpty();
 		}
     }
@@ -148,7 +148,7 @@ public class BigSet<E> implements Set<E>, BigSetPersistence {
 				return false;
 			}
 			int id = getID(obj);
-			bTreeForUpdate().remove(transaction(), new Integer(id));
+			bTreeForUpdate().remove(transaction(), Integer.valueOf(id));
 			return true;
 		}
 	}

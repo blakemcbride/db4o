@@ -13,7 +13,7 @@ public class ShortHandler extends PrimitiveHandler {
 	
     static final int LENGTH = Const4.SHORT_BYTES + Const4.ADDED_LENGTH;
 	
-	private static final Short DEFAULTVALUE = new Short((short)0);
+	private static final Short DEFAULTVALUE = Short.valueOf((short)0);
 	
     public Object coerce(ReflectClass claxx, Object obj) {
     	return Coercion4.toShort(obj);
@@ -65,7 +65,7 @@ public class ShortHandler extends PrimitiveHandler {
         if (Deploy.debug) {
             Debug4.readEnd(context);
         }
-        return new Short((short) value);
+        return Short.valueOf((short) value);
     }
 
     public void write(WriteContext context, Object obj) {

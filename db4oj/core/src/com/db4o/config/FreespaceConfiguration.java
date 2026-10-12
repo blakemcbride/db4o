@@ -57,6 +57,7 @@ public interface FreespaceConfiguration {
      * @deprecated Please use the BTree freespace system instead by
      * calling {@link #useBTreeSystem()}.
      */
+    @Deprecated
     public void useIndexSystem(); 
 
     /**

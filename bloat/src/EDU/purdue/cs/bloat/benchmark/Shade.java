@@ -31,6 +31,8 @@ public class Shade {
 
 	public static native void run(Class main, String[] args, boolean quit);
 
+	// SecurityManager is deprecated for removal; this harness relies on it to trap System.exit().
+	@SuppressWarnings("removal")
 	public static void main(final String[] args) throws Exception {
 		boolean quit = false;
 		int runs = 1;

@@ -33,7 +33,7 @@ public class MethodBuilder {
 	}
 
 	private Label forceLabel(int id) {
-		Integer key = new Integer(id);
+		Integer key = Integer.valueOf(id);
 		Label label = (Label) _labels.get(key);
 		if (label == null) {
 			label = new Label(id);
@@ -43,7 +43,7 @@ public class MethodBuilder {
 	}
 
 	private LocalVariable forceLocalVar(int id) {
-		Integer key = new Integer(id);
+		Integer key = Integer.valueOf(id);
 		LocalVariable localVar = (LocalVariable) _localVars.get(key);
 		if (localVar == null) {
 			localVar = new LocalVariable(id);
@@ -115,7 +115,7 @@ public class MethodBuilder {
 	}
 
 	public void ldc(int constant) {
-		ldc(new Integer(constant));
+		ldc(Integer.valueOf(constant));
 	}
 
 	public void ldc(boolean constant) {

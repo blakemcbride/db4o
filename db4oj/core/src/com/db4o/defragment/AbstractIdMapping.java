@@ -31,7 +31,7 @@ public abstract class AbstractIdMapping implements IdMapping {
 	}
 
 	private void mapClassIDs(int oldID, int newID) {
-		_classIDs.put(oldID,new Integer(newID));
+		_classIDs.put(oldID,Integer.valueOf(newID));
 	}
 
 	protected abstract void mapNonClassIDs(int origID,int mappedID);

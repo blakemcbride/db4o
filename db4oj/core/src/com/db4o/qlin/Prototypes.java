@@ -210,31 +210,31 @@ public class Prototypes {
 			IntegerConverter[] converters = new IntegerConverter[]{
 				new IntegerConverter(){
 					public String primitiveName() {return int.class.getName();}
-					public Object fromInteger(int i) {return new Integer(i);}
+					public Object fromInteger(int i) {return Integer.valueOf(i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return long.class.getName();}
-					public Object fromInteger(int i) {return new Long(i);}
+					public Object fromInteger(int i) {return Long.valueOf(i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return double.class.getName();}
-					public Object fromInteger(int i) {return new Double(i);}
+					public Object fromInteger(int i) {return Double.valueOf(i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return float.class.getName();}
-					public Object fromInteger(int i) {return new Float(i);}
+					public Object fromInteger(int i) {return Float.valueOf(i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return byte.class.getName();}
-					public Object fromInteger(int i) {return new Byte((byte)i);}
+					public Object fromInteger(int i) {return Byte.valueOf((byte)i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return char.class.getName();}
-					public Object fromInteger(int i) {return new Character((char)i);}
+					public Object fromInteger(int i) {return Character.valueOf((char)i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return short.class.getName();}
-					public Object fromInteger(int i) {return new Short((short)i);}
+					public Object fromInteger(int i) {return Short.valueOf((short)i);}
 				},
 				new IntegerConverter(){
 					public String primitiveName() {return String.class.getName();}

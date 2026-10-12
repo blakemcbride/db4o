@@ -262,6 +262,7 @@ public final class Platform4 {
     /**
      * @deprecated uses deprecated API
      */
+	@Deprecated
 	private static void configStringBufferCompare(Config4Impl config) {
 		config.objectClass("java.lang.StringBuffer").compare(new ObjectAttribute() {
             public Object attribute(Object original) {
@@ -318,7 +319,7 @@ public final class Platform4 {
                 shutDownHookCheck = TernaryBool.YES;
                 return true;
             } 
-            Reflection4.invoke(System.class, RUNFINALIZERSONEXIT, new Class[] {boolean.class}, new Object[]{new Boolean(true)});
+            Reflection4.invoke(System.class, RUNFINALIZERSONEXIT, new Class[] {boolean.class}, new Object[]{Boolean.valueOf(true)});
             shutDownHookCheck = TernaryBool.NO;
         }
         return shutDownHookCheck.definiteYes();
@@ -646,13 +647,13 @@ public final class Platform4 {
     private static void initNullValues() {
     	_nullValues = new Hashtable4();
     	_nullValues.put(boolean.class, Boolean.FALSE);
-    	_nullValues.put(byte.class, new Byte((byte)0));
-    	_nullValues.put(short.class, new Short((short)0));
-    	_nullValues.put(char.class, new Character((char)0));
-    	_nullValues.put(int.class, new Integer(0));
-    	_nullValues.put(float.class, new Float(0.0));
-    	_nullValues.put(long.class, new Long(0));
-    	_nullValues.put(double.class, new Double(0.0));
+    	_nullValues.put(byte.class, Byte.valueOf((byte)0));
+    	_nullValues.put(short.class, Short.valueOf((short)0));
+    	_nullValues.put(char.class, Character.valueOf((char)0));
+    	_nullValues.put(int.class, Integer.valueOf(0));
+    	_nullValues.put(float.class, Float.valueOf(0.0f));
+    	_nullValues.put(long.class, Long.valueOf(0));
+    	_nullValues.put(double.class, Double.valueOf(0.0));
 	}
 
 	private static Hashtable4 _nullValues;

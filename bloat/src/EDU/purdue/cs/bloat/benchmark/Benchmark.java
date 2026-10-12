@@ -60,6 +60,8 @@ public class Benchmark {
 
 	public static native void setMode(int mode);
 
+	// SecurityManager is deprecated for removal; this harness relies on it to trap System.exit().
+	@SuppressWarnings("removal")
 	public static void main(final String[] args) throws Exception {
 		int mode = 0;
 

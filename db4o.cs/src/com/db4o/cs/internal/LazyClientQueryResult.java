@@ -65,6 +65,8 @@ public class LazyClientQueryResult extends AbstractQueryResult{
 		return _size;
 	}
 
+	// Finalization is deprecated for removal; it releases the server-side query result.
+	@SuppressWarnings("removal")
 	protected void finalize() {
 		_client.write(Msg.OBJECTSET_FINALIZED.getWriterForInt(_transaction, _queryResultID));
 	}

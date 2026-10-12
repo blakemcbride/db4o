@@ -26,7 +26,7 @@ public class LogReplayer {
 		_counts = new HashMap();
 		Iterator it = commands.iterator();
 		while (it.hasNext()) {
-			_counts.put(it.next(), new Long(0));
+			_counts.put(it.next(), Long.valueOf(0));
 		}
 	}
 	
@@ -125,7 +125,7 @@ public class LogReplayer {
 	
 	private void incrementCount(String key) {
 		long count = ((Long)_counts.get(key)).longValue();
-		_counts.put(key, new Long(count+1));
+		_counts.put(key, Long.valueOf(count+1));
 	}
 	
 	public Map operationCounts() {

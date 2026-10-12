@@ -2989,7 +2989,7 @@ public class SSAPRE {
 						+ " to " + flag);
 			}
 
-			reloads.put(expr, new Boolean(flag));
+			reloads.put(expr, Boolean.valueOf(flag));
 		}
 
 		public boolean reload(final Expr expr) {
@@ -3004,7 +3004,7 @@ public class SSAPRE {
 						+ flag);
 			}
 
-			saves.put(expr, new Boolean(flag));
+			saves.put(expr, Boolean.valueOf(flag));
 		}
 
 		public boolean save(final Expr expr) {

@@ -16,7 +16,7 @@ final class IndexedPathIterator extends CompositeIterator4 {
 
 	protected Iterator4 nextIterator(final Object current) {
 		final FieldIndexKey key = (FieldIndexKey) current;
-		return _path.search(new Integer(key.parentID())).keys();
+		return _path.search(Integer.valueOf(key.parentID())).keys();
 	}
 
 }

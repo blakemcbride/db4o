@@ -23,7 +23,7 @@ public class ClassIndexesToBTrees_5_5 extends Conversion {
         }
         int entries = reader.readInt();
         for (int i = 0; i < entries; i++) {
-            bTree.add(trans, new Integer(reader.readInt()));
+            bTree.add(trans, Integer.valueOf(reader.readInt()));
         }
     }
 

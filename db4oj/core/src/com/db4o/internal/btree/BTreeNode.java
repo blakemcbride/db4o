@@ -407,7 +407,7 @@ public final class BTreeNode extends LocalPersistentBase{
         }
         for (int i = 0; i < _count; i++) {
             if(_children[i] instanceof BTreeNode){
-                _children[i] = new Integer( ((BTreeNode)_children[i]).getID() );
+                _children[i] = Integer.valueOf( ((BTreeNode)_children[i]).getID() );
             }
         }
     }
@@ -703,7 +703,7 @@ public final class BTreeNode extends LocalPersistentBase{
         for (int i = 0; i < _count; i++) {
             _keys[i] = keyHandler().readIndexEntry(trans.context(), reader);
             if(isInner){
-                _children[i] = new Integer(reader.readInt());
+                _children[i] = Integer.valueOf(reader.readInt());
             }
         }
     }

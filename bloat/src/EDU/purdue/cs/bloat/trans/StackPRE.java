@@ -1128,7 +1128,7 @@ public class StackPRE {
 				System.out.println("    operand " + block + " save=" + flag);
 			}
 
-			saveOperand.put(block, new Boolean(flag));
+			saveOperand.put(block, Boolean.valueOf(flag));
 		}
 
 		public boolean pushOperand(final Block block) {
@@ -1286,7 +1286,7 @@ public class StackPRE {
 		}
 
 		public void setPush(final LocalExpr expr, final boolean flag) {
-			pushes.put(expr, new Boolean(flag));
+			pushes.put(expr, Boolean.valueOf(flag));
 		}
 
 		public boolean push(final LocalExpr expr) {
@@ -1295,7 +1295,7 @@ public class StackPRE {
 		}
 
 		public void setPop(final LocalExpr expr, final boolean flag) {
-			pops.put(expr, new Boolean(flag));
+			pops.put(expr, Boolean.valueOf(flag));
 		}
 
 		public boolean pop(final LocalExpr expr) {

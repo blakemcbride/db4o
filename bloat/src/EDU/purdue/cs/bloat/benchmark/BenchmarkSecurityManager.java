@@ -31,6 +31,8 @@ import java.io.*;
  * @see Shade
  * @see Stats
  */
+// SecurityManager is deprecated for removal; this harness relies on it to trap System.exit().
+@SuppressWarnings("removal")
 public class BenchmarkSecurityManager extends SecurityManager {
 	boolean allowExit = false;
 

@@ -120,28 +120,28 @@ public abstract class SelfReflectionRegistry {
 
 	public Object getArray(Object array, int index) {
 		if(array instanceof boolean[]) {
-			return new Boolean(((boolean[])array)[index]);
+			return Boolean.valueOf(((boolean[])array)[index]);
 		}
 		if(array instanceof byte[]) {
-			return new Byte(((byte[])array)[index]);
+			return Byte.valueOf(((byte[])array)[index]);
 		}
 		if(array instanceof short[]) {
-			return new Short(((short[])array)[index]);
+			return Short.valueOf(((short[])array)[index]);
 		}
 		if(array instanceof char[]) {
-			return new Character(((char[])array)[index]);
+			return Character.valueOf(((char[])array)[index]);
 		}
 		if(array instanceof int[]) {
-			return new Integer(((int[])array)[index]);
+			return Integer.valueOf(((int[])array)[index]);
 		}
 		if(array instanceof long[]) {
-			return new Long(((long[])array)[index]);
+			return Long.valueOf(((long[])array)[index]);
 		}
 		if(array instanceof float[]) {
-			return new Float(((float[])array)[index]);
+			return Float.valueOf(((float[])array)[index]);
 		}
 		if(array instanceof double[]) {
-			return new Double(((double[])array)[index]);
+			return Double.valueOf(((double[])array)[index]);
 		}
 		return null;
 	}
@@ -150,56 +150,56 @@ public abstract class SelfReflectionRegistry {
 		if(array instanceof boolean[]) {
 			boolean[] shaped=(boolean[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Boolean(shaped[i]);
+				a_flat[i]=Boolean.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof byte[]) {
 			byte[] shaped=(byte[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Byte(shaped[i]);
+				a_flat[i]=Byte.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof short[]) {
 			short[] shaped=(short[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Short(shaped[i]);
+				a_flat[i]=Short.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof char[]) {
 			char[] shaped=(char[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Character(shaped[i]);
+				a_flat[i]=Character.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof int[]) {
 			int[] shaped=(int[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Integer(shaped[i]);
+				a_flat[i]=Integer.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof long[]) {
 			long[] shaped=(long[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Long(shaped[i]);
+				a_flat[i]=Long.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof float[]) {
 			float[] shaped=(float[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Float(shaped[i]);
+				a_flat[i]=Float.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}
 		if(array instanceof double[]) {
 			double[] shaped=(double[])array;
 			for (int i = 0; i < shaped.length; i++) {
-				a_flat[i]=new Double(shaped[i]);
+				a_flat[i]=Double.valueOf(shaped[i]);
 			}
 			return shaped.length;
 		}

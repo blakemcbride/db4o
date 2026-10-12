@@ -350,7 +350,7 @@ public class PrintVisitor extends TreeVisitor {
 		print("La");
 
 		if (stmt.sub() != null) {
-			print(new Integer(stmt.sub().returnAddress().index()));
+			print(Integer.valueOf(stmt.sub().returnAddress().index()));
 		} else {
 			print("???");
 		}

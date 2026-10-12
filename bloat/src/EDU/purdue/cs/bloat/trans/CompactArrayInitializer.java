@@ -468,7 +468,7 @@ public class CompactArrayInitializer implements Opcode {
 
 		StringBuffer sb = new StringBuffer();
 		int utfLength = 0;
-		startIndex.add(new Integer(0));
+		startIndex.add(Integer.valueOf(0));
 
 		// Iterate over every character in the array buffer. Use a
 		// StringBuffer to create String of length less than 32K.
@@ -491,11 +491,11 @@ public class CompactArrayInitializer implements Opcode {
 				// string.
 				// Add the current string buffer, and make a new one.
 				image.add(sb.toString());
-				endIndex.add(new Integer(i));
+				endIndex.add(Integer.valueOf(i));
 
 				sb = new StringBuffer();
 				utfLength = 0;
-				startIndex.add(new Integer(i));
+				startIndex.add(Integer.valueOf(i));
 			}
 
 			sb.append(n);
@@ -506,7 +506,7 @@ public class CompactArrayInitializer implements Opcode {
 			// If we've got leftovers, add it to the end of the current image
 			// entry.
 			image.add(sb.toString());
-			endIndex.add(new Integer(data.length));
+			endIndex.add(Integer.valueOf(data.length));
 		} else {
 			startIndex.remove(startIndex.size() - 1);
 		}
@@ -553,8 +553,8 @@ public class CompactArrayInitializer implements Opcode {
 				// int dstBegin)
 
 				buf.add(new Instruction(Opcode.opcx_ldc, im)); // String
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(0)));
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(im
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(0)));
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(im
 						.length())));
 				buf.add(new Instruction(Opcode.opcx_aload, array));
 				buf.add(new Instruction(Opcode.opcx_ldc, start)); // dstBegin
@@ -609,21 +609,21 @@ public class CompactArrayInitializer implements Opcode {
 				buf.add(new Instruction(Opcode.opcx_ldc, start));
 				buf.add(new Instruction(Opcode.opcx_istore, index1));
 
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(0)));
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(0)));
 				buf.add(new Instruction(Opcode.opcx_istore, index2));
 
 				// Create a new array of characters and copy the UTF8 string
 				// into it.
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(im
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(im
 						.length())));
 				buf.add(new Instruction(Opcode.opcx_newarray, Type.CHARACTER));
 				buf.add(new Instruction(Opcode.opcx_astore, array));
 				buf.add(new Instruction(Opcode.opcx_ldc, im));
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(0)));
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(im
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(0)));
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(im
 						.length())));
 				buf.add(new Instruction(Opcode.opcx_aload, array));
-				buf.add(new Instruction(Opcode.opcx_ldc, new Integer(0)));
+				buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(0)));
 				buf.add(new Instruction(Opcode.opcx_invokevirtual,
 						CompactArrayInitializer.GET_CHARS));
 
@@ -650,7 +650,7 @@ public class CompactArrayInitializer implements Opcode {
 							index2, 1)));
 					buf.add(new Instruction(Opcode.opcx_caload));
 					buf
-							.add(new Instruction(Opcode.opcx_ldc, new Integer(
+							.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(
 									32768)));
 					buf.add(new Instruction(Opcode.opcx_isub));
 					buf.add(new Instruction(Opcode.opcx_i2s));
@@ -680,7 +680,7 @@ public class CompactArrayInitializer implements Opcode {
 					buf.add(new Instruction(Opcode.opcx_iinc, new IncOperand(
 							index1, 1)));
 					buf.add(new Instruction(Opcode.opcx_iload, tmp));
-					buf.add(new Instruction(Opcode.opcx_ldc, new Integer(8)));
+					buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(8)));
 					buf.add(new Instruction(Opcode.opcx_iushr));
 					buf.add(new Instruction(Opcode.opcx_i2b));
 					buf.add(new Instruction(Opcode.opcx_bastore));
@@ -705,7 +705,7 @@ public class CompactArrayInitializer implements Opcode {
 							index1, 1)));
 					buf.add(new Instruction(Opcode.opcx_iload, tmp));
 					buf
-							.add(new Instruction(Opcode.opcx_ldc, new Integer(
+							.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(
 									0xff)));
 					buf.add(new Instruction(Opcode.opcx_iand));
 					buf.add(new Instruction(Opcode.opcx_i2b));
@@ -730,7 +730,7 @@ public class CompactArrayInitializer implements Opcode {
 					buf.add(new Instruction(Opcode.opcx_caload));
 
 					// Isolate the high-order 16 bits by shifting left
-					buf.add(new Instruction(Opcode.opcx_ldc, new Integer(16)));
+					buf.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(16)));
 					buf.add(new Instruction(Opcode.opcx_ishl));
 
 					// Increment index2 and obtain the character containing the

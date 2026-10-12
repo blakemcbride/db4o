@@ -33,6 +33,8 @@ public class Nonstop {
 
 	public static native void run(Class main, String[] args);
 
+	// SecurityManager is deprecated for removal; this harness relies on it to trap System.exit().
+	@SuppressWarnings("removal")
 	public static void main(final String[] args) throws Exception {
 		int runs = 1;
 		int eat = 0;

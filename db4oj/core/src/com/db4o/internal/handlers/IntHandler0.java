@@ -16,7 +16,7 @@ public class IntHandler0 extends IntHandler {
         if (i == Integer.MAX_VALUE) {
             return null;
         }
-        return new Integer(i);
+        return Integer.valueOf(i);
     }
     
 }

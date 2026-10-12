@@ -150,7 +150,7 @@ public class TreeInt extends Tree<Integer> implements ReadWriteable {
 	
 	@Override
     public Integer key(){
-    	return new Integer(_key);
+    	return Integer.valueOf(_key);
     }
 	
 	@Override

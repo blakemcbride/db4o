@@ -14,15 +14,15 @@ public class KeySpec {
 	private Object _defaultValue;
 	
 	public KeySpec(byte defaultValue) {
-		_defaultValue = new Byte(defaultValue);
+		_defaultValue = Byte.valueOf(defaultValue);
 	}
 
 	public KeySpec(int defaultValue) {
-		_defaultValue = new Integer(defaultValue);
+		_defaultValue = Integer.valueOf(defaultValue);
 	}
 
 	public KeySpec(boolean defaultValue) {
-		_defaultValue = new Boolean(defaultValue);
+		_defaultValue = Boolean.valueOf(defaultValue);
 	}
 
 	public KeySpec(Object defaultValue) {

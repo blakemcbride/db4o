@@ -78,7 +78,7 @@ class InstrumentFieldAccessEdit implements BloatClassEdit {
 					}
 					boolean writeAccess = ((Instruction)curCode).origOpcode() == Opcode.opc_putfield;						
 					fieldAccessIndexes.put(
-							new Integer(codeIdx),
+							Integer.valueOf(codeIdx),
 							new FieldAccess(
 									fieldRef,
 									writeAccess

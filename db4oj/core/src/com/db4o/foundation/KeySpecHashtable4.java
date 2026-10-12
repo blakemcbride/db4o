@@ -18,15 +18,15 @@ public class KeySpecHashtable4 implements DeepClone {
 	}
 	
     public void put(KeySpec spec,byte value) {
-    	_delegate.put(spec,new Byte(value));
+    	_delegate.put(spec,Byte.valueOf(value));
     }
 
     public void put(KeySpec spec,boolean value) {
-    	_delegate.put(spec,new Boolean(value));
+    	_delegate.put(spec,Boolean.valueOf(value));
     }
 
     public void put(KeySpec spec,int value) {
-    	_delegate.put(spec,new Integer(value));
+    	_delegate.put(spec,Integer.valueOf(value));
     }
 
     public void put(KeySpec spec, Object value) {

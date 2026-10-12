@@ -336,6 +336,7 @@ public interface Configuration {
      * off.
      * @see #password
      */
+    @Deprecated
     public void encrypt(boolean flag) throws GlobalOnlyConfigException;
     
     /**
@@ -545,6 +546,7 @@ public interface Configuration {
      * 
      * @param pass the password to be used.
      */
+    @Deprecated
     public void password(String pass) throws GlobalOnlyConfigException;
 
     

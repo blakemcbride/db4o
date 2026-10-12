@@ -403,6 +403,7 @@ public final class Config4Impl implements Configuration, DeepClone,
     /**
      * @deprecated
      */
+    @Deprecated
     public void encrypt(boolean flag) {
         globalSettingOnly();
         _config.put(ENCRYPT_KEY,flag);
@@ -536,6 +537,7 @@ public final class Config4Impl implements Configuration, DeepClone,
     /**
      * @deprecated
      */
+    @Deprecated
     public void password(String pw) {
         globalSettingOnly();
         _config.put(PASSWORD_KEY,pw);
@@ -623,6 +625,7 @@ public final class Config4Impl implements Configuration, DeepClone,
     /**
      * @deprecated
      */
+    @Deprecated
     public void setOut(PrintStream outStream) {
         _config.put(OUTSTREAM_KEY,outStream);
         if (_container != null) {
@@ -679,6 +682,7 @@ public final class Config4Impl implements Configuration, DeepClone,
 	/**
 	 * @deprecated
 	 */
+    @Deprecated
     public void useIndexSystem() {
 		throw new NotSupportedException();
 	}

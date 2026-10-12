@@ -80,11 +80,11 @@ public class BTreeClassIndexStrategy extends AbstractClassIndexStrategy {
 	}
 
 	protected void internalAdd(Transaction trans, int id) {
-		_btreeIndex.add(trans, new Integer(id));
+		_btreeIndex.add(trans, Integer.valueOf(id));
 	}
 
 	protected void internalRemove(Transaction ta, int id) {
-		_btreeIndex.remove(ta, new Integer(id));
+		_btreeIndex.remove(ta, Integer.valueOf(id));
 	}
 
 	public void dontDelete(Transaction transaction, int id) {

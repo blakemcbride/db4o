@@ -26,7 +26,7 @@ public class IntIterator4Impl implements FixedSizeIntIterator4 {
 	}
 
 	public Object current() {
-		return new Integer(currentInt());
+		return Integer.valueOf(currentInt());
 	}
 
 	public boolean moveNext() {

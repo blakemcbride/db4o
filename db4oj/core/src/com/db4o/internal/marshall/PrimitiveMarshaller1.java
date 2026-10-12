@@ -18,7 +18,7 @@ public class PrimitiveMarshaller1 extends PrimitiveMarshaller {
 	}
     
     public Object readInteger(ByteArrayBuffer bytes) {
-    	return new Integer(bytes.readInt());
+    	return Integer.valueOf(bytes.readInt());
     }
     
     public Object readFloat(ByteArrayBuffer bytes) {
@@ -30,11 +30,11 @@ public class PrimitiveMarshaller1 extends PrimitiveMarshaller {
 	}
 
 	public Object readLong(ByteArrayBuffer buffer) {
-		return new Long(buffer.readLong());
+		return Long.valueOf(buffer.readLong());
 	}
 
 	public Object readShort(ByteArrayBuffer buffer) {
-		return new Short(PrimitiveMarshaller0.unmarshallShort(buffer));
+		return Short.valueOf(PrimitiveMarshaller0.unmarshallShort(buffer));
 	}
 
 }

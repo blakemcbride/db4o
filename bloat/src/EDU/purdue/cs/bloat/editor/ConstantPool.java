@@ -79,7 +79,7 @@ public class ConstantPool {
 			constants.add(c[i]);
 			resolved.add(null);
 			if (c[i] != null) {
-				constantIndices.put(c[i], new Integer(i));
+				constantIndices.put(c[i], Integer.valueOf(i));
 			}
 		}
 	}
@@ -355,13 +355,13 @@ public class ConstantPool {
 			Assert.isTrue(value instanceof Type, "Invalid value: " + value);
 			final int index = addConstant(Constant.UTF8, ((Type) value)
 					.className());
-			c = new Constant(Constant.CLASS, new Integer(index));
+			c = new Constant(Constant.CLASS, Integer.valueOf(index));
 			break;
 		}
 		case Constant.STRING: {
 			Assert.isTrue(value instanceof String, "Invalid value: " + value);
 			final int index = addConstant(Constant.UTF8, value);
-			c = new Constant(Constant.STRING, new Integer(index));
+			c = new Constant(Constant.STRING, Integer.valueOf(index));
 			break;
 		}
 		case Constant.FIELD_REF:
@@ -424,7 +424,7 @@ public class ConstantPool {
 		Integer index = (Integer) constantIndices.get(c);
 
 		if (index == null) {
-			index = new Integer(constants.size());
+			index = Integer.valueOf(constants.size());
 			constantIndices.put(c, index);
 			constants.add(c);
 			resolved.add(value);

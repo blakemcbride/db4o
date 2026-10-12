@@ -226,7 +226,7 @@ public class Db4oDatabase implements Db4oType, Internal4{
         Query q = stream.query(trans);
         q.constrain(getClass());
         if(constrainByUUID){
-            q.descend(CREATIONTIME_FIELD).constrain(new Long(i_uuid));
+            q.descend(CREATIONTIME_FIELD).constrain(Long.valueOf(i_uuid));
         }
         ObjectSet objectSet = q.execute();
         while (objectSet.hasNext()) {

@@ -308,13 +308,13 @@ class BloatMethodBuilder implements MethodBuilder {
 
 	private Object coerce(Object value) {
 		if(value instanceof Boolean) {
-			return ((Boolean)value).booleanValue() ? new Integer(1) : new Integer(0);
+			return ((Boolean)value).booleanValue() ? Integer.valueOf(1) : Integer.valueOf(0);
 		}
 		if(value instanceof Character) {
-			return new Integer(((Character)value).charValue());
+			return Integer.valueOf(((Character)value).charValue());
 		}
 		if(value instanceof Byte || value instanceof Short) {
-			return new Integer(((Number)value).intValue());
+			return Integer.valueOf(((Number)value).intValue());
 		}
 		return value;
 	}

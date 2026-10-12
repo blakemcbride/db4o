@@ -265,7 +265,7 @@ public class Peephole implements Opcode {
 			final Object ce = iter.next();
 
 			if (ce instanceof Label) {
-				labelPos.put(ce, new Integer(i));
+				labelPos.put(ce, Integer.valueOf(i));
 			}
 
 			i++;

@@ -502,32 +502,32 @@ class ValueFolder extends TreeVisitor {
 
 			switch (expr.operation()) {
 			case ArithExpr.ADD:
-				value = new Integer(lval + rval);
+				value = Integer.valueOf(lval + rval);
 				break;
 			case ArithExpr.AND:
-				value = new Integer(lval & rval);
+				value = Integer.valueOf(lval & rval);
 				break;
 			case ArithExpr.DIV:
 				if (rval != 0) {
-					value = new Integer(lval / rval);
+					value = Integer.valueOf(lval / rval);
 				}
 				break;
 			case ArithExpr.MUL:
-				value = new Integer(lval * rval);
+				value = Integer.valueOf(lval * rval);
 				break;
 			case ArithExpr.IOR:
-				value = new Integer(lval | rval);
+				value = Integer.valueOf(lval | rval);
 				break;
 			case ArithExpr.REM:
 				if (rval != 0) {
-					value = new Integer(lval % rval);
+					value = Integer.valueOf(lval % rval);
 				}
 				break;
 			case ArithExpr.SUB:
-				value = new Integer(lval - rval);
+				value = Integer.valueOf(lval - rval);
 				break;
 			case ArithExpr.XOR:
-				value = new Integer(lval ^ rval);
+				value = Integer.valueOf(lval ^ rval);
 				break;
 			default:
 				break;
@@ -570,7 +570,7 @@ class ValueFolder extends TreeVisitor {
 					break;
 				case ArithExpr.MUL:
 				case ArithExpr.AND:
-					node = new ConstantExpr(new Integer(0), expr.type());
+					node = new ConstantExpr(Integer.valueOf(0), expr.type());
 					node.setValueNumber(v);
 
 					values.set(v, node);
@@ -598,7 +598,7 @@ class ValueFolder extends TreeVisitor {
 					}
 					break;
 				case ArithExpr.REM:
-					node = new ConstantExpr(new Integer(0), expr.type());
+					node = new ConstantExpr(Integer.valueOf(0), expr.type());
 					node.setValueNumber(v);
 
 					values.set(v, node);
@@ -674,7 +674,7 @@ class ValueFolder extends TreeVisitor {
 					break;
 				case ArithExpr.MUL:
 				case ArithExpr.AND:
-					node = new ConstantExpr(new Integer(0), expr.type());
+					node = new ConstantExpr(Integer.valueOf(0), expr.type());
 					node.setValueNumber(v);
 
 					values.set(v, node);
@@ -769,40 +769,40 @@ class ValueFolder extends TreeVisitor {
 
 			switch (expr.operation()) {
 			case ArithExpr.ADD:
-				value = new Long(lval + rval);
+				value = Long.valueOf(lval + rval);
 				break;
 			case ArithExpr.AND:
-				value = new Long(lval & rval);
+				value = Long.valueOf(lval & rval);
 				break;
 			case ArithExpr.DIV:
 				if (rval != 0) {
-					value = new Long(lval / rval);
+					value = Long.valueOf(lval / rval);
 				}
 				break;
 			case ArithExpr.MUL:
-				value = new Long(lval * rval);
+				value = Long.valueOf(lval * rval);
 				break;
 			case ArithExpr.IOR:
-				value = new Long(lval | rval);
+				value = Long.valueOf(lval | rval);
 				break;
 			case ArithExpr.REM:
 				if (rval != 0L) {
-					value = new Long(lval % rval);
+					value = Long.valueOf(lval % rval);
 				}
 				break;
 			case ArithExpr.SUB:
-				value = new Long(lval - rval);
+				value = Long.valueOf(lval - rval);
 				break;
 			case ArithExpr.XOR:
-				value = new Long(lval ^ rval);
+				value = Long.valueOf(lval ^ rval);
 				break;
 			case ArithExpr.CMP:
 				if (lval > rval) {
-					value = new Integer(1);
+					value = Integer.valueOf(1);
 				} else if (lval < rval) {
-					value = new Integer(-1);
+					value = Integer.valueOf(-1);
 				} else {
-					value = new Integer(0);
+					value = Integer.valueOf(0);
 				}
 				break;
 			default:
@@ -847,7 +847,7 @@ class ValueFolder extends TreeVisitor {
 					break;
 				case ArithExpr.MUL:
 				case ArithExpr.AND:
-					node = new ConstantExpr(new Long(0L), expr.type());
+					node = new ConstantExpr(Long.valueOf(0L), expr.type());
 					node.setValueNumber(v);
 
 					values.set(v, node);
@@ -874,7 +874,7 @@ class ValueFolder extends TreeVisitor {
 					}
 					break;
 				case ArithExpr.REM:
-					node = new ConstantExpr(new Long(0L), expr.type());
+					node = new ConstantExpr(Long.valueOf(0L), expr.type());
 					node.setValueNumber(v);
 
 					values.set(v, node);
@@ -943,7 +943,7 @@ class ValueFolder extends TreeVisitor {
 					break;
 				case ArithExpr.MUL:
 				case ArithExpr.AND:
-					node = new ConstantExpr(new Long(0L), expr.type());
+					node = new ConstantExpr(Long.valueOf(0L), expr.type());
 					node.setValueNumber(v);
 
 					values.set(v, node);
@@ -1056,27 +1056,27 @@ class ValueFolder extends TreeVisitor {
 
 		switch (expr.operation()) {
 		case ArithExpr.ADD:
-			value = new Float(lval + rval);
+			value = Float.valueOf(lval + rval);
 			break;
 		case ArithExpr.DIV:
-			value = new Float(lval / rval);
+			value = Float.valueOf(lval / rval);
 			break;
 		case ArithExpr.MUL:
-			value = new Float(lval * rval);
+			value = Float.valueOf(lval * rval);
 			break;
 		case ArithExpr.REM:
-			value = new Float(lval % rval);
+			value = Float.valueOf(lval % rval);
 			break;
 		case ArithExpr.SUB:
-			value = new Float(lval - rval);
+			value = Float.valueOf(lval - rval);
 			break;
 		case ArithExpr.CMP:
 			if (lval > rval) {
-				value = new Integer(1);
+				value = Integer.valueOf(1);
 			} else if (lval < rval) {
-				value = new Integer(-1);
+				value = Integer.valueOf(-1);
 			} else {
-				value = new Integer(0);
+				value = Integer.valueOf(0);
 			}
 			break;
 		default:
@@ -1161,27 +1161,27 @@ class ValueFolder extends TreeVisitor {
 
 		switch (expr.operation()) {
 		case ArithExpr.ADD:
-			value = new Double(lval + rval);
+			value = Double.valueOf(lval + rval);
 			break;
 		case ArithExpr.DIV:
-			value = new Double(lval / rval);
+			value = Double.valueOf(lval / rval);
 			break;
 		case ArithExpr.MUL:
-			value = new Double(lval * rval);
+			value = Double.valueOf(lval * rval);
 			break;
 		case ArithExpr.REM:
-			value = new Double(lval % rval);
+			value = Double.valueOf(lval % rval);
 			break;
 		case ArithExpr.SUB:
-			value = new Double(lval - rval);
+			value = Double.valueOf(lval - rval);
 			break;
 		case ArithExpr.CMP:
 			if (lval > rval) {
-				value = new Integer(1);
+				value = Integer.valueOf(1);
 			} else if (lval < rval) {
-				value = new Integer(-1);
+				value = Integer.valueOf(-1);
 			} else {
-				value = new Integer(0);
+				value = Integer.valueOf(0);
 			}
 			break;
 		default:
@@ -1290,13 +1290,13 @@ class ValueFolder extends TreeVisitor {
 				Number value = null;
 
 				if (evalue instanceof Integer) {
-					value = new Integer(-evalue.intValue());
+					value = Integer.valueOf(-evalue.intValue());
 				} else if (value instanceof Long) {
-					value = new Long(-evalue.longValue());
+					value = Long.valueOf(-evalue.longValue());
 				} else if (value instanceof Float) {
-					value = new Float(-evalue.floatValue());
+					value = Float.valueOf(-evalue.floatValue());
 				} else if (value instanceof Double) {
-					value = new Double(-evalue.doubleValue());
+					value = Double.valueOf(-evalue.doubleValue());
 				}
 
 				if (value != null) {
@@ -1375,7 +1375,7 @@ class ValueFolder extends TreeVisitor {
 		}
 
 		if ((eexpr == null) && (bexpr != null)) {
-			if (bvalue.equals(new Integer(0)) || bvalue.equals(new Long(0))) {
+			if (bvalue.equals(Integer.valueOf(0)) || bvalue.equals(Long.valueOf(0))) {
 				// x << 0 = x
 				// x >> 0 = x
 				// x >>> 0 = x
@@ -1418,13 +1418,13 @@ class ValueFolder extends TreeVisitor {
 
 				switch (expr.dir()) {
 				case ShiftExpr.LEFT:
-					value = new Integer(eval << bval);
+					value = Integer.valueOf(eval << bval);
 					break;
 				case ShiftExpr.RIGHT:
-					value = new Integer(eval >> bval);
+					value = Integer.valueOf(eval >> bval);
 					break;
 				case ShiftExpr.UNSIGNED_RIGHT:
-					value = new Integer(eval >>> bval);
+					value = Integer.valueOf(eval >>> bval);
 					break;
 				}
 			}
@@ -1447,13 +1447,13 @@ class ValueFolder extends TreeVisitor {
 
 				switch (expr.dir()) {
 				case ShiftExpr.LEFT:
-					value = new Long(eval << bval);
+					value = Long.valueOf(eval << bval);
 					break;
 				case ShiftExpr.RIGHT:
-					value = new Long(eval >> bval);
+					value = Long.valueOf(eval >> bval);
 					break;
 				case ShiftExpr.UNSIGNED_RIGHT:
-					value = new Long(eval >>> bval);
+					value = Long.valueOf(eval >>> bval);
 					break;
 				}
 			}

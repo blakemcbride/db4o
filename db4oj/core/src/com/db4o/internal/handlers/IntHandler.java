@@ -16,7 +16,7 @@ import com.db4o.reflect.*;
 public class IntHandler extends PrimitiveHandler {
     
 
-	private static final Integer DEFAULTVALUE = new Integer(0);
+	private static final Integer DEFAULTVALUE = Integer.valueOf(0);
     
     public Object coerce(ReflectClass claxx, Object obj) {
     	return Coercion4.toInt(obj);
@@ -39,7 +39,7 @@ public class IntHandler extends PrimitiveHandler {
     }
 
     Object read1(ByteArrayBuffer a_bytes) {
-        return new Integer(a_bytes.readInt());
+        return Integer.valueOf(a_bytes.readInt());
     }    
 
     public void write(Object obj, ByteArrayBuffer writer) {
@@ -54,7 +54,7 @@ public class IntHandler extends PrimitiveHandler {
         if (Deploy.debug) {
             a_bytes.writeBegin(Const4.YAPINTEGER);
             if (Deploy.debugLong) {
-                String l_s = "                " + new Integer(a_int).toString();
+                String l_s = "                " + Integer.valueOf(a_int).toString();
                 new LatinStringIO().write(
                     a_bytes,
                     l_s.substring(l_s.length() - Const4.INTEGER_BYTES));
@@ -74,7 +74,7 @@ public class IntHandler extends PrimitiveHandler {
     }
     
     public Object read(ReadContext context) {
-        return new Integer(context.readInt());
+        return Integer.valueOf(context.readInt());
     }
 
     public void write(WriteContext context, Object obj) {

@@ -59,7 +59,7 @@ public class UUIDFieldMetadata extends VirtualFieldMetadata {
         writer.writeLong(uuid);
         
         if(isnew){
-            addIndexEntry(writer, new Long(uuid));
+            addIndexEntry(writer, Long.valueOf(uuid));
         }
         
     }
@@ -100,7 +100,7 @@ public class UUIDFieldMetadata extends VirtualFieldMetadata {
         long longPart = context.readLong();
         if(longPart > 0){
             if (context.container().maintainsIndices()){
-                removeIndexEntry(context.transaction(), context.objectId(), new Long(longPart));
+                removeIndexEntry(context.transaction(), context.objectId(), Long.valueOf(longPart));
             }
         }
     }
@@ -122,7 +122,7 @@ public class UUIDFieldMetadata extends VirtualFieldMetadata {
 		if (null == data) {
 			return;
 		}
-		addIndexEntry(container.localSystemTransaction(), objectId, new Long(
+		addIndexEntry(container.localSystemTransaction(), objectId, Long.valueOf(
 				data.uuid));
 	}
     
@@ -206,7 +206,7 @@ public class UUIDFieldMetadata extends VirtualFieldMetadata {
         }
         buffer.writeLong(attr.i_uuid);
         if(doAddIndexEntry){
-            addIndexEntry(trans, ref.getID(), new Long(attr.i_uuid));
+            addIndexEntry(trans, ref.getID(), Long.valueOf(attr.i_uuid));
         }
     }
     
@@ -216,7 +216,7 @@ public class UUIDFieldMetadata extends VirtualFieldMetadata {
     }
 
 	public final HardObjectReference getHardObjectReferenceBySignature(final Transaction transaction, final long longPart, final byte[] signature) {
-		final BTreeRange range = search(transaction, new Long(longPart));		
+		final BTreeRange range = search(transaction, Long.valueOf(longPart));		
 		final Iterator4 keys = range.keys();
 		while (keys.moveNext()) {
 			final FieldIndexKey current = (FieldIndexKey) keys.current();

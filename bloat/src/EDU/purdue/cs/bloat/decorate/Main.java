@@ -496,7 +496,7 @@ public class Main implements Opcode {
 					// ^prev ^next
 
 					addInst = new Instruction(Opcode.opcx_rc,
-							new Integer(depth));
+							Integer.valueOf(depth));
 					iter.add(addInst);
 
 					// +-----+----+------+-----------+
@@ -674,7 +674,7 @@ public class Main implements Opcode {
 						// ^prev ^next
 
 						addInst = new Instruction(Opcode.opcx_aupdate,
-								new Integer(depth));
+								Integer.valueOf(depth));
 						/*
 						 * if (uctype == POINTER) { addInst = new
 						 * Instruction(opcx_aupdate, new Integer(depth)); } else {

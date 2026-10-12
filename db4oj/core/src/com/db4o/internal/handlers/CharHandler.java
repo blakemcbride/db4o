@@ -13,7 +13,7 @@ public final class CharHandler extends PrimitiveHandler {
 
     static final int LENGTH = Const4.CHAR_BYTES + Const4.ADDED_LENGTH;
 	
-	private static final Character DEFAULTVALUE = new Character((char)0);
+	private static final Character DEFAULTVALUE = Character.valueOf((char)0);
 	
 	public Object defaultValue(){
 		return DEFAULTVALUE;
@@ -37,7 +37,7 @@ public final class CharHandler extends PrimitiveHandler {
 			a_bytes.readEnd();
 		}
 		char ret = (char) ((b1 & 0xff) | ((b2 & 0xff) << 8));
-		return new Character(ret);
+		return Character.valueOf(ret);
 	}
 
 	public void write(Object a_object, ByteArrayBuffer a_bytes) {
@@ -65,7 +65,7 @@ public final class CharHandler extends PrimitiveHandler {
             Debug4.readEnd(context);
         }
         
-        return new Character(charValue);
+        return Character.valueOf(charValue);
     }
 
     public void write(WriteContext context, Object obj) {

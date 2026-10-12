@@ -113,7 +113,7 @@ public class BloatExprBuilderVisitor extends TreeVisitor {
 				FieldValue fieldVal = (FieldValue) retval;
 				Object constVal=null;
 				if(fieldVal.field().type().isPrimitive()) {
-					constVal=new Integer(0);
+					constVal=Integer.valueOf(0);
 				}
 				retval = comparisonExpression(fieldVal,
 						new ConstValue(constVal), ComparisonOperator.VALUE_EQUALITY);

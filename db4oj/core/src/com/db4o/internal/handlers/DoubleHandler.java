@@ -14,7 +14,7 @@ import com.db4o.reflect.*;
  */
 public class DoubleHandler extends LongHandler {
 	
-    private static final Double DEFAULTVALUE = new Double(0);
+    private static final Double DEFAULTVALUE = Double.valueOf(0);
     
     public Object coerce(ReflectClass claxx, Object obj) {
     	return Coercion4.toDouble(obj);
@@ -44,7 +44,7 @@ public class DoubleHandler extends LongHandler {
 	@Override
     public Object read(ReadContext context) {
         Long l = (Long)super.read(context);
-        return new Double(Platform4.longToDouble(l.longValue()));
+        return Double.valueOf(Platform4.longToDouble(l.longValue()));
     }
 
     public void write(WriteContext context, Object obj) {

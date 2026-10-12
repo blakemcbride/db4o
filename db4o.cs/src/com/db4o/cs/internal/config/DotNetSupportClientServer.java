@@ -15,6 +15,7 @@ import com.db4o.query.*;
  * @deprecated Since 8.0
  * @sharpen.ignore
  */
+@Deprecated
 public class DotNetSupportClientServer implements ConfigurationItem {
 
 	public void apply(InternalObjectContainer container) {

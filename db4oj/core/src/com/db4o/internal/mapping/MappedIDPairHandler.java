@@ -36,8 +36,8 @@ public class MappedIDPairHandler implements Indexable4 {
 
 	public void writeIndexEntry(Context context, ByteArrayBuffer reader, Object obj) {
 		MappedIDPair mappedIDs=(MappedIDPair)obj;
-		_origHandler.writeIndexEntry(context, reader, new Integer(mappedIDs.orig()));
-		_mappedHandler.writeIndexEntry(context, reader, new Integer(mappedIDs.mapped()));
+		_origHandler.writeIndexEntry(context, reader, Integer.valueOf(mappedIDs.orig()));
+		_mappedHandler.writeIndexEntry(context, reader, Integer.valueOf(mappedIDs.mapped()));
 	}
 
 	private int readID(Context context, ByteArrayBuffer a_reader) {

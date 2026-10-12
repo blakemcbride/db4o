@@ -408,7 +408,7 @@ public class FlowGraph extends Graph {
 				final Label label = (Label) curr;
 
 				if (label.startsBlock()) {
-					labelPos.put(label, new Integer(i));
+					labelPos.put(label, Integer.valueOf(i));
 
 					final Block nextBlock = (Block) getNode(label);
 
@@ -777,7 +777,7 @@ public class FlowGraph extends Graph {
 						final Type type = left.type();
 
 						if (left.type().isIntegral()) {
-							value = new Integer(0);
+							value = Integer.valueOf(0);
 
 						} else {
 							Assert.isTrue(left.type().isReference());
@@ -871,7 +871,7 @@ public class FlowGraph extends Graph {
 						final LocalExpr copy = (LocalExpr) index.clone();
 						copy.setDef(null);
 						final Stmt insert = new ExprStmt(new StoreExpr(copy,
-								new ConstantExpr(new Integer(values[i]), index
+								new ConstantExpr(Integer.valueOf(values[i]), index
 										.type()), index.type()));
 
 						targets[i].tree().prependStmt(insert);
@@ -1657,7 +1657,7 @@ public class FlowGraph extends Graph {
 					&& (loop.header.blockType() != Block.IRREDUCIBLE)) {
 
 				headers.add(loop.header);
-				peel.add(new Integer(i));
+				peel.add(Integer.valueOf(i));
 
 				// Find the next outer loop.
 				LoopNode outerLoop = null;
@@ -1671,7 +1671,7 @@ public class FlowGraph extends Graph {
 				final int outerIndex = loops.indexOf(outerLoop);
 				Assert.isTrue(outerIndex != -1);
 
-				outer.add(new Integer(outerIndex));
+				outer.add(Integer.valueOf(outerIndex));
 			}
 		}
 

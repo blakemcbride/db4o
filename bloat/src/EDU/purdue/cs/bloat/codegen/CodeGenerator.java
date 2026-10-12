@@ -758,22 +758,22 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 
 		if (target.type().isIntegral()) {
 			return new ExprStmt(new StoreExpr(target, new ConstantExpr(
-					new Integer(0), Type.INTEGER), target.type()));
+					Integer.valueOf(0), Type.INTEGER), target.type()));
 		}
 
 		if (target.type().equals(Type.LONG)) {
 			return new ExprStmt(new StoreExpr(target, new ConstantExpr(
-					new Long(0), Type.LONG), target.type()));
+					Long.valueOf(0), Type.LONG), target.type()));
 		}
 
 		if (target.type().equals(Type.FLOAT)) {
 			return new ExprStmt(new StoreExpr(target, new ConstantExpr(
-					new Float(0.0F), Type.FLOAT), target.type()));
+					Float.valueOf(0.0F), Type.FLOAT), target.type()));
 		}
 
 		if (target.type().equals(Type.DOUBLE)) {
 			return new ExprStmt(new StoreExpr(target, new ConstantExpr(
-					new Double(0.0), Type.DOUBLE), target.type()));
+					Double.valueOf(0.0), Type.DOUBLE), target.type()));
 		}
 
 		throw new RuntimeException("Illegal type: " + target.type());
@@ -1101,12 +1101,12 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 				if (p.isDef()) {
 					// a[i] := r
 					// Stack at the xastore: ... a i r
-					postpone = new Instruction(Opcode.opcx_rc, new Integer(p
+					postpone = new Instruction(Opcode.opcx_rc, Integer.valueOf(p
 							.type().stackHeight() + 1));
 				} else {
 					// use a[i]
 					// Stack at the xaload: ... a i
-					postpone = new Instruction(Opcode.opcx_rc, new Integer(1));
+					postpone = new Instruction(Opcode.opcx_rc, Integer.valueOf(1));
 				}
 			}
 
@@ -1118,7 +1118,7 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 				// Stack at the invoke: ... a b c
 				final MemberRef method = p.method();
 				final int depth = method.nameAndType().type().stackHeight();
-				postpone = new Instruction(Opcode.opcx_rc, new Integer(depth));
+				postpone = new Instruction(Opcode.opcx_rc, Integer.valueOf(depth));
 			}
 
 		} else if (parent instanceof FieldExpr) {
@@ -1128,7 +1128,7 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 				if (p.isDef()) {
 					// a.b := r
 					// Stack at the putfield: ... a r
-					postpone = new Instruction(Opcode.opcx_rc, new Integer(p
+					postpone = new Instruction(Opcode.opcx_rc, Integer.valueOf(p
 							.type().stackHeight()));
 				}
 			}
@@ -1145,7 +1145,7 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 				depth = stackHeight - stackVar.index() - 1;
 			}
 
-			method.addInstruction(Opcode.opcx_rc, new Integer(depth));
+			method.addInstruction(Opcode.opcx_rc, Integer.valueOf(depth));
 
 		} else {
 			postponedInstructions.put(parent, postpone);
@@ -1180,11 +1180,11 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 					// Stack at the putfield: ... a r
 					if (expr.kind() == UCExpr.POINTER) {
 						postpone = new Instruction(Opcode.opcx_aupdate,
-								new Integer(p.type().stackHeight()));
+								Integer.valueOf(p.type().stackHeight()));
 
 					} else if (expr.kind() == UCExpr.SCALAR) {
 						postpone = new Instruction(Opcode.opcx_supdate,
-								new Integer(p.type().stackHeight()));
+								Integer.valueOf(p.type().stackHeight()));
 
 					} else {
 						throw new RuntimeException();
@@ -1204,9 +1204,9 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 			}
 
 			if (expr.kind() == UCExpr.POINTER) {
-				method.addInstruction(Opcode.opcx_aupdate, new Integer(depth));
+				method.addInstruction(Opcode.opcx_aupdate, Integer.valueOf(depth));
 			} else if (expr.kind() == UCExpr.SCALAR) {
-				method.addInstruction(Opcode.opcx_supdate, new Integer(depth));
+				method.addInstruction(Opcode.opcx_supdate, Integer.valueOf(depth));
 			} else {
 				throw new RuntimeException();
 			}
@@ -1354,7 +1354,7 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 					}
 
 					if ((value != null) && (arith.operation() == ArithExpr.SUB)) {
-						value = new Integer(-value.intValue());
+						value = Integer.valueOf(-value.intValue());
 					} else if (arith.operation() != ArithExpr.ADD) {
 						value = null;
 					}
@@ -1384,20 +1384,20 @@ public class CodeGenerator extends TreeVisitor implements Opcode {
 								// to make correct code in the chance that we
 								// have something like this.
 								method.addInstruction(Opcode.opcx_ldc,
-										new Integer(0));
+										Integer.valueOf(0));
 								method.addInstruction(Opcode.opc_dup_x2);
 								method.addInstruction(Opcode.opc_pop);
 								stackHeight += 1;
 							}
 							for (int i = 0; i < dup_x1s; i++) {
 								method.addInstruction(Opcode.opcx_ldc,
-										new Integer(0));
+										Integer.valueOf(0));
 								method.addInstruction(Opcode.opc_swap);
 								stackHeight += 1;
 							}
 							for (int i = 0; i < dups; i++) {
 								method.addInstruction(Opcode.opcx_ldc,
-										new Integer(0));
+										Integer.valueOf(0));
 								stackHeight += 1;
 							}
 						}

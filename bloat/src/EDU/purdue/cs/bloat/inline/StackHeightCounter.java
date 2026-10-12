@@ -114,7 +114,7 @@ public class StackHeightCounter extends InstructionAdapter {
 				}
 
 			} else {
-				labelHeights.put(target, new Integer(height));
+				labelHeights.put(target, Integer.valueOf(height));
 			}
 
 		} else if (inst.isSwitch()) {
@@ -132,7 +132,7 @@ public class StackHeightCounter extends InstructionAdapter {
 							+ ") at " + inst);
 				}
 			} else {
-				labelHeights.put(defaultTarget, new Integer(height));
+				labelHeights.put(defaultTarget, Integer.valueOf(height));
 			}
 
 			final Label[] targets = sw.targets();
@@ -148,7 +148,7 @@ public class StackHeightCounter extends InstructionAdapter {
 								+ ") at " + inst);
 					}
 				} else {
-					labelHeights.put(target, new Integer(height));
+					labelHeights.put(target, Integer.valueOf(height));
 				}
 			}
 
@@ -168,7 +168,7 @@ public class StackHeightCounter extends InstructionAdapter {
 				}
 
 			} else {
-				labelHeights.put(subroutine, new Integer(height + 1));
+				labelHeights.put(subroutine, Integer.valueOf(height + 1));
 			}
 
 		} else if (inst.isThrow() || inst.isReturn()) {

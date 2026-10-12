@@ -17,7 +17,7 @@ import com.db4o.reflect.*;
  */
 public class LongHandler extends PrimitiveHandler {
 
-    private static final Long DEFAULTVALUE = new Long(0);
+    private static final Long DEFAULTVALUE = Long.valueOf(0);
 
     public Object coerce(ReflectClass claxx, Object obj) {
     	return Coercion4.toLong(obj);
@@ -41,7 +41,7 @@ public class LongHandler extends PrimitiveHandler {
 	}
 	
 	Object read1(ByteArrayBuffer a_bytes){
-		return new Long(a_bytes.readLong());
+		return Long.valueOf(a_bytes.readLong());
 	}
 	
 	public void write(Object obj, ByteArrayBuffer buffer){
@@ -85,7 +85,7 @@ public class LongHandler extends PrimitiveHandler {
 	}
 	
     public Object read(ReadContext context) {
-        return new Long(context.readLong());
+        return Long.valueOf(context.readLong());
     }
 
     public void write(WriteContext context, Object obj) {

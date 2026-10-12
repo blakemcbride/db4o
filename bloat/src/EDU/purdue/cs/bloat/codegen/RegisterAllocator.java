@@ -226,7 +226,7 @@ public class RegisterAllocator {
 
 					if (rhs.operation() == ArithExpr.SUB) {
 						if (value != null) {
-							value = new Integer(-value.intValue());
+							value = Integer.valueOf(-value.intValue());
 						}
 
 					} else if (rhs.operation() != ArithExpr.ADD) {

@@ -94,6 +94,7 @@ public class Config4Class extends Config4Abstract implements ObjectClass,
     /**
      * @deprecated
      */
+    @Deprecated
     public void compare(ObjectAttribute comparator) {
         _config.put(QUERY_ATTRIBUTE_PROVIDER_KEY,comparator);
     }

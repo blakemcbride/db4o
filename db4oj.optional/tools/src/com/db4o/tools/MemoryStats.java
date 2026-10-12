@@ -9,6 +9,8 @@ package com.db4o.tools;
  */
 public class MemoryStats {
 
+	// System.runFinalization() is deprecated for removal; still useful here until finalization is gone.
+	@SuppressWarnings("removal")
 	public static long usedMemory() {
         Runtime rt = Runtime.getRuntime();
         while (true) {

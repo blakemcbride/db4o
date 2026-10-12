@@ -23,6 +23,7 @@ import com.db4o.internal.config.*;
  * 
  * @sharpen.rename Db4oFactory
  */
+@Deprecated
 public class Db4o {
 	
 	static final Config4Impl i_config = new Config4Impl();
@@ -36,6 +37,7 @@ public class Db4o {
 	 * 
 	 * @deprecated Use {@link Db4oVersion#NAME} instead.
      */
+	@Deprecated
 	public static void main(String args[]){
 		System.out.println(version());
 	}
@@ -52,6 +54,7 @@ public class Db4o {
 	 * 
 	 * @deprecated use explicit configuration via {@link Db4oEmbedded#newConfiguration()} instead
      */
+	@Deprecated
 	public static Configuration configure(){
 		return i_config;
 	}
@@ -63,6 +66,7 @@ public class Db4o {
 	 *
 	 * @deprecated Use {@link Db4oEmbedded#newConfiguration()} instead.
 	 */
+	@Deprecated
 	public static Configuration newConfiguration() {
 		Config4Impl config = new Config4Impl();
 		Platform4.getDefaultConfiguration(config);
@@ -77,6 +81,7 @@ public class Db4o {
 	 * 
 	 * @deprecated use explicit configuration via {@link Db4oEmbedded#newConfiguration()} instead
 	 */
+	@Deprecated
 	public static Configuration cloneConfiguration() {
 		return (Config4Impl) ((DeepClone) Db4o.configure()).deepClone(null);
 	}
@@ -111,6 +116,7 @@ public class Db4o {
      * @deprecated See the {@link com.db4o.cs.Db4oClientServer} class in db4o client server library
      * for methods to open db4o servers and db4o clients. 
 	 */
+	@Deprecated
 	public static ObjectContainer openClient(String hostName, int port,
 			String user, String password) throws Db4oIOException,
 			OldFormatException, InvalidPasswordException {
@@ -146,6 +152,7 @@ public class Db4o {
      * @deprecated See the {@link com.db4o.cs.Db4oClientServer} class in db4o client server library
      * for methods to open db4o servers and db4o clients. 
 	 */
+	@Deprecated
 	public static ObjectContainer openClient(Configuration config,
 			String hostName, int port, String user, String password)
 			throws Db4oIOException, OldFormatException,
@@ -183,6 +190,7 @@ public class Db4o {
      * @throws DatabaseReadOnlyException database was configured as read-only.
      * @deprecated Use {@link Db4oEmbedded#openFile(EmbeddedConfiguration, String)} instead
 	 */
+	@Deprecated
 	public static final ObjectContainer openFile(String databaseFileName)
 			throws Db4oIOException, DatabaseFileLockedException,
 			IncompatibleFileFormatException, OldFormatException, DatabaseReadOnlyException {
@@ -217,6 +225,7 @@ public class Db4o {
 	 * @throws DatabaseReadOnlyException database was configured as read-only.
      * @deprecated Use {@link Db4oEmbedded#openFile(EmbeddedConfiguration, String)} instead
 	 */
+	@Deprecated
 	public static final ObjectContainer openFile(Configuration config,
 			String databaseFileName) throws Db4oIOException,
 			DatabaseFileLockedException, IncompatibleFileFormatException,
@@ -258,6 +267,7 @@ public class Db4o {
      * @deprecated See the {@link com.db4o.cs.Db4oClientServer} class in db4o client server library
      * for methods to open db4o servers and db4o clients. 
 	 */
+	@Deprecated
 	public static final ObjectServer openServer(String databaseFileName,
 			int port) throws Db4oIOException, IncompatibleFileFormatException,
 			OldFormatException, DatabaseFileLockedException,
@@ -295,6 +305,7 @@ public class Db4o {
      * @deprecated See the Db4oClientServer class in db4o client server library 
      * for methods to open db4o servers and db4o clients. 
 	 */
+	@Deprecated
 	public static final ObjectServer openServer(Configuration config,
 			String databaseFileName, int port) throws Db4oIOException,
 			IncompatibleFileFormatException, OldFormatException,
@@ -309,6 +320,7 @@ public class Db4o {
      * 
      * @deprecated Since 8.1. Use {@link Db4oVersion#NAME} instead.
      */
+    @Deprecated
     public static final String version () {
     	 return "db4o " + Db4oVersion.NAME;
     }

@@ -40,7 +40,7 @@ public class FieldIndexProcessorResult implements IntVisitable{
 		return new MappingIterator(_indexedNode.iterator()) {
 			protected Object map(Object current) {
 			    FieldIndexKey composite = (FieldIndexKey)current;
-				return new Integer(composite.parentID());
+				return Integer.valueOf(composite.parentID());
 			}
 		};
 	}

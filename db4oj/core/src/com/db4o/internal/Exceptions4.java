@@ -29,6 +29,7 @@ public class Exceptions4 {
     /**
      * @deprecated
      */
+    @Deprecated
     public static final void throwRuntimeException (int code, String msg, Throwable cause,boolean doLog) {
     	if(doLog) {
     		Messages.logErr(Db4o.configure(), code,msg, cause);

@@ -73,7 +73,7 @@ public class FieldIndexKeyHandler implements Indexable4, CanExcludeNullInQueries
 		        }catch (IllegalComparisonException ex){
 		            // can happen, is expected
 		        }
-		        return preparedParentIdComparison.compareTo(new Integer(target.parentID()));
+		        return preparedParentIdComparison.compareTo(Integer.valueOf(target.parentID()));
 			}
 		};
 	}

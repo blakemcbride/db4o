@@ -143,6 +143,7 @@ public final class Messages {
     /**
      * @deprecated uses deprecated api
      */
+	@Deprecated
 	private static Configuration safeConfig(Configuration config) {
 		if (config != null) {
 			return config;

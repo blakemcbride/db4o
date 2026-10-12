@@ -27,7 +27,7 @@ public class PrimitiveMarshaller0 extends PrimitiveMarshaller {
 		if (value == Integer.MAX_VALUE) {
 			return null;
 		}
-		return new Integer(value);
+		return Integer.valueOf(value);
 	}
 
 	public Object readFloat(ByteArrayBuffer bytes) {
@@ -51,7 +51,7 @@ public class PrimitiveMarshaller0 extends PrimitiveMarshaller {
 		if (value == Long.MAX_VALUE) {
 			return null;
 		}
-		return new Long(value);
+		return Long.valueOf(value);
 	}
 	
 	public Object readShort(ByteArrayBuffer buffer) {
@@ -59,15 +59,15 @@ public class PrimitiveMarshaller0 extends PrimitiveMarshaller {
 		if (value == Short.MAX_VALUE) {
 			return null;
 		}
-		return new Short(value);
+		return Short.valueOf(value);
 	}
 	
 	public static Double unmarshalDouble(ByteArrayBuffer buffer) {
-		return new Double(Platform4.longToDouble(buffer.readLong()));
+		return Double.valueOf(Platform4.longToDouble(buffer.readLong()));
 	}
 
 	public static Float unmarshallFloat(ByteArrayBuffer buffer) {
-		return new Float(Float.intBitsToFloat(buffer.readInt()));
+		return Float.valueOf(Float.intBitsToFloat(buffer.readInt()));
 	}	
 	
 	public static short unmarshallShort(ByteArrayBuffer buffer){

@@ -227,7 +227,7 @@ public class Liveness {
 						final List n = nodes[predIndex];
 						final Map indices = nodeIndices[predIndex];
 
-						indices.put(stmt, new Integer(n.size()));
+						indices.put(stmt, Integer.valueOf(n.size()));
 						final NodeInfo info = new NodeInfo(stmt);
 						n.add(info);
 
@@ -290,7 +290,7 @@ public class Liveness {
 									+ n.size());
 						}
 
-						indices.put(parent, new Integer(n.size()));
+						indices.put(parent, Integer.valueOf(n.size()));
 						info = new NodeInfo(parent);
 						n.add(info);
 
@@ -330,7 +330,7 @@ public class Liveness {
 									+ n.size());
 						}
 
-						indices.put(stmt, new Integer(n.size()));
+						indices.put(stmt, Integer.valueOf(n.size()));
 						info = new NodeInfo(stmt);
 						n.add(info);
 

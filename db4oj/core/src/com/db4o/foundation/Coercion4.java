@@ -13,7 +13,7 @@ public class Coercion4 {
         if(obj instanceof Number){
         	Number number=(Number)obj;
         	if(number.byteValue()==number.doubleValue()) {
-                return new Byte((number).byteValue());
+                return Byte.valueOf((number).byteValue());
         	}
         }
         return No4.INSTANCE;
@@ -26,7 +26,7 @@ public class Coercion4 {
         if(obj instanceof Number){
         	Number number=(Number)obj;
         	if(number.shortValue()==number.doubleValue()) {
-                return new Short((number).shortValue());
+                return Short.valueOf((number).shortValue());
         	}
         }
         return No4.INSTANCE;
@@ -39,7 +39,7 @@ public class Coercion4 {
         if(obj instanceof Number){
         	Number number=(Number)obj;
         	if(number.intValue()==number.doubleValue()) {
-                return new Integer((number).intValue());
+                return Integer.valueOf((number).intValue());
         	}
         }
         return No4.INSTANCE;
@@ -52,7 +52,7 @@ public class Coercion4 {
         if(obj instanceof Number){
         	Number number=(Number)obj;
         	if(number.longValue()==number.doubleValue()) {
-                return new Long((number).longValue());
+                return Long.valueOf((number).longValue());
         	}
         }
         return No4.INSTANCE;
@@ -65,7 +65,7 @@ public class Coercion4 {
         if(obj instanceof Number){
         	Number number=(Number)obj;
         	if(number.floatValue()==number.doubleValue()) {
-                return new Float((number).floatValue());
+                return Float.valueOf((number).floatValue());
         	}
         }
         return No4.INSTANCE;
@@ -77,7 +77,7 @@ public class Coercion4 {
         }
         if(obj instanceof Number){
         	Number number=(Number)obj;
-            return new Double((number).doubleValue());
+            return Double.valueOf((number).doubleValue());
         }
         return No4.INSTANCE;
 	}

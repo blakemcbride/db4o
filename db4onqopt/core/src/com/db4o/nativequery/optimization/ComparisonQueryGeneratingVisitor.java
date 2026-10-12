@@ -42,67 +42,67 @@ final class ComparisonQueryGeneratingVisitor implements ComparisonOperandVisitor
 
 	Object add(Object a,Object b) {
 		if(a instanceof Double||b instanceof Double) {
-			return new Double(((Double)a).doubleValue()+ ((Double)b).doubleValue());
+			return Double.valueOf(((Double)a).doubleValue()+ ((Double)b).doubleValue());
 		}
 		if(a instanceof Float||b instanceof Float) {
-			return new Float(((Float)a).floatValue()+ ((Float)b).floatValue());
+			return Float.valueOf(((Float)a).floatValue()+ ((Float)b).floatValue());
 		}
 		if(a instanceof Long||b instanceof Long) {
-			return new Long(((Long)a).longValue()+ ((Long)b).longValue());
+			return Long.valueOf(((Long)a).longValue()+ ((Long)b).longValue());
 		}
-		return new Integer(((Integer)a).intValue()+ ((Integer)b).intValue());
+		return Integer.valueOf(((Integer)a).intValue()+ ((Integer)b).intValue());
 	}
 
 	Object subtract(Object a,Object b) {
 		if(a instanceof Double||b instanceof Double) {
-	        return new Double(((Double)a).doubleValue()- ((Double)b).doubleValue());
+	        return Double.valueOf(((Double)a).doubleValue()- ((Double)b).doubleValue());
 		}
 		if(a instanceof Float||b instanceof Float) {
-	        return new Float(((Float)a).floatValue() - ((Float)b).floatValue());
+	        return Float.valueOf(((Float)a).floatValue() - ((Float)b).floatValue());
 		}
 		if(a instanceof Long||b instanceof Long) {
-	        return new Long(((Long)a).longValue() - ((Long)b).longValue());
+	        return Long.valueOf(((Long)a).longValue() - ((Long)b).longValue());
 		}
-	    return new Integer(((Integer)a).intValue() - ((Integer)b).intValue());
+	    return Integer.valueOf(((Integer)a).intValue() - ((Integer)b).intValue());
 	}
 
 	Object multiply(Object a,Object b) {
 	    if(a instanceof Double||b instanceof Double) {
-	        return new Double(((Double)a).doubleValue() * ((Double)b).doubleValue());
+	        return Double.valueOf(((Double)a).doubleValue() * ((Double)b).doubleValue());
 	    }
 	    if(a instanceof Float||b instanceof Float) {
-	        return new Float(((Float)a).floatValue() * ((Float)b).floatValue());
+	        return Float.valueOf(((Float)a).floatValue() * ((Float)b).floatValue());
 	    }
 	    if(a instanceof Long||b instanceof Long) {
-	        return new Long(((Long)a).longValue() * ((Long)b).longValue());
+	        return Long.valueOf(((Long)a).longValue() * ((Long)b).longValue());
 	    }
-	    return new Integer(((Integer)a).intValue() * ((Integer)b).intValue());
+	    return Integer.valueOf(((Integer)a).intValue() * ((Integer)b).intValue());
 	}
 
 	Object divide(Object a,Object b) {
 	    if(a instanceof Double||b instanceof Double) {
-	        return new Double(((Double)a).doubleValue()/ ((Double)b).doubleValue());
+	        return Double.valueOf(((Double)a).doubleValue()/ ((Double)b).doubleValue());
 	    }
 	    if(a instanceof Float||b instanceof Float) {
-	        return new Float(((Float)a).floatValue() / ((Float)b).floatValue());
+	        return Float.valueOf(((Float)a).floatValue() / ((Float)b).floatValue());
 	    }
 	    if(a instanceof Long||b instanceof Long) {
-	        return new Long(((Long)a).longValue() / ((Long)b).longValue());
+	        return Long.valueOf(((Long)a).longValue() / ((Long)b).longValue());
 	    }
-	    return new Integer(((Integer)a).intValue() / ((Integer)b).intValue());
+	    return Integer.valueOf(((Integer)a).intValue() / ((Integer)b).intValue());
 	}
 
 	Object modulo(Object a,Object b) {
 	    if(a instanceof Double||b instanceof Double) {
-	        return new Double(((Double)a).doubleValue() % ((Double)b).doubleValue());
+	        return Double.valueOf(((Double)a).doubleValue() % ((Double)b).doubleValue());
 	    }
 	    if(a instanceof Float||b instanceof Float) {
-	        return new Float(((Float)a).floatValue() % ((Float)b).floatValue());
+	        return Float.valueOf(((Float)a).floatValue() % ((Float)b).floatValue());
 	    }
 	    if(a instanceof Long||b instanceof Long) {
-	        return new Long(((Long)a).longValue() % ((Long)b).longValue());
+	        return Long.valueOf(((Long)a).longValue() % ((Long)b).longValue());
 	    }
-	    return new Integer(((Integer)a).intValue() % ((Integer)b).intValue());
+	    return Integer.valueOf(((Integer)a).intValue() % ((Integer)b).intValue());
 	}
 
 	public void visit(ArithmeticExpression operand) {

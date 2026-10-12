@@ -12,7 +12,7 @@ public final class ByteHandler extends PrimitiveHandler {
 
     static final int LENGTH = 1 + Const4.ADDED_LENGTH;
 	
-	private static final Byte DEFAULTVALUE = new Byte((byte)0);
+	private static final Byte DEFAULTVALUE = Byte.valueOf((byte)0);
 	
     public Object coerce(ReflectClass claxx, Object obj) {
     	return Coercion4.toByte(obj);
@@ -38,7 +38,7 @@ public final class ByteHandler extends PrimitiveHandler {
 		if (Deploy.debug){
 			a_bytes.readEnd();
 		}
-		return new Byte(ret);
+		return Byte.valueOf(ret);
 	}
 	
 	public void write(Object a_object, ByteArrayBuffer a_bytes){
@@ -62,7 +62,7 @@ public final class ByteHandler extends PrimitiveHandler {
             Debug4.readEnd(context);
         }
         
-        return new Byte(byteValue);
+        return Byte.valueOf(byteValue);
     }
 
     public void write(WriteContext context, Object obj) {

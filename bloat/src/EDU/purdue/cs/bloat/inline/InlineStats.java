@@ -62,13 +62,13 @@ public class InlineStats {
 	 * give an idea as to how "dynamic" a program is.
 	 */
 	public void noteMorphicity(final int morphicity) {
-		final Integer r = new Integer(morphicity);
+		final Integer r = Integer.valueOf(morphicity);
 		final Integer count = (Integer) this.morphicity.get(r);
 		if (count == null) {
-			this.morphicity.put(r, new Integer(1));
+			this.morphicity.put(r, Integer.valueOf(1));
 
 		} else {
-			this.morphicity.put(r, new Integer(count.intValue() + 1));
+			this.morphicity.put(r, Integer.valueOf(count.intValue() + 1));
 		}
 	}
 

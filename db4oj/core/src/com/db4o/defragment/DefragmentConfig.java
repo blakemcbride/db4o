@@ -169,6 +169,7 @@ public class DefragmentConfig {
 	 * during the defragment process.
 	 * @deprecated since 7.9: use {@link DefragmentConfig#db4oConfig(EmbeddedConfiguration)} instead
 	 */
+	@Deprecated
 	public void db4oConfig(Configuration config) {
 		_config=config;
 	}

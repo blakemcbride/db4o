@@ -117,6 +117,7 @@ public interface ObjectClass {
 	 * @param attributeProvider the attribute provider to be used
 	 * @deprecated since version 7.0
 	 */
+	@Deprecated
 	public void compare(ObjectAttribute attributeProvider);
 	
 	
@@ -128,6 +129,7 @@ public interface ObjectClass {
      * @param setting 
      * @deprecated As of version 8.0 please use {@link #generateUUIDs(boolean)} and {@link FileConfiguration#generateCommitTimestamps(boolean)} instead
      */
+    @Deprecated
     public void enableReplication(boolean setting);
 
 	
@@ -145,6 +147,7 @@ public interface ObjectClass {
      * @param setting
      * @deprecated As of version 8.0 please use {@link FileConfiguration#generateCommitTimestamps(boolean)} instead
      */
+    @Deprecated
     public void generateVersionNumbers(boolean setting);
 
     /**

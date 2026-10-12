@@ -375,7 +375,7 @@ public class DefragmentServicesImpl implements DefragmentServices {
 	}
 	
 	public void registerUnindexed(int id) {
-		_unindexed.add(new Integer(id));
+		_unindexed.add(Integer.valueOf(id));
 	}
 
 	public IdSource unindexedIDs() {

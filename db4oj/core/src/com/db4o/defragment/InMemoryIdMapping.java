@@ -42,7 +42,7 @@ public class InMemoryIdMapping extends AbstractIdMapping {
 	}
 
 	protected void mapNonClassIDs(int origID, int mappedID) {
-		_tree = Tree.add(_tree, new TreeIntObject(origID, new Integer(mappedID)));
+		_tree = Tree.add(_tree, new TreeIntObject(origID, Integer.valueOf(mappedID)));
 	}
 	
 	public int addressForId(int id){

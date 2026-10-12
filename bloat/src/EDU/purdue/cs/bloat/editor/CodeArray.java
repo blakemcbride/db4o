@@ -159,7 +159,7 @@ public class CodeArray implements InstructionVisitor, Opcode {
 				// A Label starts a new basic block. Reset the stack height.
 
 				stackHeight = 0;
-				labelPos.put(label, new Integer(i));
+				labelPos.put(label, Integer.valueOf(i));
 
 				addLabel(label);
 				heights[i++] = stackHeight;
@@ -203,7 +203,7 @@ public class CodeArray implements InstructionVisitor, Opcode {
 					targets.add(target);
 
 					stackHeight = 0;
-					labelPos.put(target, new Integer(i));
+					labelPos.put(target, Integer.valueOf(i));
 
 					addLabel(target);
 					heights[i++] = stackHeight;
@@ -623,7 +623,7 @@ public class CodeArray implements InstructionVisitor, Opcode {
 			System.out.println("    " + codeLength + ": " + "label " + label);
 		}
 
-		labels.put(label, new Integer(codeLength));
+		labels.put(label, Integer.valueOf(codeLength));
 	}
 
 	/**
@@ -636,8 +636,8 @@ public class CodeArray implements InstructionVisitor, Opcode {
 					+ label);
 		}
 
-		branchInsts.put(new Integer(codeLength), new Integer(lastInst));
-		longBranches.put(new Integer(codeLength), label);
+		branchInsts.put(Integer.valueOf(codeLength), Integer.valueOf(lastInst));
+		longBranches.put(Integer.valueOf(codeLength), label);
 		addByte(0);
 		addByte(0);
 		addByte(0);
@@ -654,8 +654,8 @@ public class CodeArray implements InstructionVisitor, Opcode {
 					+ label);
 		}
 
-		branchInsts.put(new Integer(codeLength), new Integer(lastInst));
-		branches.put(new Integer(codeLength), label);
+		branchInsts.put(Integer.valueOf(codeLength), Integer.valueOf(lastInst));
+		branches.put(Integer.valueOf(codeLength), label);
 		addByte(0);
 		addByte(0);
 	}

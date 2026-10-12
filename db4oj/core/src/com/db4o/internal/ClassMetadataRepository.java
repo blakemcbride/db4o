@@ -365,7 +365,7 @@ public final class ClassMetadataRepository extends PersistentBase {
 		}
     	
     	protected Object map(Object current) {
-    		return new Integer(((ClassMetadata)current).getID());
+    		return Integer.valueOf(((ClassMetadata)current).getID());
     	}
     }
     

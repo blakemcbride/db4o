@@ -16,6 +16,7 @@ import com.db4o.internal.handlers.*;
  * @deprecated Since 8.0
  * @sharpen.ignore
  */
+@Deprecated
 public class DotnetSupport implements ConfigurationItem {
 
 	private final boolean _addCSSupport;
@@ -24,6 +25,7 @@ public class DotnetSupport implements ConfigurationItem {
 	 * @deprecated Use the constructor with the boolean parameter to specify if 
 	 * client/server support is desired.
 	 */
+	@Deprecated
 	public DotnetSupport() {
 		_addCSSupport = false;	
 	}
@@ -34,6 +36,7 @@ public class DotnetSupport implements ConfigurationItem {
 	 *                     
 	 * @deprecated Since 8.0
 	 */
+	@Deprecated
 	public DotnetSupport(boolean addCSSupport) {
 		_addCSSupport = addCSSupport;
 	}

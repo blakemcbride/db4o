@@ -327,7 +327,7 @@ public class CounterDecorate implements Opcode {
 					iter.remove();
 					iter.add(new Instruction(Opcode.opcx_getstatic, aufield));
 					iter.next();
-					iter.add(new Instruction(Opcode.opcx_ldc, new Integer(1)));
+					iter.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(1)));
 					iter.next();
 					iter.add(new Instruction(Opcode.opcx_iadd));
 					iter.next();
@@ -338,7 +338,7 @@ public class CounterDecorate implements Opcode {
 					iter.remove();
 					iter.add(new Instruction(Opcode.opcx_getstatic, sufield));
 					iter.next();
-					iter.add(new Instruction(Opcode.opcx_ldc, new Integer(1)));
+					iter.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(1)));
 					iter.next();
 					iter.add(new Instruction(Opcode.opcx_iadd));
 					iter.next();
@@ -348,7 +348,7 @@ public class CounterDecorate implements Opcode {
 					iter.remove();
 					iter.add(new Instruction(Opcode.opcx_getstatic, rcfield));
 					iter.next();
-					iter.add(new Instruction(Opcode.opcx_ldc, new Integer(1)));
+					iter.add(new Instruction(Opcode.opcx_ldc, Integer.valueOf(1)));
 					iter.next();
 					iter.add(new Instruction(Opcode.opcx_iadd));
 					iter.next();

@@ -26,7 +26,7 @@ public class ExpressionBuilder {
 				if(rightConst.value() instanceof Boolean) {
 					Boolean boolVal=(Boolean)rightConst.value();
 					// new Boolean() instead of Boolean.valueOf() for .NET conversion
-					return new ComparisonExpression(cmpExpr.left(),new ConstValue(new Boolean(!boolVal.booleanValue())),cmpExpr.op());
+					return new ComparisonExpression(cmpExpr.left(),new ConstValue(Boolean.valueOf(!boolVal.booleanValue())),cmpExpr.op());
 				}
 			}
 		}

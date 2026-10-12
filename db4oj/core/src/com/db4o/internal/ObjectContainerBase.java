@@ -797,6 +797,8 @@ public abstract class ObjectContainerBase  implements TransientClass, Internal4,
     /**
      * @sharpen.ignore
      */
+    // Finalization is deprecated for removal; it is kept as a last-resort shutdown for unclosed containers.
+    @SuppressWarnings("removal")
     protected void finalize() {
 		if (doFinalize() && configuredForAutomaticShutDown()) {
 			shutdownHook();
@@ -1318,6 +1320,8 @@ public abstract class ObjectContainerBase  implements TransientClass, Internal4,
             .add(_justPeeked, new TreeIntObject(id, obj));
     }
 
+	// System.runFinalization() is deprecated for removal; still useful here until finalization is gone.
+	@SuppressWarnings("removal")
 	public void purge() {
 	    synchronized (_lock) {
 	        checkClosed();

@@ -1272,7 +1272,7 @@ public class MethodEditor implements Opcode {
 
 		final LocalVariable local = new LocalVariable(index);
 
-		locals.put(new Integer(index), local);
+		locals.put(Integer.valueOf(index), local);
 
 		return (local);
 	}
@@ -1296,7 +1296,7 @@ public class MethodEditor implements Opcode {
 
 		final LocalVariable local = new LocalVariable(index);
 
-		locals.put(new Integer(index), local);
+		locals.put(Integer.valueOf(index), local);
 
 		return (local);
 	}
@@ -1307,11 +1307,11 @@ public class MethodEditor implements Opcode {
 	 * assume that this variable is not wide.
 	 */
 	public LocalVariable localAt(int index) {
-		LocalVariable local = (LocalVariable) locals.get(new Integer(index));
+		LocalVariable local = (LocalVariable) locals.get(Integer.valueOf(index));
 
 		if (local == null) {
 			local = new LocalVariable(index);
-			locals.put(new Integer(index), local);
+			locals.put(Integer.valueOf(index), local);
 			if (index >= maxLocals) {
 				maxLocals = index++; // Dangerous?
 			}

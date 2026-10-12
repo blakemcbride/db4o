@@ -130,7 +130,7 @@ public class KnownClassesRepository {
 		ret = lookupByName(className);
 		if(ret != null){
 			_classByID.put(id, ret);
-			_pendingClasses.add(new Integer(id));
+			_pendingClasses.add(Integer.valueOf(id));
 			return ret;
 		}
 		
@@ -139,7 +139,7 @@ public class KnownClassesRepository {
 		
 		// step 1 only add to _classByID, keep the class out of _classByName and _classes
         _classByID.put(id, ret);
-		_pendingClasses.add(new Integer(id));
+		_pendingClasses.add(Integer.valueOf(id));
 		
 		return ret;
 	}

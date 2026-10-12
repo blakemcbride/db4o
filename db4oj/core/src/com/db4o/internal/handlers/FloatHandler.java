@@ -13,7 +13,7 @@ import com.db4o.reflect.*;
 
 public class FloatHandler extends IntHandler {
     
-    private static final Float DEFAULTVALUE = new Float(0);
+    private static final Float DEFAULTVALUE = Float.valueOf(0);
     
     public Object coerce(ReflectClass claxx, Object obj) {
     	return Coercion4.toFloat(obj);
@@ -42,7 +42,7 @@ public class FloatHandler extends IntHandler {
 	}
 
     public Object read(ReadContext context) {
-        return new Float(Float.intBitsToFloat(context.readInt()));
+        return Float.valueOf(Float.intBitsToFloat(context.readInt()));
     }
 
     public void write(WriteContext context, Object obj) {

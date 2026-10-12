@@ -20,6 +20,7 @@ import com.db4o.instrumentation.core.*;
  * @exclude
  * @deprecated replaced by {@link InstrumentFieldAccessEdit} strategy
  */
+@Deprecated
 class InstrumentMethodStartEdit implements BloatClassEdit {
 
 	public InstrumentationStatus enhance(ClassEditor ce, ClassLoader origLoader, BloatLoaderContext loaderContext) {

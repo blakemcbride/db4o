@@ -104,12 +104,12 @@ public class SODAMethodBuilder {
 				return;
 			}
 			if (op.equals(ComparisonOperator.STARTS_WITH)) {
-				ldc(new Integer(1));
+				ldc(Integer.valueOf(1));
 				invoke(startsWithRef);
 				return;
 			}
 			if (op.equals(ComparisonOperator.ENDS_WITH)) {
-				ldc(new Integer(1));
+				ldc(Integer.valueOf(1));
 				invoke(endsWithRef);
 				return;
 			}

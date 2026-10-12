@@ -505,7 +505,7 @@ public class StandardReferenceTypeHandler implements FieldAwareTypeHandler, Inde
 	}	
 
     public final Object readIndexEntry(Context context, ByteArrayBuffer a_reader) {
-        return new Integer(a_reader.readInt());
+        return Integer.valueOf(a_reader.readInt());
     }
     
     public final Object readIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer statefulBuffer) throws CorruptionException{
@@ -513,7 +513,7 @@ public class StandardReferenceTypeHandler implements FieldAwareTypeHandler, Inde
     }
     
     public Object readIndexEntry(ObjectIdContext context) throws CorruptionException, Db4oIOException{
-        return new Integer(context.readInt());
+        return Integer.valueOf(context.readInt());
     }
     
     public int linkLength() {

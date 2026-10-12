@@ -69,7 +69,7 @@ public class CachingBloatContext extends PersistentBloatContext {
 		final ClassEditor ce = super.newClass(modifiers, className, superType,
 				interfaces);
 		final ClassInfo info = ce.classInfo();
-		classRC.put(info, new Integer(1));
+		classRC.put(info, Integer.valueOf(1));
 
 		return ce;
 	}
@@ -81,7 +81,7 @@ public class CachingBloatContext extends PersistentBloatContext {
 		if (ce == null) {
 			ce = new ClassEditor(this, info);
 			classEditors.put(info, ce);
-			classRC.put(info, new Integer(1));
+			classRC.put(info, Integer.valueOf(1));
 
 			if (!classInfos.containsValue(info)) {
 				final String className = ce.name().intern();
@@ -92,7 +92,7 @@ public class CachingBloatContext extends PersistentBloatContext {
 
 		} else {
 			final Integer rc = (Integer) classRC.get(info);
-			classRC.put(info, new Integer(rc.intValue() + 1));
+			classRC.put(info, Integer.valueOf(rc.intValue() + 1));
 		}
 
 		return (ce);
@@ -157,13 +157,13 @@ public class CachingBloatContext extends PersistentBloatContext {
 			release(classInfo);
 
 			methodEditors.put(info, me);
-			methodRC.put(info, new Integer(1));
+			methodRC.put(info, Integer.valueOf(1));
 			BloatContext
 					.db("Creating a new MethodEditor for " + me.memberRef());
 
 		} else {
 			final Integer rc = (Integer) methodRC.get(info);
-			methodRC.put(info, new Integer(rc.intValue() + 1));
+			methodRC.put(info, Integer.valueOf(rc.intValue() + 1));
 		}
 
 		return (me);
@@ -219,13 +219,13 @@ public class CachingBloatContext extends PersistentBloatContext {
 			release(classInfo);
 
 			fieldEditors.put(info, fe);
-			fieldRC.put(info, new Integer(0));
+			fieldRC.put(info, Integer.valueOf(0));
 			BloatContext.db("Creating a new FieldEditor for "
 					+ fe.nameAndType());
 
 		} else {
 			final Integer rc = (Integer) fieldRC.get(info);
-			fieldRC.put(info, new Integer(rc.intValue() + 1));
+			fieldRC.put(info, Integer.valueOf(rc.intValue() + 1));
 
 		}
 
@@ -237,7 +237,7 @@ public class CachingBloatContext extends PersistentBloatContext {
 
 		if ((rc != null) && (rc.intValue() > 1)) {
 			// Not done yet;
-			classRC.put(info, new Integer(rc.intValue() - 1));
+			classRC.put(info, Integer.valueOf(rc.intValue() - 1));
 			return;
 
 		}
@@ -282,7 +282,7 @@ public class CachingBloatContext extends PersistentBloatContext {
 		final Integer rc = (Integer) classRC.get(info);
 
 		if ((rc != null) && (rc.intValue() > 1)) {
-			methodRC.put(info, new Integer(rc.intValue() - 1));
+			methodRC.put(info, Integer.valueOf(rc.intValue() - 1));
 			return;
 		}
 
@@ -318,7 +318,7 @@ public class CachingBloatContext extends PersistentBloatContext {
 		BloatContext.db("Releasing " + info);
 
 		if ((rc != null) && (rc.intValue() > 1)) {
-			fieldRC.put(info, new Integer(rc.intValue() - 1));
+			fieldRC.put(info, Integer.valueOf(rc.intValue() - 1));
 			return;
 		}
 

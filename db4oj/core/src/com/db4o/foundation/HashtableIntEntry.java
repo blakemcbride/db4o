@@ -24,7 +24,7 @@ public class HashtableIntEntry implements Entry4, DeepClone  {
 	}
 
 	public Object key() {
-		return new Integer(_key);
+		return Integer.valueOf(_key);
 	}
 	
 	public Object value(){

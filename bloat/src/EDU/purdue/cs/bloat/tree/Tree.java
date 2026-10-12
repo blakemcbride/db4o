@@ -2184,7 +2184,7 @@ public class Tree extends Node implements InstructionVisitor, Opcode {
 		int incr = operand.incr();
 
 		if (incr < 0) {
-			final Expr right = new ConstantExpr(new Integer(-incr),
+			final Expr right = new ConstantExpr(Integer.valueOf(-incr),
 					Type.INTEGER);
 			final Expr left = new LocalExpr(operand.var().index(), Type.INTEGER);
 
@@ -2195,7 +2195,7 @@ public class Tree extends Node implements InstructionVisitor, Opcode {
 			copy.setDef(null);
 			addStmt(new ExprStmt(new StoreExpr(copy, top, left.type())));
 		} else if (incr > 0) {
-			final Expr right = new ConstantExpr(new Integer(incr), Type.INTEGER);
+			final Expr right = new ConstantExpr(Integer.valueOf(incr), Type.INTEGER);
 			final Expr left = new LocalExpr(operand.var().index(), Type.INTEGER);
 
 			final Expr top = new ArithExpr(ArithExpr.ADD, left, right,
@@ -2970,7 +2970,7 @@ public class Tree extends Node implements InstructionVisitor, Opcode {
 				final Expr object = stack.peek();
 
 				if (object.type().isWide()) {
-					depth = new Integer(2);
+					depth = Integer.valueOf(2);
 					inst.setOperand(depth);
 					Tree.AUPDATE_FIX_HACK_CHANGED = true;
 				}

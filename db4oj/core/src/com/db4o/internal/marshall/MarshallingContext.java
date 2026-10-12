@@ -252,7 +252,7 @@ public class MarshallingContext implements MarshallingInfo, WriteContext {
         int id = container().storeInternal(transaction(), obj, _updateDepth, true);
         writeInt(id);
         _currentMarshalledObject = obj;
-        _currentIndexEntry = new Integer(id);
+        _currentIndexEntry = Integer.valueOf(id);
     }
     
     public void writeObject(TypeHandler4 handler, Object obj){

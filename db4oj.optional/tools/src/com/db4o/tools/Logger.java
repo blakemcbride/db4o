@@ -178,7 +178,7 @@ public class Logger {
 			
 			if(classes[i] == java.util.Date.class){
 				String fieldName = className + ".getTime";
-				Object obj = new Long(((java.util.Date)a_object).getTime());
+				Object obj = Long.valueOf(((java.util.Date)a_object).getTime());
 				log(a_container, obj, fieldName, a_depth + 1, -1, a_list);
 				
 			}else{

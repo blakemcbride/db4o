@@ -105,52 +105,52 @@ public class Instruction implements Opcode {
 			operand = null;
 			break;
 		case opc_iconst_m1:
-			operand = new Integer(-1);
+			operand = Integer.valueOf(-1);
 			break;
 		case opc_iconst_0:
-			operand = new Integer(0);
+			operand = Integer.valueOf(0);
 			break;
 		case opc_iconst_1:
-			operand = new Integer(1);
+			operand = Integer.valueOf(1);
 			break;
 		case opc_iconst_2:
-			operand = new Integer(2);
+			operand = Integer.valueOf(2);
 			break;
 		case opc_iconst_3:
-			operand = new Integer(3);
+			operand = Integer.valueOf(3);
 			break;
 		case opc_iconst_4:
-			operand = new Integer(4);
+			operand = Integer.valueOf(4);
 			break;
 		case opc_iconst_5:
-			operand = new Integer(5);
+			operand = Integer.valueOf(5);
 			break;
 		case opc_lconst_0:
-			operand = new Long(0);
+			operand = Long.valueOf(0);
 			break;
 		case opc_lconst_1:
-			operand = new Long(1);
+			operand = Long.valueOf(1);
 			break;
 		case opc_fconst_0:
-			operand = new Float(0.0F);
+			operand = Float.valueOf(0.0F);
 			break;
 		case opc_fconst_1:
-			operand = new Float(1.0F);
+			operand = Float.valueOf(1.0F);
 			break;
 		case opc_fconst_2:
-			operand = new Float(2.0F);
+			operand = Float.valueOf(2.0F);
 			break;
 		case opc_dconst_0:
-			operand = new Double(0.0);
+			operand = Double.valueOf(0.0);
 			break;
 		case opc_dconst_1:
-			operand = new Double(1.0);
+			operand = Double.valueOf(1.0);
 			break;
 		case opc_bipush:
-			operand = new Integer(code[index + 1]);
+			operand = Integer.valueOf(code[index + 1]);
 			break;
 		case opc_sipush:
-			operand = new Integer(Instruction.toShort(code[index + 1],
+			operand = Integer.valueOf(Instruction.toShort(code[index + 1],
 					code[index + 2]));
 			break;
 		case opc_ldc:
@@ -359,15 +359,15 @@ public class Instruction implements Opcode {
 			break;
 		case opc_rc:
 			i = Instruction.toUByte(code[index + 1]);
-			operand = new Integer(i);
+			operand = Integer.valueOf(i);
 			break;
 		case opc_aupdate:
 			i = Instruction.toUByte(code[index + 1]);
-			operand = new Integer(i);
+			operand = Integer.valueOf(i);
 			break;
 		case opc_supdate:
 			i = Instruction.toUByte(code[index + 1]);
-			operand = new Integer(i);
+			operand = Integer.valueOf(i);
 			break;
 		default:
 			break;

@@ -19,7 +19,7 @@ public final class BooleanHandler extends PrimitiveHandler {
 	private static final byte FALSE = (byte) 'F';
 	private static final byte NULL = (byte) 'N';
 	
-	private static final Boolean DEFAULTVALUE = new Boolean(false);
+	private static final Boolean DEFAULTVALUE = Boolean.valueOf(false);
 	
 	public Object defaultValue(){
 		return DEFAULTVALUE;
@@ -43,10 +43,10 @@ public final class BooleanHandler extends PrimitiveHandler {
 		}
 		
 		if(ret == TRUE){
-			return new Boolean(true);
+			return Boolean.valueOf(true);
 		}
 		if(ret == FALSE){
-			return new Boolean(false);
+			return Boolean.valueOf(false);
 		}
 		
 		return null;
@@ -84,10 +84,10 @@ public final class BooleanHandler extends PrimitiveHandler {
             Debug4.readEnd(context);
         }
 		if(ret == TRUE){
-			return new Boolean(true);
+			return Boolean.valueOf(true);
 		}
 		if(ret == FALSE){
-			return new Boolean(false);
+			return Boolean.valueOf(false);
 		}
 		return null;
 	}

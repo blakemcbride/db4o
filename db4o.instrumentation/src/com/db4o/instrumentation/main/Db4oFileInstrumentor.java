@@ -159,6 +159,7 @@ public class Db4oFileInstrumentor {
 	 * 
 	 * @throws MalformedURLException
 	 */
+	@Deprecated
 	private URL toURL(final String classPathItem) throws MalformedURLException {
 		return new File(classPathItem).toURL();
 	}
